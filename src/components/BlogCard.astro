@@ -1,0 +1,58 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const { title, description, pubDate, heroImage, tags } = post.data;
+
+const formattedDate = new Date(pubDate).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<article class="group">
+  <a href={`/blog/${post.id}`} class="block">
+    {
+      heroImage && (
+        <img
+          src={heroImage}
+          alt={title}
+          class="mb-4 aspect-video w-full rounded-xl object-cover transition-transform group-hover:scale-[1.02]"
+          loading="lazy"
+        />
+      )
+    }
+
+    <div class="space-y-2">
+      <div class="flex items-center gap-2">
+        <time datetime={pubDate.toISOString()} class="text-sm text-gray-500 dark:text-gray-400">
+          {formattedDate}
+        </time>
+        {
+          tags && tags.length > 0 && (
+            <div class="flex gap-1">
+              {tags.slice(0, 2).map((tag) => (
+                <span class="rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )
+        }
+      </div>
+
+      <h3 class="text-xl font-semibold text-gray-900 transition-colors group-hover:text-indigo-600 dark:text-white dark:group-hover:text-indigo-400">
+        {title}
+      </h3>
+
+      <p class="line-clamp-2 text-gray-600 dark:text-gray-400">
+        {description}
+      </p>
+    </div>
+  </a>
+</article>
