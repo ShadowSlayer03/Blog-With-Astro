@@ -11,7 +11,6 @@ export default function TableOfContents() {
   const [activeId, setActiveId] = useState<string>('');
 
   useEffect(() => {
-    // Extract headings from the article
     const article = document.querySelector('article');
     if (!article) return;
 
@@ -23,7 +22,6 @@ export default function TableOfContents() {
     }));
     setHeadings(items);
 
-    // Intersection observer for active heading
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
