@@ -103,7 +103,6 @@ export default function SearchDialog() {
           }}
         >
           <div className="mx-4 w-full max-w-xl overflow-hidden rounded-2xl border border-gray-200/80 bg-white/95 shadow-2xl shadow-gray-900/10 backdrop-blur-xl dark:border-white/10 dark:bg-gray-900/95 dark:shadow-black/30">
-            {/* Input */}
             <div className="flex items-center gap-3 border-b border-gray-100 px-4 dark:border-white/5">
               <svg className="h-5 w-5 shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -124,7 +123,6 @@ export default function SearchDialog() {
               </button>
             </div>
 
-            {/* Results */}
             <div className="max-h-80 overflow-y-auto p-2">
               {isLoading && (
                 <div className="px-4 py-8 text-center text-sm text-gray-500">Searching...</div>
@@ -165,7 +163,6 @@ export default function SearchDialog() {
               )}
             </div>
 
-            {/* Footer */}
             <div className="border-t border-gray-100 px-4 py-2.5 dark:border-white/5">
               <p className="text-[11px] text-gray-400 dark:text-gray-600">
                 Powered by <span className="font-semibold">Pagefind</span> &middot; Local search, zero tracking
