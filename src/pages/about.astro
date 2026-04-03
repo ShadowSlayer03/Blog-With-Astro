@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE, SOCIALS } from '../lib/constants';
+---
+
+<BaseLayout title={`About - ${SITE.title}`} description={`Learn more about ${SITE.author} and the tech behind ${SITE.title}.`}>
+  <section class="mx-auto max-w-3xl px-4 py-12">
+    <h1 class="mb-6 text-4xl font-bold tracking-tight text-gray-900 dark:text-white">About</h1>
+
+    <div class="prose prose-lg prose-indigo max-w-none dark:prose-invert">
+      <p>
+        Hey there! 👋 Welcome to <strong>{SITE.title}</strong> — a modern blog built with
+        cutting-edge web technologies and deployed on the edge.
+      </p>
+
+      <h2>Tech Stack</h2>
+      <ul>
+        <li><strong>Astro 6</strong> — Static-first framework with Islands Architecture</li>
+        <li><strong>Tailwind CSS 4</strong> — Utility-first CSS framework</li>
+        <li><strong>React 19</strong> — Interactive islands (search, comments, likes)</li>
+        <li><strong>MDX</strong> — Blog posts with Markdown + JSX components</li>
+        <li><strong>Keystatic</strong> — Git-based CMS for managing content</li>
+        <li><strong>Content Collections</strong> — Type-safe content with schema validation</li>
+        <li><strong>Pagefind</strong> — Static search index for fast full-text search</li>
+        <li><strong>Giscus</strong> — GitHub Discussions powered comments</li>
+        <li><strong>Shiki</strong> — Beautiful dual-theme syntax highlighting</li>
+        <li><strong>Bun</strong> — Fast JavaScript runtime & package manager</li>
+      </ul>
+
+      <h2>Architecture</h2>
+      <p>
+        This blog uses Astro's <strong>Islands Architecture</strong> — pages are rendered as static
+        HTML by default, and only interactive components (search, comments, like buttons) ship
+        JavaScript. The result is near-perfect Lighthouse scores with zero layout shift.
+      </p>
+      <p>
+        Content is managed through <strong>Keystatic</strong>, a git-based CMS that writes directly
+        to the repository. Search is powered by <strong>Pagefind</strong>, generating a static
+        search index at build time — no server required.
+      </p>
+
+      <h2>Get in Touch</h2>
+      <p>
+        Feel free to reach out on
+        <a href={SOCIALS.twitter} target="_blank" rel="noopener noreferrer">Twitter / X</a>,
+        connect on
+        <a href={SOCIALS.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>,
+        or check out the source code on
+        <a href={SOCIALS.github} target="_blank" rel="noopener noreferrer">GitHub</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
