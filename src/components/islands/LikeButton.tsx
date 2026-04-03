@@ -9,7 +9,6 @@ export default function LikeButton({ slug }: Props) {
   const [hasLiked, setHasLiked] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Load from localStorage on mount
   useEffect(() => {
     const stored = localStorage.getItem(`likes:${slug}`);
     if (stored) {
