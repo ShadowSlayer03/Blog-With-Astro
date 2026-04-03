@@ -14,11 +14,9 @@ export default function SearchDialog() {
   const inputRef = useRef<HTMLInputElement>(null);
   const pagefindRef = useRef<any>(null);
 
-  // Load Pagefind on first open
   const loadPagefind = useCallback(async () => {
     if (pagefindRef.current) return;
     try {
-      // Build the path dynamically so Vite cannot statically analyze it
       const pagefindPath = `/${['pagefind', 'pagefind.js'].join('/')}`;
       pagefindRef.current = await import(/* @vite-ignore */ pagefindPath);
       await pagefindRef.current.init();
@@ -27,7 +25,6 @@ export default function SearchDialog() {
     }
   }, []);
 
-  // Keyboard shortcut: Cmd/Ctrl + K
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -42,7 +39,6 @@ export default function SearchDialog() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Focus input when opened
   useEffect(() => {
     if (isOpen) {
       loadPagefind();
@@ -53,7 +49,6 @@ export default function SearchDialog() {
     }
   }, [isOpen, loadPagefind]);
 
-  // Search
   useEffect(() => {
     if (!query.trim() || !pagefindRef.current) {
       setResults([]);
@@ -86,7 +81,6 @@ export default function SearchDialog() {
 
   return (
     <>
-      {/* Search trigger button */}
       <button
         onClick={() => setIsOpen(true)}
         className="flex items-center gap-2 rounded-lg border border-gray-200/80 bg-gray-50/50 px-3 py-1.5 text-sm text-gray-400 transition-all hover:border-gray-300 hover:bg-gray-100 hover:text-gray-600 dark:border-white/5 dark:bg-white/5 dark:text-gray-500 dark:hover:border-white/10 dark:hover:bg-white/10 dark:hover:text-gray-300"
@@ -101,7 +95,6 @@ export default function SearchDialog() {
         </kbd>
       </button>
 
-      {/* Modal overlay */}
       {isOpen && (
         <div
           className="fixed inset-0 z-100 flex items-start justify-center bg-black/50 pt-[15vh] backdrop-blur-sm"
