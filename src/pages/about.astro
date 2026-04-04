@@ -1,53 +1,225 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE, SOCIALS } from '../lib/constants';
+import GradientText from '../components/ui/GradientText';
+
+const stack = [
+  {
+    name: 'Astro 6',
+    desc: 'Static-first framework with Islands Architecture',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M13.13 22.19L11.5 18.36C13.07 17.07 14.14 15.27 14.65 13.19L18.31 16.85L22.15 15.22C21.59 19.61 18.45 21.55 13.13 22.19M5.64 12.5L1.81 10.87C2.45 5.55 4.39 2.41 8.78 1.85L7.15 5.69L10.81 9.35C8.73 9.86 6.93 10.93 5.64 12.5M21.61 2.39C21.61 2.39 16.66 .27 11 5.93C8.81 8.12 7.5 10.53 6.65 12.64C6.26 13.62 6.5 14.72 7.21 15.43L8.57 16.79C9.28 17.5 10.38 17.74 11.36 17.35C13.5 16.53 15.88 15.19 18.07 13C23.73 7.34 21.61 2.39 21.61 2.39M14.54 9.46C13.76 8.68 13.76 7.41 14.54 6.63S16.59 5.85 17.37 6.63C18.14 7.41 18.15 8.68 17.37 9.46C16.59 10.24 15.32 10.24 14.54 9.46M8.88 16.53L7.47 15.12L8.88 16.53M6.24 22L9.88 18.36C9.54 18.27 9.21 18.12 8.91 17.91L4.83 22H6.24M2 22H3.41L8.18 17.24L6.76 15.82L2 20.59V22M2 19.17L6.09 15.09C5.88 14.79 5.73 14.46 5.64 14.12L2 17.76V19.17Z"/></svg>',
+  },
+  {
+    name: 'Tailwind CSS 4',
+    desc: 'Utility-first CSS framework',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"/><path d="M9.6 4.6A2 2 0 1 1 11 8H2"/><path d="M12.6 19.4A2 2 0 1 0 14 16H2"/></svg>',
+  },
+  {
+    name: 'React 19',
+    desc: 'Interactive islands (search, comments, likes)',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><path d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.54-4.52-9.87-6.54-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.54 4.52 9.87 6.54 11.9 4.5Z"/><path d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5Z"/></svg>',
+  },
+  {
+    name: 'MDX',
+    desc: 'Blog posts with Markdown + JSX components',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12.5 8 15l2 2.5"/><path d="m14 12.5 2 2.5-2 2.5"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/></svg>',
+  },
+  {
+    name: 'Keystatic',
+    desc: 'Git-based CMS for managing content',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"/><path d="m21 2-9.6 9.6"/><circle cx="7.5" cy="15.5" r="5.5"/></svg>',
+  },
+  {
+    name: 'Content Collections',
+    desc: 'Type-safe content with schema validation',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>',
+  },
+  {
+    name: 'Pagefind',
+    desc: 'Static search index for fast full-text search',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>',
+  },
+  {
+    name: 'Giscus',
+    desc: 'GitHub Discussions powered comments',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>',
+  },
+  {
+    name: 'Shiki',
+    desc: 'Beautiful dual-theme syntax highlighting',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
+  },
+  {
+    name: 'Bun',
+    desc: 'Fast JavaScript runtime & package manager',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>',
+  },
+];
 ---
 
 <BaseLayout title={`About - ${SITE.title}`} description={`Learn more about ${SITE.author} and the tech behind ${SITE.title}.`}>
-  <section class="mx-auto max-w-3xl px-4 py-12">
-    <h1 class="mb-6 text-4xl font-bold tracking-tight text-gray-900 dark:text-white">About</h1>
 
-    <div class="prose prose-lg prose-indigo max-w-none dark:prose-invert">
-      <p>
-        Hey there! 👋 Welcome to <strong>{SITE.title}</strong> — a modern blog built with
-        cutting-edge web technologies and deployed on the edge.
-      </p>
+  <section class="relative py-16 md:py-24 overflow-hidden border-b border-gray-200 dark:border-cyan-500/10 dark:bg-black/50">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(34,211,238,0.08),transparent_60%)] pointer-events-none hidden dark:block"></div>
+    <div class="absolute inset-0 bg-linear-to-b from-gray-50 to-white pointer-events-none dark:hidden"></div>
+    <div class="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-cyan-500/30 to-transparent hidden dark:block"></div>
 
-      <h2>Tech Stack</h2>
-      <ul>
-        <li><strong>Astro 6</strong> — Static-first framework with Islands Architecture</li>
-        <li><strong>Tailwind CSS 4</strong> — Utility-first CSS framework</li>
-        <li><strong>React 19</strong> — Interactive islands (search, comments, likes)</li>
-        <li><strong>MDX</strong> — Blog posts with Markdown + JSX components</li>
-        <li><strong>Keystatic</strong> — Git-based CMS for managing content</li>
-        <li><strong>Content Collections</strong> — Type-safe content with schema validation</li>
-        <li><strong>Pagefind</strong> — Static search index for fast full-text search</li>
-        <li><strong>Giscus</strong> — GitHub Discussions powered comments</li>
-        <li><strong>Shiki</strong> — Beautiful dual-theme syntax highlighting</li>
-        <li><strong>Bun</strong> — Fast JavaScript runtime & package manager</li>
-      </ul>
+    <div class="relative z-10 mx-auto max-w-6xl px-6 text-center ">
+      <span class="inline-block font-mono text-[10px] tracking-[0.3em] uppercase border rounded-full px-4 py-1 mb-6
+        text-cyan-700 border-cyan-600/30 bg-cyan-500/10
+        dark:text-cyan-500 dark:border-cyan-500/30 dark:bg-cyan-500/10">
+        System_Profile: {SITE.author.replace(/\s/g, '_').toUpperCase()}
+      </span>
 
-      <h2>Architecture</h2>
-      <p>
-        This blog uses Astro's <strong>Islands Architecture</strong> — pages are rendered as static
-        HTML by default, and only interactive components (search, comments, like buttons) ship
-        JavaScript. The result is near-perfect Lighthouse scores with zero layout shift.
-      </p>
-      <p>
-        Content is managed through <strong>Keystatic</strong>, a git-based CMS that writes directly
-        to the repository. Search is powered by <strong>Pagefind</strong>, generating a static
-        search index at build time — no server required.
-      </p>
+      <GradientText
+        client:load
+        colors={["#22d3ee", "#06b6d4", "#0891b2", "#22d3ee"]}
+        animationSpeed={8}
+        showBorder={false}
+        className="text-7xl md:text-8xl font-black tracking-tighter uppercase italic mt-4 dark:drop-shadow-[0_0_40px_rgba(34,211,238,0.2)]"
+      >
+        ABOUT
+      </GradientText>
 
-      <h2>Get in Touch</h2>
-      <p>
-        Feel free to reach out on
-        <a href={SOCIALS.twitter} target="_blank" rel="noopener noreferrer">Twitter / X</a>,
-        connect on
-        <a href={SOCIALS.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>,
-        or check out the source code on
-        <a href={SOCIALS.github} target="_blank" rel="noopener noreferrer">GitHub</a>.
+      <p class="mt-8 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed text-gray-600 dark:text-slate-400">
+        Hey there! 👋 Welcome to <strong class="text-cyan-700 dark:text-cyan-400 font-bold">{SITE.title}</strong> — a modern blog
+        built with cutting-edge web technologies and deployed on the edge.
       </p>
     </div>
   </section>
+
+  <div class="mx-auto max-w-6xl px-6 py-16 md:py-24">
+
+    <div class="mb-24">
+      <div class="mb-8 flex items-center gap-4">
+        <h2 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white font-mono">Tech Stack</h2>
+        <div class="h-px flex-1 bg-linear-to-r from-gray-200 dark:from-white/10 to-transparent"></div>
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-2">
+        {stack.map((item) => (
+          <div class="glass-card flex items-start gap-4 p-5 transition-all duration-300 group hover:-translate-y-0.5 hover:border-cyan-500/40 dark:hover:border-cyan-500/30">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg transition-colors
+              bg-gray-100 border border-gray-200 text-cyan-700
+              group-hover:bg-cyan-50 group-hover:border-cyan-300
+              dark:bg-[#0f172a] dark:border-white/10 dark:text-cyan-400
+              dark:group-hover:bg-cyan-950/30 dark:group-hover:border-cyan-500/20"
+              set:html={item.icon} />
+            <div>
+              <h3 class="text-sm font-bold font-mono transition-colors
+                text-gray-900 group-hover:text-cyan-700
+                dark:text-white dark:group-hover:text-cyan-300">{item.name}</h3>
+              <p class="mt-1 text-sm text-gray-500 dark:text-slate-400">{item.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="mb-24">
+      <div class="mb-8 flex items-center gap-4">
+        <h2 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white font-mono">Architecture</h2>
+        <div class="h-px flex-1 bg-linear-to-r from-gray-200 dark:from-white/10 to-transparent"></div>
+      </div>
+
+      <div class="glass-card p-8 space-y-6">
+        <div class="relative pl-6 border-l-2 border-cyan-400/40 dark:border-cyan-500/30">
+          <div class="absolute -left-1.25 top-1.5 h-2 w-2 rounded-full bg-cyan-500"></div>
+          <p class="leading-relaxed text-gray-700 dark:text-slate-300">
+            This blog uses Astro's <strong class="text-gray-900 dark:text-white font-semibold">Islands Architecture</strong> — pages are rendered as static
+            HTML by default, and only interactive components (search, comments, like buttons) ship
+            JavaScript. The result is near-perfect Lighthouse scores with zero layout shift.
+          </p>
+        </div>
+
+        <div class="relative pl-6 border-l-2 border-teal-400/40 dark:border-teal-500/30">
+          <div class="absolute -left-1.25 top-1.5 h-2 w-2 rounded-full bg-teal-500"></div>
+          <p class="leading-relaxed text-gray-700 dark:text-slate-300">
+            Content is managed through <strong class="text-gray-900 dark:text-white font-semibold">Keystatic</strong>, a git-based CMS that writes directly
+            to the repository. Search is powered by <strong class="text-gray-900 dark:text-white font-semibold">Pagefind</strong>, generating a static
+            search index at build time — no server required.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-6 glass-card p-10 relative overflow-hidden group">
+        <div class="absolute inset-0 bg-linear-to-br from-cyan-500/5 to-teal-500/5 opacity-50"></div>
+        <svg class="absolute inset-0 w-full h-full opacity-[0.03] dark:opacity-[0.04]" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid-about" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M0 40V0H40" fill="none" stroke="currentColor" stroke-width="1" class="text-gray-900 dark:text-white"/></pattern></defs><rect width="100%" height="100%" fill="url(#grid-about)"/></svg>
+
+        <div class="relative z-10 flex flex-col items-center">
+          <span class="mb-8 font-mono text-[10px] font-medium tracking-[0.3em] uppercase text-cyan-700 dark:text-cyan-500/80">Deployment_Workflow</span>
+
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-0 w-full max-w-lg">
+            <div class="flex flex-col items-center">
+              <div class="flex h-14 w-14 items-center justify-center rounded-xl shadow-lg z-10
+                bg-white border border-gray-200
+                dark:bg-[#0f172a] dark:border-white/10">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-600 dark:text-cyan-400"><path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"/><path d="m21 2-9.6 9.6"/><circle cx="7.5" cy="15.5" r="5.5"/></svg>
+              </div>
+              <span class="mt-3 font-mono text-[9px] tracking-[0.2em] uppercase text-gray-500 dark:text-slate-500">Keystatic CMS</span>
+            </div>
+
+            <div class="h-8 w-px sm:h-px sm:w-16 bg-linear-to-b sm:bg-linear-to-r from-cyan-500/30 to-teal-500/30 relative">
+              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-1 w-1 rounded-full bg-gray-400 dark:bg-slate-600"></div>
+            </div>
+
+            <div class="flex flex-col items-center">
+              <div class="flex h-14 w-14 items-center justify-center rounded-xl shadow-lg z-10
+                bg-white border border-gray-200
+                dark:bg-[#0f172a] dark:border-white/10">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" class="text-cyan-600 dark:text-cyan-400"><path d="M13.13 22.19L11.5 18.36C13.07 17.07 14.14 15.27 14.65 13.19L18.31 16.85L22.15 15.22C21.59 19.61 18.45 21.55 13.13 22.19M5.64 12.5L1.81 10.87C2.45 5.55 4.39 2.41 8.78 1.85L7.15 5.69L10.81 9.35C8.73 9.86 6.93 10.93 5.64 12.5M21.61 2.39C21.61 2.39 16.66 .27 11 5.93C8.81 8.12 7.5 10.53 6.65 12.64C6.26 13.62 6.5 14.72 7.21 15.43L8.57 16.79C9.28 17.5 10.38 17.74 11.36 17.35C13.5 16.53 15.88 15.19 18.07 13C23.73 7.34 21.61 2.39 21.61 2.39M14.54 9.46C13.76 8.68 13.76 7.41 14.54 6.63S16.59 5.85 17.37 6.63C18.14 7.41 18.15 8.68 17.37 9.46C16.59 10.24 15.32 10.24 14.54 9.46Z"/></svg>
+              </div>
+              <span class="mt-3 font-mono text-[9px] tracking-[0.2em] uppercase text-gray-500 dark:text-slate-500">Astro Build</span>
+            </div>
+
+            <div class="h-8 w-px sm:h-px sm:w-16 bg-linear-to-b sm:bg-linear-to-r from-teal-500/30 to-cyan-500/30 relative">
+              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-1 w-1 rounded-full bg-gray-400 dark:bg-slate-600"></div>
+            </div>
+
+            <div class="flex flex-col items-center">
+              <div class="flex h-14 w-14 items-center justify-center rounded-xl shadow-lg z-10
+                bg-white border border-gray-200
+                dark:bg-[#0f172a] dark:border-white/10">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-600 dark:text-cyan-400"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+              </div>
+              <span class="mt-3 font-mono text-[9px] tracking-[0.2em] uppercase text-gray-500 dark:text-slate-500">Edge Network</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Get in Touch -->
+    <div class="glass-card p-10 text-center max-w-2xl mx-auto">
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 font-mono">Get in Touch</h2>
+      <p class="text-gray-500 dark:text-slate-400 mb-8 max-w-sm mx-auto text-sm leading-relaxed">
+        Feel free to reach out on Twitter / X, connect on LinkedIn,
+        or check out the source code on GitHub.
+      </p>
+
+      <div class="flex flex-wrap justify-center gap-3">
+        <a href={SOCIALS.twitter} target="_blank" rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-mono font-semibold transition-all duration-200 hover:scale-[1.02]
+            bg-white text-gray-900 border border-gray-300 hover:border-cyan-400 hover:bg-cyan-50
+            dark:bg-white dark:text-gray-900 dark:border-transparent dark:hover:bg-gray-100">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          Twitter / X
+        </a>
+        <a href={SOCIALS.linkedin} target="_blank" rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-mono font-semibold transition-all duration-200 hover:scale-[1.02]
+            bg-gray-900 text-white border border-gray-800 hover:border-cyan-500/50 hover:bg-gray-800
+            dark:bg-[#0f172a] dark:text-white dark:border-white/10 dark:hover:border-cyan-500/30 dark:hover:bg-slate-800">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn
+        </a>
+        <a href={SOCIALS.github} target="_blank" rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-mono font-semibold transition-all duration-200 hover:scale-[1.02]
+            bg-gray-100 text-gray-900 border border-gray-200 hover:border-cyan-400 hover:bg-cyan-50
+            dark:bg-slate-800/50 dark:text-slate-300 dark:border-white/10 dark:hover:border-cyan-500/30 dark:hover:text-white">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </div>
 </BaseLayout>
