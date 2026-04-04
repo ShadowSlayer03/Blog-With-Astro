@@ -2,11 +2,14 @@ import { config, fields, collection } from '@keystatic/core';
 
 export default config({
   storage: {
-    kind: 'local',
+    kind: 'cloud',
+  },
+  cloud: {
+    project: 'lone-blogger-team/blog-with-astro',
   },
   ui: {
     brand: {
-      name: 'AstroBlog CMS',
+      name: 'Arjun Nambiar Blog CMS',
     },
     navigation: {
       Content: ['blog'],
@@ -48,8 +51,9 @@ export default config({
           defaultValue: false,
           description: 'Draft posts are not published',
         }),
-        content: fields.mdx({
+        content: fields.markdoc({
           label: 'Content',
+          extension: 'md',
         }),
       },
     }),
