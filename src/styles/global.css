@@ -112,3 +112,82 @@ img {
 .glow:hover::after {
   @apply opacity-100;
 }
+
+.pagefind-ui {
+    --pagefind-ui-scale: 0.85;
+    --pagefind-ui-primary: #6366f1;
+    --pagefind-ui-text: #111827;
+    --pagefind-ui-background: #ffffff;
+    --pagefind-ui-border: #e5e7eb;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 0.75rem;
+    --pagefind-ui-font: var(--font-sans);
+    --pagefind-ui-tag: #f3f4f6;
+
+    width: 100%;
+  }
+
+  :is(.dark) .pagefind-ui {
+    --pagefind-ui-primary: #818cf8;
+    --pagefind-ui-text: #f3f4f6;
+    --pagefind-ui-background: #030712;
+    --pagefind-ui-border: rgba(255, 255, 255, 0.08);
+    --pagefind-ui-tag: rgba(255, 255, 255, 0.06);
+  }
+
+  .pagefind-ui .pagefind-ui__search-input {
+    border-radius: 0.75rem;
+    border: 1px solid var(--pagefind-ui-border);
+    background-color: var(--pagefind-ui-background);
+    color: var(--pagefind-ui-text);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .pagefind-ui .pagefind-ui__search-input:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  }
+
+  .pagefind-ui .pagefind-ui__search-clear {
+    color: var(--pagefind-ui-primary);
+  }
+
+  .pagefind-ui .pagefind-ui__drawer:not(.pagefind-ui__hidden) {
+    position: relative;
+    margin-top: 0.75rem;
+    z-index: 10;
+    padding: 1rem;
+    overflow-y: auto;
+    border: 1px solid var(--pagefind-ui-border);
+    border-radius: 0.75rem;
+    background-color: var(--pagefind-ui-background);
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.08), 0 2px 8px -2px rgba(0, 0, 0, 0.04);
+  }
+
+  :is(.dark) .pagefind-ui .pagefind-ui__drawer:not(.pagefind-ui__hidden) {
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5);
+  }
+
+  .pagefind-ui .pagefind-ui__result {
+    border-color: var(--pagefind-ui-border);
+  }
+
+  .pagefind-ui .pagefind-ui__result-link {
+    color: var(--pagefind-ui-primary);
+    font-weight: 600;
+  }
+
+  .pagefind-ui .pagefind-ui__result-link:hover {
+    text-decoration: underline;
+  }
+
+  .pagefind-ui .pagefind-ui__result-excerpt {
+    color: var(--pagefind-ui-text);
+    opacity: 0.75;
+  }
+
+  .pagefind-ui .pagefind-ui__message {
+    color: var(--pagefind-ui-text);
+    opacity: 0.6;
+  }
