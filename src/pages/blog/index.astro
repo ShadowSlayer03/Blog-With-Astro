@@ -4,6 +4,7 @@ import BlogCard from '../../components/BlogCard.astro';
 import TagPill from '../../components/TagPill.astro';
 import { SITE } from '../../lib/constants';
 import { getCollection } from 'astro:content';
+import Search from 'astro-pagefind/components/Search';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
@@ -17,7 +18,6 @@ const allTags = [...new Set(posts.flatMap((post) => post.data.tags))].sort();
   description="All blog posts about web development, design, and technology."
 >
   <section class="mx-auto max-w-5xl px-6 py-16">
-    <!-- Page header -->
     <div class="mb-12">
       <p class="mb-1 text-sm font-semibold uppercase tracking-wider text-indigo-500">Blog</p>
       <h1 class="text-balance text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
@@ -28,7 +28,10 @@ const allTags = [...new Set(posts.flatMap((post) => post.data.tags))].sort();
       </p>
     </div>
 
-    <!-- Tag filter -->
+    <div class="relative mb-10">
+      <Search id="search" className="pagefind-ui" uiOptions={{ showImages: false }}  />
+    </div>
+
     {allTags.length > 0 && (
       <div class="mb-10 flex flex-wrap items-center gap-2">
         <a
@@ -42,7 +45,6 @@ const allTags = [...new Set(posts.flatMap((post) => post.data.tags))].sort();
       </div>
     )}
 
-    {/* Posts grid */}
     {
       posts.length === 0 ? (
         <div class="rounded-2xl border border-dashed border-gray-200 py-20 text-center dark:border-gray-800">

@@ -1,6 +1,3 @@
-/// Site-wide constants used across the blog.
-/// Update these values when you set up your own domain and socials.
-
 export const SITE = {
   title: 'AstroBlog',
   description:

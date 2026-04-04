@@ -7,10 +7,10 @@ import markdoc from '@astrojs/markdoc';
 import keystatic from '@keystatic/astro';
 import node from '@astrojs/node';
 import tailwindcss from '@tailwindcss/vite';
-
+import pagefind from "astro-pagefind";
 
 export default defineConfig({
-  site: 'https://your-blog.com',
+  site: 'https://blog.arjunnambiar.dev',
   output: 'static',
   adapter: node({ mode: 'standalone' }),
   integrations: [
@@ -19,14 +19,12 @@ export default defineConfig({
     react(),
     markdoc(),
     keystatic(),
+    pagefind()
   ],
   vite: {
-    plugins: [tailwindcss()],
-    build: {
-      rollupOptions: {
-        external: ['/pagefind/pagefind.js'],
-      },
-    },
+    plugins: [
+      tailwindcss(),
+    ],
   },
   markdown: {
     shikiConfig: {
