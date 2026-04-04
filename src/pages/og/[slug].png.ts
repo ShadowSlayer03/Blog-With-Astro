@@ -4,6 +4,8 @@ import satori from 'satori';
 import sharp from 'sharp';
 import { SITE } from '../../lib/constants';
 
+export const prerender = true;
+
 export const getStaticPaths: GetStaticPaths = async () => {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
   return posts.map((post) => ({ params: { slug: post.id } }));
