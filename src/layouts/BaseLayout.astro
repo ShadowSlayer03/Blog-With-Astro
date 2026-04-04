@@ -9,9 +9,10 @@ export interface Props {
   description: string;
   image?: string;
   article?: boolean;
+  isBlogPost?: boolean;
 }
 
-const { title, description, image, article } = Astro.props;
+const { title, description, image, article, isBlogPost=false } = Astro.props;
 ---
 
 <!doctype html>
@@ -19,7 +20,7 @@ const { title, description, image, article } = Astro.props;
   <head>
     <SEOHead title={title} description={description} image={image} article={article} />
   </head>
-  <body class="flex min-h-screen flex-col">
+  <body class="flex min-h-screen flex-col" {...(!isBlogPost ? { 'data-pagefind-ignore': 'all' } : {})}>
     <Header />
     <main class="flex-1">
       <slot />
