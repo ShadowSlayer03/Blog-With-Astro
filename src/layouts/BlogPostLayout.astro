@@ -2,6 +2,7 @@
 import BaseLayout from './BaseLayout.astro';
 import TagPill from '../components/TagPill.astro';
 import Newsletter from '../components/Newsletter.astro';
+import { SITE } from '../lib/constants';
 import type { CollectionEntry } from 'astro:content';
 
 import ScrollProgress from '../components/islands/ScrollProgress';
@@ -42,83 +43,121 @@ const ogImage = heroImage || `/og/${slug}.png`;
 
 <BaseLayout title={title} description={description} image={ogImage} article={true} isBlogPost={true}>
   <ScrollProgress client:idle />
-
   <TableOfContents client:idle />
 
-  <article class="mx-auto max-w-3xl px-6 pb-16 pt-12">
+  <!-- Hero Header Section -->
+  <div class="relative py-20 md:py-28 overflow-hidden border-b border-gray-200 dark:border-cyan-500/10">
+    <!-- Mesh / Glow background (dark mode only) -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(34,211,238,0.08),transparent_60%)] pointer-events-none hidden dark:block"></div>
+    <!-- Light mode subtle gradient -->
+    <div class="absolute inset-0 bg-gradient-to-b from-gray-50 to-white pointer-events-none dark:hidden"></div>
+    <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent hidden dark:block"></div>
+
+    <div class="max-w-3xl mx-auto px-6 relative text-center z-10">
+       <span class="inline-block font-mono text-[9px] tracking-[0.4em] text-cyan-600 dark:text-cyan-500/60 uppercase border border-cyan-500/30 dark:border-cyan-500/20 rounded-full px-4 py-1.5 mb-8 bg-cyan-50 dark:bg-transparent">
+         {formattedPubDate.toUpperCase()}
+         {formattedUpdatedDate && <span> &middot; Updated {formattedUpdatedDate.toUpperCase()}</span>}
+       </span>
+       
+       <h1 class="text-balance text-4xl md:text-6xl font-black text-gray-900 dark:text-white mt-4 mb-8 leading-tight tracking-tighter">
+         {title}
+       </h1>
+
+       <p class="text-lg text-gray-500 dark:text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">{description}</p>
+       
+       <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-[10px] font-mono text-gray-500 dark:text-slate-400 uppercase tracking-widest">
+         <div class="flex items-center gap-2">
+            <div class="w-6 h-6 rounded-full border border-gray-300 dark:border-cyan-500/50 overflow-hidden bg-gray-200 dark:bg-cyan-900">
+               <img src="/avatar.png" class="w-full h-full object-cover" onerror="this.style.display='none'" />
+            </div>
+            <span class="text-gray-900 dark:text-white font-semibold">{SITE.author}</span>
+         </div>
+         {wordCount > 0 && (
+           <div class="flex items-center gap-1.5">
+             <svg class="h-3.5 w-3.5 text-cyan-600 dark:text-cyan-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+               <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+             </svg>
+             {readingMinutes} min read
+           </div>
+         )}
+       </div>
+
+       {tags && tags.length > 0 && (
+         <div class="mt-8 flex flex-wrap items-center justify-center gap-2">
+           {tags.map((tag) => <TagPill tag={tag} size="sm" />)}
+         </div>
+       )}
+    </div>
+  </div>
+
+  <article class="mx-auto max-w-3xl px-6 pb-4 pt-12" data-pagefind-body>
     <a
       href="/blog"
-      class="group mb-8 inline-flex items-center gap-1.5 text-sm font-medium text-gray-400 transition-colors hover:text-gray-900 dark:text-gray-600 dark:hover:text-white"
+      class="group mb-10 inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-gray-400 dark:text-slate-500 transition-colors hover:text-cyan-600 dark:hover:text-cyan-400"
     >
-      <svg class="h-4 w-4 transition-transform group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <svg class="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
       </svg>
-      All posts
+      Back to all posts
     </a>
-
-    <header class="mb-10">
-      {tags && tags.length > 0 && (
-        <div class="mb-4 flex flex-wrap items-center gap-2">
-          {tags.map((tag) => <TagPill tag={tag} size="sm" />)}
-        </div>
-      )}
-
-      <h1 class="text-balance text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-4xl lg:text-5xl">
-        {title}
-      </h1>
-
-      <p class="mt-4 text-lg leading-relaxed text-gray-500 dark:text-gray-400">{description}</p>
-
-      <div class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-gray-100 pb-6 text-sm text-gray-400 dark:border-white/5 dark:text-gray-500">
-        <time datetime={pubDate.toISOString()} class="font-medium">
-          {formattedPubDate}
-        </time>
-        {
-          formattedUpdatedDate && (
-            <span class="flex items-center gap-1">
-              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
-              </svg>
-              Updated {formattedUpdatedDate}
-            </span>
-          )
-        }
-        {wordCount > 0 && (
-          <span class="flex items-center gap-1">
-            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            {readingMinutes} min read
-          </span>
-        )}
-      </div>
-    </header>
 
     {
       heroImage && (
         <img
           src={heroImage}
           alt={title}
-          class="mb-10 aspect-video w-full rounded-2xl object-cover shadow-lg shadow-gray-200/50 dark:shadow-none"
+          class="mb-12 aspect-video w-full rounded-2xl object-cover shadow-lg ring-1 ring-gray-200 dark:ring-white/10 dark:shadow-none"
           loading="eager"
         />
       )
     }
 
-    <div class="prose prose-lg prose-gray max-w-none dark:prose-invert prose-headings:scroll-mt-20 prose-headings:font-bold prose-headings:tracking-tight prose-a:font-medium prose-a:text-indigo-600 prose-a:no-underline hover:prose-a:text-indigo-500 prose-a:transition-colors prose-img:rounded-xl prose-pre:border prose-pre:border-gray-200 dark:prose-pre:border-gray-800 dark:prose-a:text-indigo-400">
+    <div class="prose prose-lg prose-gray max-w-none
+      dark:prose-invert
+      prose-headings:scroll-mt-20 prose-headings:font-bold prose-headings:tracking-tight
+      prose-headings:text-gray-900 dark:prose-headings:text-white
+      prose-p:text-gray-600 dark:prose-p:text-slate-300 prose-p:leading-relaxed
+      prose-a:font-medium prose-a:text-cyan-600 dark:prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:text-cyan-500 prose-a:transition-colors
+      prose-img:rounded-xl prose-img:ring-1 prose-img:ring-gray-200 dark:prose-img:ring-white/5
+      prose-pre:rounded-xl prose-pre:border prose-pre:border-gray-200 dark:prose-pre:border-white/10 dark:prose-pre:bg-[#0b1121]
+      prose-code:text-cyan-700 dark:prose-code:text-cyan-300 prose-code:font-mono prose-code:bg-cyan-50 dark:prose-code:bg-cyan-900/20 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none
+      prose-blockquote:border-l-cyan-500 prose-blockquote:bg-cyan-50/50 dark:prose-blockquote:bg-cyan-950/20 prose-blockquote:rounded-r-lg prose-blockquote:not-italic
+      prose-strong:text-gray-900 dark:prose-strong:text-white">
       <slot />
     </div>
 
-    <div class="mt-12 flex flex-wrap items-center gap-3 border-t border-gray-100 pt-8 dark:border-white/5">
+    <!-- Post Interactions -->
+    <div class="mt-16 flex flex-wrap items-center gap-3 border-t border-gray-200 dark:border-white/5 pt-8">
       <LikeButton client:visible slug={slug} />
       <ShareButton client:visible title={title} url={currentUrl} />
     </div>
 
-    <div class="mt-12">
+    <!-- Author Box -->
+    <div class="mt-12 mb-12 rounded-2xl p-8 flex flex-col md:flex-row gap-6 items-center
+      bg-gray-50 border border-gray-200
+      dark:bg-[#070b14] dark:border-cyan-500/10 relative overflow-hidden group">
+      <div class="shrink-0">
+        <div class="w-20 h-20 rounded-2xl overflow-hidden grayscale border border-gray-200 dark:border-white/10 group-hover:grayscale-0 transition-all duration-500">
+           <img src="/avatar.png" class="w-full h-full object-cover" onerror="this.style.display='none'" />
+        </div>
+      </div>
+      <div>
+        <h4 class="text-gray-900 dark:text-white text-lg font-bold tracking-tight">{SITE.author}</h4>
+        <p class="text-[10px] font-mono text-cyan-600 dark:text-cyan-500 uppercase tracking-widest mb-2">Author @ {SITE.title}</p>
+        <p class="text-sm text-gray-500 dark:text-slate-400 leading-relaxed max-w-xl">{SITE.description}</p>
+      </div>
+    </div>
+
+    <!-- Newsletter -->
+    <div class="mb-12">
       <Newsletter />
     </div>
 
-    <GiscusComments client:visible />
+    <!-- Comments Area -->
+    <div class="py-12 border-t border-gray-200 dark:border-dashed dark:border-white/10">
+      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-8">Comments</h3>
+      <GiscusComments client:visible />
+    </div>
   </article>
 
   <BackToTop client:idle />
