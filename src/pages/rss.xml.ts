@@ -3,6 +3,8 @@ import { getCollection } from 'astro:content';
 import type { APIContext } from 'astro';
 import { SITE } from '../lib/constants';
 
+export const prerender = true;
+
 export async function GET(context: APIContext) {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
 
