@@ -1,4 +1,5 @@
 ---
+export const prerender = true;
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BlogCard from '../components/BlogCard.astro';
 import Newsletter from '../components/Newsletter.astro';
@@ -35,7 +36,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
         <h1 class="animate-fade-in-up stagger-1 text-balance text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-5xl lg:text-6xl">
           Ideas, code &
           <span class="relative whitespace-nowrap">
-            <span class="relative bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+            <span class="relative bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
               craft
             </span>
           </span>
