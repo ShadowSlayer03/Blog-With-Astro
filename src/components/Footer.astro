@@ -4,55 +4,98 @@ import { SITE, SOCIALS } from '../lib/constants';
 const currentYear = new Date().getFullYear();
 
 const socialLinks = [
-  { href: SOCIALS.github, label: 'GitHub', icon: 'M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z' },
-  { href: SOCIALS.twitter, label: 'X / Twitter', icon: 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z' },
-  { href: SOCIALS.linkedin, label: 'LinkedIn', icon: 'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z' },
-  { href: '/rss.xml', label: 'RSS', icon: 'M6.18 15.64a2.18 2.18 0 012.18 2.18C8.36 19 7.38 20 6.18 20 5 20 4 19 4 17.82a2.18 2.18 0 012.18-2.18M4 4.44A15.56 15.56 0 0119.56 20h-2.83A12.73 12.73 0 004 7.27V4.44m0 5.66a9.9 9.9 0 019.9 9.9h-2.83A7.07 7.07 0 004 12.93V10.1z' },
+  {
+    href: SOCIALS.github,
+    label: 'GitHub',
+    icon: 'M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z',
+  },
+  {
+    href: SOCIALS.twitter,
+    label: 'X / Twitter',
+    icon: 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z',
+  },
+  {
+    href: SOCIALS.linkedin,
+    label: 'LinkedIn',
+    icon: 'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z',
+  },
+  {
+    href: '/rss.xml',
+    label: 'RSS',
+    icon: 'M6.18 15.64a2.18 2.18 0 012.18 2.18C8.36 19 7.38 20 6.18 20 5 20 4 19 4 17.82a2.18 2.18 0 012.18-2.18M4 4.44A15.56 15.56 0 0119.56 20h-2.83A12.73 12.73 0 004 7.27V4.44m0 5.66a9.9 9.9 0 019.9 9.9h-2.83A7.07 7.07 0 004 12.93V10.1z',
+  },
 ];
 ---
 
-<footer class="mt-auto border-t border-gray-100 dark:border-white/5">
-  <div class="mx-auto max-w-5xl px-6 py-12">
-    <div class="flex flex-col items-center justify-between gap-6 sm:flex-row">
-      <div class="flex flex-col items-center gap-2 sm:items-start">
-        <a href="/" class="flex items-center gap-2">
-          <div class="flex h-6 w-6 items-center justify-center rounded-md bg-linear-to-br from-indigo-500 to-purple-600">
-            <svg class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+<footer class="mt-auto border-t
+  border-gray-200 bg-gray-50/90
+  dark:border-white/5 dark:bg-[#020617]">
+
+  <!-- Top glow line -->
+  <div class="h-px w-full bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent dark:via-cyan-500/30"></div>
+
+  <div class="mx-auto max-w-6xl px-6 py-12">
+    <div class="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
+
+      <!-- Left: Brand + description -->
+      <div class="max-w-sm">
+        <a href="/" class="group inline-flex items-center gap-2 mb-4">
+          <div class="flex h-6 w-6 items-center justify-center rounded-md bg-cyan-500">
+            <svg class="h-3 w-3 text-slate-900" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
             </svg>
           </div>
-          <span class="text-sm font-semibold text-gray-900 dark:text-white">{SITE.title}</span>
+          <span class="font-mono text-sm font-bold text-gray-900 dark:text-white">
+            {SITE.title}<span class="text-cyan-500">_</span>
+          </span>
         </a>
-        <p class="text-xs text-gray-400 dark:text-gray-600">
-          &copy; {currentYear} {SITE.author}. All rights reserved.
+        <p class="text-xs text-gray-500 dark:text-slate-500 leading-relaxed font-mono">
+          {SITE.description}
         </p>
       </div>
 
-      <div class="flex items-center gap-1">
-        {socialLinks.map((link) => (
-          <a
-            href={link.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:text-gray-600 dark:hover:bg-white/5 dark:hover:text-gray-400"
-            aria-label={link.label}
-          >
-            <svg class="h-4.5 w-4.5" fill="currentColor" viewBox="0 0 24 24">
-              <path d={link.icon} />
-            </svg>
-          </a>
-        ))}
+      <!-- Right: Socials -->
+      <div>
+        <h4 class="font-mono text-[10px] uppercase tracking-widest text-cyan-600 dark:text-cyan-500 mb-4 flex items-center gap-2">
+          <div class="w-1.5 h-3 bg-cyan-500 rounded-sm"></div>
+          Connect
+        </h4>
+        <div class="flex items-center gap-1">
+          {socialLinks.map((link) => (
+            <a
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="rounded-lg p-2.5 transition-colors
+                text-gray-400 hover:bg-gray-100 hover:text-cyan-600
+                dark:text-slate-500 dark:hover:bg-white/5 dark:hover:text-cyan-400"
+              aria-label={link.label}
+            >
+              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d={link.icon} />
+              </svg>
+            </a>
+          ))}
+        </div>
       </div>
     </div>
 
-    <div class="mt-8 border-t border-gray-100 pt-6 text-center dark:border-white/5">
-      <p class="text-xs text-gray-400 dark:text-gray-600">
+    <!-- Bottom bar -->
+    <div class="mt-10 flex flex-col items-center justify-between gap-4
+      border-t border-gray-200 dark:border-white/5 pt-6 md:flex-row">
+      <p class="text-[10px] font-mono text-gray-400 dark:text-slate-600 uppercase tracking-widest">
+        &copy; {currentYear} {SITE.author}. All rights reserved.
+      </p>
+      <p class="text-[10px] font-mono text-gray-400 dark:text-slate-600 uppercase tracking-widest">
         Built with
-        <a href="https://astro.build" target="_blank" rel="noopener" class="font-medium text-gray-500 transition-colors hover:text-indigo-500 dark:text-gray-500">Astro</a>,
-        styled with
-        <a href="https://tailwindcss.com" target="_blank" rel="noopener" class="font-medium text-gray-500 transition-colors hover:text-indigo-500 dark:text-gray-500">Tailwind</a>,
-        deployed on
-        <a href="https://pages.cloudflare.com" target="_blank" rel="noopener" class="font-medium text-gray-500 transition-colors hover:text-indigo-500 dark:text-gray-500">Cloudflare</a>
+        <a href="https://astro.build" target="_blank" rel="noopener"
+          class="text-gray-500 transition-colors hover:text-cyan-600 dark:text-slate-400 dark:hover:text-cyan-400">Astro</a>
+        &middot; Styled with
+        <a href="https://tailwindcss.com" target="_blank" rel="noopener"
+          class="text-gray-500 transition-colors hover:text-cyan-600 dark:text-slate-400 dark:hover:text-cyan-400">Tailwind</a>
+        &middot; Deployed on
+        <a href="https://pages.cloudflare.com" target="_blank" rel="noopener"
+          class="text-gray-500 transition-colors hover:text-cyan-600 dark:text-slate-400 dark:hover:text-cyan-400">Cloudflare</a>
       </p>
     </div>
   </div>
