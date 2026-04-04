@@ -1,6 +1,5 @@
 ---
 import { SITE, NAV_LINKS } from '../lib/constants';
-import SearchDialog from './islands/SearchDialog';
 
 const currentPath = Astro.url.pathname;
 ---
@@ -41,8 +40,6 @@ const currentPath = Astro.url.pathname;
       </div>
 
       <div class="mx-1 hidden h-5 w-px bg-gray-200 dark:bg-gray-800 sm:block" aria-hidden="true"></div>
-
-      <SearchDialog client:idle />
 
       <button
         id="theme-toggle"
