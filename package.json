@@ -10,11 +10,13 @@
     "build": "astro build && npx pagefind --site dist/client",
     "preview": "astro preview",
     "astro": "astro",
+    "seed": "bun src/scripts/seed.ts",
     "db:generate": "bunx drizzle-kit generate",
     "db:migrate": "bunx drizzle-kit migrate",
     "db:studio": "bunx drizzle-kit studio"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^13.1.7",
     "@astrojs/markdoc": "^1.0.3",
     "@astrojs/mdx": "^5.0.2",
     "@astrojs/node": "^10.0.4",
@@ -25,6 +27,7 @@
     "@keystatic/astro": "^5.0.6",
     "@keystatic/core": "^0.5.50",
     "@libsql/client": "^0.17.2",
+    "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.2.2",
     "@tanstack/react-query": "^5.96.0",
@@ -41,7 +44,6 @@
     "react-dom": "^19.2.4",
     "satori": "^0.26.0",
     "satori-html": "^0.3.2",
-    "sharp": "^0.34.5",
     "tailwindcss": "^4.2.2",
     "three": "^0.183.2"
   },

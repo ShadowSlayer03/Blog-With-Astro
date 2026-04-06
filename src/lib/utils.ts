@@ -1,10 +1,11 @@
 /**
  * Formats a Date object to a human-readable string.
+ * @param style 'long' → "April 5, 2026" | 'short' → "Apr 5, 2026"
  */
-export function formatDate(date: Date): string {
+export function formatDate(date: Date, style: 'long' | 'short' = 'long'): string {
   return new Date(date).toLocaleDateString('en-US', {
     year: 'numeric',
-    month: 'long',
+    month: style,
     day: 'numeric',
   });
 }
@@ -12,21 +13,9 @@ export function formatDate(date: Date): string {
 /**
  * Estimates reading time for a given text.
  * Average reading speed: 200 words per minute.
+ * @returns number of minutes (minimum 1)
  */
-export function getReadingTime(content: string): string {
+export function getReadingTime(content: string): number {
   const words = content.trim().split(/\s+/).length;
-  const minutes = Math.ceil(words / 200);
-  return `${minutes} min read`;
-}
-
-/**
- * Generates a URL-safe slug from a string.
- */
-export function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .trim();
+  return Math.max(1, Math.ceil(words / 200));
 }

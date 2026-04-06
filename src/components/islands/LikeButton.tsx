@@ -5,42 +5,67 @@ interface Props {
 }
 
 export default function LikeButton({ slug }: Props) {
-  const [likes, setLikes] = useState(0);
+  const [count, setCount] = useState<number | null>(null); // null = loading
   const [hasLiked, setHasLiked] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem(`likes:${slug}`);
-    if (stored) {
-      const data = JSON.parse(stored);
-      setLikes(data.count);
-      setHasLiked(data.liked);
-    }
+    // Check localStorage to restore liked state across page refreshes
+    const alreadyLiked = localStorage.getItem(`liked:${slug}`) === 'true';
+    setHasLiked(alreadyLiked);
+
+    // Fetch real count from DB
+    fetch(`/api/likes/${slug}`)
+      .then(res => res.ok ? res.json() : null)
+      .then(data => setCount(data?.likes?.[0]?.count ?? 0))
+      .catch(() => setCount(0));
   }, [slug]);
 
-  const handleLike = () => {
-    if (hasLiked) return;
+  const handleLike = async () => {
+    if (hasLiked || isLoading || count === null) return;
 
-    const newCount = likes + 1;
-    setLikes(newCount);
+    // Optimistic update — feels instant to the user
+    setCount(prev => (prev ?? 0) + 1);
     setHasLiked(true);
     setIsAnimating(true);
+    setIsLoading(true);
+    localStorage.setItem(`liked:${slug}`, 'true');
 
-    localStorage.setItem(`likes:${slug}`, JSON.stringify({ count: newCount, liked: true }));
+    try {
+      const res = await fetch(`/api/likes/${slug}`, { method: 'PUT' });
 
-    setTimeout(() => setIsAnimating(false), 600);
+      if (!res.ok) {
+        // Rollback if the API call failed
+        setCount(prev => Math.max(0, (prev ?? 1) - 1));
+        setHasLiked(false);
+        localStorage.removeItem(`liked:${slug}`);
+      } else {
+        const data = await res.json();
+        // Sync with the real DB value
+        setCount(data.updatedLikeData?.[0]?.count ?? count + 1);
+      }
+    } catch {
+      // Rollback on network error
+      setCount(prev => Math.max(0, (prev ?? 1) - 1));
+      setHasLiked(false);
+      localStorage.removeItem(`liked:${slug}`);
+    } finally {
+      setIsLoading(false);
+      setTimeout(() => setIsAnimating(false), 600);
+    }
   };
 
   return (
     <button
       onClick={handleLike}
-      disabled={hasLiked}
+      disabled={hasLiked || isLoading}
       className={`group inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium transition-all duration-200 ${
         hasLiked
           ? 'border-pink-200/60 bg-pink-50 text-pink-600 dark:border-pink-500/20 dark:bg-pink-500/10 dark:text-pink-400'
           : 'border-gray-200/80 bg-white text-gray-500 hover:border-pink-200 hover:bg-pink-50 hover:text-pink-600 dark:border-white/5 dark:bg-white/5 dark:text-gray-400 dark:hover:border-pink-500/20 dark:hover:bg-pink-500/10 dark:hover:text-pink-400'
       }`}
-      aria-label={hasLiked ? `Liked (${likes})` : 'Like this article'}
+      aria-label={hasLiked ? `Liked (${count})` : 'Like this article'}
     >
       <span
         className={`inline-block transition-transform ${
@@ -49,7 +74,7 @@ export default function LikeButton({ slug }: Props) {
       >
         {hasLiked ? '❤️' : '🤍'}
       </span>
-      <span>{likes > 0 ? likes : 'Like'}</span>
+      <span>{count === null ? '…' : count > 0 ? count : 'Like'}</span>
     </button>
   );
 }

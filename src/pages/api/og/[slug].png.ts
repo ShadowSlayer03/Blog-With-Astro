@@ -1,8 +1,8 @@
 import type { APIRoute, GetStaticPaths } from 'astro';
 import { getCollection } from 'astro:content';
 import satori from 'satori';
-import sharp from 'sharp';
-import { SITE } from '../../lib/constants';
+import { Resvg } from '@resvg/resvg-js';
+import { SITE } from '../../../lib/constants';
 
 export const prerender = true;
 
@@ -153,9 +153,12 @@ export const GET: APIRoute = async ({ params }) => {
     ],
   });
 
-  const png = await sharp(Buffer.from(svg)).png().toBuffer();
+  const resvg = new Resvg(svg);
+  const pngData = resvg.render();
+  const pngBuffer = pngData.asPng();
 
-  return new Response(png, {
+  return new Response(new Uint8Array(pngBuffer), {
+    status: 200,
     headers: {
       'Content-Type': 'image/png',
       'Cache-Control': 'public, max-age=31536000, immutable',

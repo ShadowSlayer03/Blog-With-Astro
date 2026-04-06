@@ -1,0 +1,9 @@
+name = "blog-with-astro"
+compatibility_date = "2024-09-23"
+
+# Enable Node.js built-ins (e.g. node:path, node:crypto) on the Workers runtime.
+# Required if any SSR code (non-prerendered pages) imports a Node.js built-in at runtime.
+compatibility_flags = ["nodejs_compat"]
+
+[pages_build_output_dir]
+path = "./dist"
