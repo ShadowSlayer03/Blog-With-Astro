@@ -3,6 +3,7 @@ import BaseLayout from './BaseLayout.astro';
 import TagPill from '../components/TagPill.astro';
 import Newsletter from '../components/Newsletter.astro';
 import { SITE } from '../lib/constants';
+import { formatDate } from '../lib/utils';
 import type { CollectionEntry } from 'astro:content';
 
 import ScrollProgress from '../components/islands/ScrollProgress';
@@ -19,19 +20,8 @@ type Props = CollectionEntry<'blog'>['data'] & {
 
 const { title, description, pubDate, updatedDate, heroImage, tags, slug, rawContent } = Astro.props;
 
-const formattedPubDate = new Date(pubDate).toLocaleDateString('en-US', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-});
-
-const formattedUpdatedDate = updatedDate
-  ? new Date(updatedDate).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    })
-  : null;
+const formattedPubDate = formatDate(pubDate);
+const formattedUpdatedDate = updatedDate ? formatDate(updatedDate) : null;
 
 const wordCount = rawContent ? rawContent.trim().split(/\s+/).length : 0;
 const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
@@ -50,8 +40,8 @@ const ogImage = heroImage || `/og/${slug}.png`;
     <!-- Mesh / Glow background (dark mode only) -->
     <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(34,211,238,0.08),transparent_60%)] pointer-events-none hidden dark:block"></div>
     <!-- Light mode subtle gradient -->
-    <div class="absolute inset-0 bg-gradient-to-b from-gray-50 to-white pointer-events-none dark:hidden"></div>
-    <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent hidden dark:block"></div>
+    <div class="absolute inset-0 bg-linear-to-b from-gray-50 to-white pointer-events-none dark:hidden"></div>
+    <div class="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-cyan-500/30 to-transparent hidden dark:block"></div>
 
     <div class="max-w-3xl mx-auto px-6 relative text-center z-10">
        <span class="inline-block font-mono text-[9px] tracking-[0.4em] text-cyan-600 dark:text-cyan-500/60 uppercase border border-cyan-500/30 dark:border-cyan-500/20 rounded-full px-4 py-1.5 mb-8 bg-cyan-50 dark:bg-transparent">
