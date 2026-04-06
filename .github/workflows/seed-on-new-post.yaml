@@ -11,6 +11,8 @@ on:
 jobs:
   seed:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - name: Checkout repo
@@ -27,5 +29,4 @@ jobs:
       - name: Run seed script
         run: bun run seed
         env:
-          TURSO_DB_URL: ${{ secrets.TURSO_DB_URL }}
-          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          API_BASE_URL: ${{ secrets.API_BASE_URL }}
