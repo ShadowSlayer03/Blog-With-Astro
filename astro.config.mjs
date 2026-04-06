@@ -5,16 +5,22 @@ import sitemap from '@astrojs/sitemap';
 import react from '@astrojs/react';
 import markdoc from '@astrojs/markdoc';
 import keystatic from '@keystatic/astro';
+import cloudflare from '@astrojs/cloudflare';
 import node from '@astrojs/node';
 import tailwindcss from '@tailwindcss/vite';
 import pagefind from "astro-pagefind";
 
+// CF_PAGES=1 is automatically injected by Cloudflare Pages during production builds.
+const isCloudflare = !!process.env.CF_PAGES;
+
 export default defineConfig({
   site: 'https://blog.arjunnambiar.dev',
-  // Static is the best option for a blog for pre-rendering HTML, CSS, JS 
-  // But Keystatic Cloud needs OAuth so we can go hybrid: export const prerender = true; in blog pages
+  // Set `export const prerender = true` for prerendering(SSG) in the blog pages.
+  // output:'server' lets Keystatic's OAuth API routes stay server-side(SSR).
   output: 'server',
-  adapter: node({ mode: 'standalone' }),
+  adapter: isCloudflare
+    ? cloudflare()
+    : node({ mode: 'standalone' }),
   integrations: [
     mdx(),
     sitemap(),
