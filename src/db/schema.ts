@@ -1,10 +1,10 @@
 import { sql } from "drizzle-orm";
-import { text, sqliteTable } from "drizzle-orm/sqlite-core";
+import { text, sqliteTable, integer } from "drizzle-orm/sqlite-core";
 
 export const likes = sqliteTable("likes", {
     id: text("id").primaryKey(),
     post_slug: text("post_slug").unique().notNull(),
-    count: text("count").notNull().default("0"),
+    count: integer("count").notNull().default(0),
     created_at: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
     updated_at: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
@@ -12,7 +12,7 @@ export const likes = sqliteTable("likes", {
 export const views = sqliteTable("views", {
     id: text("id").primaryKey(),
     post_slug: text("post_slug").unique().notNull(),
-    count: text("count").notNull().default("0"),
+    count: integer("count").notNull().default(0),
     created_at: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
     updated_at: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
