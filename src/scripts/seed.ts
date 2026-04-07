@@ -3,7 +3,17 @@ import fs from "node:fs";
 import path from "node:path";
 
 function getBlogSlugs(): string[] {
-    const blogDir = path.resolve(process.cwd(), "src/content/blog");
+
+    const projectRoot = process.cwd().endsWith("scripts") 
+        ? path.resolve(process.cwd(), "..", "..") 
+        : process.cwd();
+        
+    const blogDir = path.resolve(projectRoot, "src/content/blog");
+
+    if (!fs.existsSync(blogDir)) {
+        console.error(`❌ Blog directory not found at: ${blogDir}`);
+        process.exit(1);
+    }
 
     return fs
         .readdirSync(blogDir)
@@ -38,9 +48,6 @@ async function main() {
             },
             body: JSON.stringify({ postSlugs: localBlogSlugs}),
         });
-
-        console.log("API response - Likes", await updateLikesResponse.text());
-        console.log("API response - Views", await updateViewsResponse.text());
 
         const likesResponseData = await updateLikesResponse.json();
 
