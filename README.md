@@ -30,7 +30,7 @@ A modern, fast, and feature-rich blog built with **Astro 6**, **Tailwind CSS 4**
 | CMS | Keystatic |
 | Search | Pagefind |
 | Comments | Giscus |
-| OG Images | Satori + Sharp |
+| OG Images | Satori |
 | Fonts | Inter + JetBrains Mono (Google Fonts) |
 | Runtime | Bun |
 
