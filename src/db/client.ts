@@ -1,14 +1,16 @@
 import { drizzle } from "drizzle-orm/libsql";
-import { createClient } from "@libsql/client/web";
-import "dotenv/config";
+import { createClient } from "@libsql/client";
 
-if(!process.env.TURSO_DB_URL || !process.env.TURSO_AUTH_TOKEN) {
+const url = import.meta.env.TURSO_DB_URL ?? process.env.TURSO_DB_URL;
+const authToken = import.meta.env.TURSO_AUTH_TOKEN ?? process.env.TURSO_AUTH_TOKEN;
+
+if (!url || !authToken) {
     throw new Error("TURSO_DB_URL and TURSO_AUTH_TOKEN must be set in environment variables.");
 }
 
 const turso = createClient({
-  url: process.env.TURSO_DB_URL!,
-  authToken: process.env.TURSO_AUTH_TOKEN,
+  url,
+  authToken,
 });
 
 export const db = drizzle(turso);

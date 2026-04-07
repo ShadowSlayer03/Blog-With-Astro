@@ -34,7 +34,7 @@ export default defineConfig({
       tailwindcss(),
     ],
     server: {
-      allowedHosts: ["https://astroblog.share.zrok.io"]
+      allowedHosts: ["astroblog.share.zrok.io"]
     }
   },
   markdown: {
