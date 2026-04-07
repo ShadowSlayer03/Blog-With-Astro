@@ -33,6 +33,9 @@ export default defineConfig({
     plugins: [
       tailwindcss(),
     ],
+    server: {
+      allowedHosts: ["https://astroblog.share.zrok.io"]
+    }
   },
   markdown: {
     shikiConfig: {
