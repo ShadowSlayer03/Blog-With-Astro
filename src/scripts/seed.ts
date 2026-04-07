@@ -49,6 +49,9 @@ async function main() {
             body: JSON.stringify({ postSlugs: localBlogSlugs}),
         });
 
+        // console.log("likes response:", await updateLikesResponse.text());
+        // console.log("views response:", await updateViewsResponse.text());
+
         const likesResponseData = await updateLikesResponse.json();
 
         const viewsResponseData = await updateViewsResponse.json();
