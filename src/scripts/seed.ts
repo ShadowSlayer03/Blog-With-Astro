@@ -4,10 +4,10 @@ import path from "node:path";
 
 function getBlogSlugs(): string[] {
 
-    const projectRoot = process.cwd().endsWith("scripts") 
-        ? path.resolve(process.cwd(), "..", "..") 
+    const projectRoot = process.cwd().endsWith("scripts")
+        ? path.resolve(process.cwd(), "..", "..")
         : process.cwd();
-        
+
     const blogDir = path.resolve(projectRoot, "src/content/blog");
 
     if (!fs.existsSync(blogDir)) {
@@ -28,8 +28,13 @@ async function main() {
     try {
         const localBlogSlugs = getBlogSlugs();
 
-        if(!process.env.API_BASE_URL) {
+        if (!process.env.API_BASE_URL) {
             console.error("API_BASE_URL is not defined in environment variables.");
+            return;
+        }
+
+        if (!process.env.API_KEY) {
+            console.error("API_KEY is not defined in environment variables.");
             return;
         }
 
@@ -37,16 +42,18 @@ async function main() {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "x-api-key": process.env.API_KEY,
             },
-            body: JSON.stringify({ postSlugs: localBlogSlugs}),
+            body: JSON.stringify({ postSlugs: localBlogSlugs }),
         });
 
         const updateViewsResponse = await fetch(`${process.env.API_BASE_URL}/api/views`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "x-api-key": process.env.API_KEY,
             },
-            body: JSON.stringify({ postSlugs: localBlogSlugs}),
+            body: JSON.stringify({ postSlugs: localBlogSlugs }),
         });
 
         // console.log("likes response:", await updateLikesResponse.text());

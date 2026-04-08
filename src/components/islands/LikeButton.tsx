@@ -11,11 +11,9 @@ export default function LikeButton({ slug }: Props) {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Check localStorage to restore liked state across page refreshes
     const alreadyLiked = localStorage.getItem(`liked:${slug}`) === 'true';
     setHasLiked(alreadyLiked);
 
-    // Fetch real count from DB
     fetch(`/api/likes/${slug}`)
       .then(res => res.ok ? res.json() : null)
       .then(data => setCount(data?.likes?.[0]?.count ?? 0))
@@ -25,7 +23,6 @@ export default function LikeButton({ slug }: Props) {
   const handleLike = async () => {
     if (hasLiked || isLoading || count === null) return;
 
-    // Optimistic update — feels instant to the user
     setCount(prev => (prev ?? 0) + 1);
     setHasLiked(true);
     setIsAnimating(true);
@@ -36,17 +33,14 @@ export default function LikeButton({ slug }: Props) {
       const res = await fetch(`/api/likes/${slug}`, { method: 'PUT' });
 
       if (!res.ok) {
-        // Rollback if the API call failed
         setCount(prev => Math.max(0, (prev ?? 1) - 1));
         setHasLiked(false);
         localStorage.removeItem(`liked:${slug}`);
       } else {
         const data = await res.json();
-        // Sync with the real DB value
         setCount(data.updatedLikeData?.[0]?.count ?? count + 1);
       }
     } catch {
-      // Rollback on network error
       setCount(prev => Math.max(0, (prev ?? 1) - 1));
       setHasLiked(false);
       localStorage.removeItem(`liked:${slug}`);

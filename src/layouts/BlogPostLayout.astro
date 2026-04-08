@@ -12,6 +12,7 @@ import LikeButton from '../components/islands/LikeButton';
 import ShareButton from '../components/islands/ShareButton';
 import GiscusComments from '../components/islands/GiscusComments';
 import BackToTop from '../components/islands/BackToTop';
+import TrackPageView from '../components/islands/TrackPageView';
 
 type Props = CollectionEntry<'blog'>['data'] & {
   slug: string;
@@ -32,6 +33,7 @@ const ogImage = heroImage || `/og/${slug}.png`;
 ---
 
 <BaseLayout title={title} description={description} image={ogImage} article={true} isBlogPost={true}>
+  <TrackPageView slug={slug} readingTime={readingMinutes} client:visible />
   <ScrollProgress client:idle />
   <TableOfContents client:idle />
 
