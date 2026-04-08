@@ -8,9 +8,7 @@ export default function PostStats({ slug }: Props) {
   const [likes, setLikes] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch(`/api/likes/${slug}`, {
-      headers: { 'x-api-key': import.meta.env.PUBLIC_API_KEY },
-    })
+    fetch(`/api/likes/${slug}`)
       .then(res => res.ok ? res.json() : null)
       .then(data => setLikes(data?.likes?.[0]?.count ?? 0))
       .catch(() => setLikes(0));
