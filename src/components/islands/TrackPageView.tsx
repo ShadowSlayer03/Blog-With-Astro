@@ -30,23 +30,17 @@ const TrackPageView = ({ slug }: TrackPageViewProps) => {
             hasFiredRef.current = true;
             sessionStorage.setItem(sessionKey, "true");
 
-            // sendBeacon is more reliable on page unload than fetch
             const payload = JSON.stringify({ timeSpent: activeSecondsRef.current });
-            const headers = { type: "application/json" };
-            const blob = new Blob([payload], headers);
+            const blob = new Blob([payload], { type: "application/json" });
 
-            const url = `/api/views/${slug}?key=${encodeURIComponent(import.meta.env.PUBLIC_API_KEY)}`;
-            const sent = navigator.sendBeacon(url, blob);
+            // sendBeacon always sends POST and includes the Origin header
+            const sent = navigator.sendBeacon(`/api/views/${slug}`, blob);
 
             if (!sent) {
-                // Fallback to fetch with keepalive
                 fetch(`/api/views/${slug}`, {
                     method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "x-api-key": import.meta.env.PUBLIC_API_KEY,
-                    },
                     body: payload,
+                    headers: { "Content-Type": "application/json" },
                     keepalive: true,
                 }).catch(() => { });
             }
