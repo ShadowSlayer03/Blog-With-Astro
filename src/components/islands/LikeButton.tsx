@@ -11,11 +11,9 @@ export default function LikeButton({ slug }: Props) {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Check localStorage to restore liked state across page refreshes
     const alreadyLiked = localStorage.getItem(`liked:${slug}`) === 'true';
     setHasLiked(alreadyLiked);
 
-    // Fetch real count from DB
     fetch(`/api/likes/${slug}`, {
       headers: { 'x-api-key': import.meta.env.PUBLIC_API_KEY },
     })
@@ -27,7 +25,6 @@ export default function LikeButton({ slug }: Props) {
   const handleLike = async () => {
     if (hasLiked || isLoading || count === null) return;
 
-    // Optimistic update
     setCount(prev => (prev ?? 0) + 1);
     setHasLiked(true);
     setIsAnimating(true);
