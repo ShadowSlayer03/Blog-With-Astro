@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig, envField } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import react from '@astrojs/react';
@@ -44,5 +44,10 @@ export default defineConfig({
         dark: 'github-dark',
       },
     },
+  },
+  env: {
+    schema: {
+      API_KEY: envField.string({ context: 'server', access: 'secret' }),
+    }
   },
 });
