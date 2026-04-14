@@ -1,22 +1,21 @@
 import { defineMiddleware } from "astro:middleware";
+import { API_KEY } from "astro:env/server";
 
-export const onRequest = defineMiddleware(({ request }, next) => {
-    const url = new URL(request.url);
+export const onRequest = defineMiddleware((context, next) => {
+    const url = new URL(context.request.url);
 
     if (!url.pathname.startsWith("/api/")) return next();
 
-    // Server-to-server calls (seed script, CI): validate secret API key
-    const apiKey = request.headers.get("x-api-key");
+    const apiKey = context.request.headers.get("x-api-key");
     if (apiKey) {
-        const validKey = import.meta.env.API_KEY;
-        if (!validKey || apiKey !== validKey) {
+        if (apiKey !== API_KEY) {
             return new Response(JSON.stringify({ message: "Unauthorized" }), { status: 401 });
         }
         return next();
     }
 
-    const origin = request.headers.get("origin");
-    const referer = request.headers.get("referer");
+    const origin = context.request.headers.get("origin");
+    const referer = context.request.headers.get("referer");
     const siteOrigin = url.origin;
 
     const fromSameSite =
@@ -29,4 +28,3 @@ export const onRequest = defineMiddleware(({ request }, next) => {
 
     return next();
 });
-
