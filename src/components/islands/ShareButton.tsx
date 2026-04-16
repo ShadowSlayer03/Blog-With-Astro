@@ -66,7 +66,7 @@ export default function ShareButton({ title, url }: ShareButtonProps) {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="inline-flex items-center gap-2 rounded-xl border border-gray-200/80 bg-white px-4 py-2.5 text-sm font-medium text-gray-500 transition-all duration-200 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900 dark:border-white/5 dark:bg-white/5 dark:text-gray-400 dark:hover:border-white/10 dark:hover:bg-white/10 dark:hover:text-white"
+        className="inline-flex items-center gap-2 rounded-full border border-white/8 bg-[#08111f]/90 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.22em] text-slate-300 transition-all duration-200 hover:border-cyan-400/25 hover:bg-[#0d1727] hover:text-white"
         aria-label="Share this article"
       >
         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -76,14 +76,14 @@ export default function ShareButton({ title, url }: ShareButtonProps) {
       </button>
 
       {isOpen && (
-        <div className="absolute bottom-full right-0 mb-2 w-52 overflow-hidden rounded-xl border border-gray-200/80 bg-white/95 py-1.5 shadow-xl shadow-gray-900/5 backdrop-blur-xl dark:border-white/10 dark:bg-gray-900/95 dark:shadow-black/20">
+        <div className="absolute bottom-full right-0 mb-2 w-56 overflow-hidden rounded-2xl border border-white/10 bg-[#07101c]/95 py-1.5 shadow-xl shadow-black/30 backdrop-blur-xl">
           {shareLinks.map((link) => (
             <a
               key={link.name}
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+              className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-300 transition-colors hover:bg-white/5 hover:text-white"
               onClick={() => setIsOpen(false)}
             >
               {link.icon}
@@ -95,7 +95,7 @@ export default function ShareButton({ title, url }: ShareButtonProps) {
               copyToClipboard();
               setIsOpen(false);
             }}
-            className="flex w-full items-center gap-3 px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+            className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-slate-300 transition-colors hover:bg-white/5 hover:text-white"
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
