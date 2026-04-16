@@ -11,7 +11,7 @@ export default function TableOfContents() {
   const [activeId, setActiveId] = useState<string>('');
 
   useEffect(() => {
-    const article = document.querySelector('article');
+    const article = document.querySelector('#post-content');
     if (!article) return;
 
     const elements = article.querySelectorAll('h2, h3');
@@ -40,30 +40,40 @@ export default function TableOfContents() {
   if (headings.length < 2) return null;
 
   return (
-    <nav className="hidden xl:block">
-      <div className="fixed top-28 right-8 w-56">
-        <p className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-600">
-          On this page
-        </p>
-        <ul className="space-y-0.5 border-l border-gray-200 dark:border-white/5">
-          {headings.map((heading) => (
+    <nav className="sticky top-28">
+      <div className="mb-6 flex items-center gap-2 font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-white">
+        <span className="block h-3 w-1 bg-cyan-400"></span>
+        ON THIS PAGE
+      </div>
+      <ul className="space-y-3 font-mono text-[9px] uppercase tracking-[0.2em] text-slate-500">
+        {headings.map((heading, idx) => {
+          const numberPrefix = heading.level === 2 
+            ? `${String(headings.filter((h, i) => i <= idx && h.level === 2).length).padStart(2, '0')}_`
+            : '.._';
+          
+          return (
             <li key={heading.id}>
               <a
                 href={`#${heading.id}`}
-                className={`block border-l-2 -ml-px py-1.5 text-[13px] leading-snug transition-all duration-200 ${
-                  heading.level === 3 ? 'pl-6' : 'pl-3'
+                className={`group flex items-start gap-1.5 transition-all duration-200 ${
+                  heading.level === 3 ? 'ml-4' : ''
                 } ${
                   activeId === heading.id
-                    ? 'border-indigo-500 font-medium text-indigo-600 dark:text-indigo-400'
-                    : 'border-transparent text-gray-400 hover:border-gray-300 hover:text-gray-700 dark:text-gray-600 dark:hover:border-gray-600 dark:hover:text-gray-300'
+                    ? 'text-cyan-300'
+                    : 'hover:text-slate-300'
                 }`}
               >
-                {heading.text}
+                <span className={activeId === heading.id ? "text-cyan-500/50" : "text-slate-700/70 group-hover:text-slate-500 transition-colors"}>
+                  {numberPrefix}
+                </span>
+                <span className="mt-0.5 leading-[1.4]">
+                  {heading.text.replace(/\s+/g, '_')}
+                </span>
               </a>
             </li>
-          ))}
-        </ul>
-      </div>
+          );
+        })}
+      </ul>
     </nav>
   );
 }
