@@ -38,9 +38,11 @@ export default config({
         updatedDate: fields.date({
           label: 'Updated Date',
         }),
-        heroImage: fields.text({
-          label: 'Hero Image URL',
-          description: 'URL or path to the hero image',
+        heroImage: fields.image({
+          label: 'Hero Image',
+          description: 'Upload the hero image',
+          directory: 'public/images/blog',
+          publicPath: '/images/blog/',
         }),
         tags: fields.array(fields.text({ label: 'Tag' }), {
           label: 'Tags',
