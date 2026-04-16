@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ARCHITECT_OS // BLOGS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;family=Fira+Code&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    h1, h2, h3, .font-headline {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .glass-card {
+      background: rgba(25, 37, 64, 0.6);
+      backdrop-filter: blur(24px);
+    }
+    .technical-grid {
+      background-size: 40px 40px;
+      background-image: linear-gradient(to right, rgba(129, 236, 255, 0.03) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(129, 236, 255, 0.03) 1px, transparent 1px);
+    }
+    .tonal-shift-low {
+      background: linear-gradient(to bottom, rgba(6, 14, 32, 1), rgba(9, 19, 40, 1));
+    }
+    /* Styles ported from SCREEN_21 for footer consistency */
+    .holographic-text {
+        background: linear-gradient(
+            45deg, 
+            #a68cff 0%, 
+            #ffffff 25%, 
+            #00E5FF 50%, 
+            #ff6c95 75%, 
+            #a68cff 100%
+        );
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 0 10px rgba(166, 140, 255, 0.2));
+    }
+    .mono-font {
+        font-family: 'Fira Code', monospace;
+    }
+  </style>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "secondary-dim": "#7e51ff",
+                  "primary-fixed-dim": "#00d4ec",
+                  "surface-container-lowest": "#000000",
+                  "surface-container-high": "#141f38",
+                  "on-surface": "#dee5ff",
+                  "tertiary": "#ff6c95",
+                  "on-secondary-container": "#e4daff",
+                  "on-secondary-fixed": "#3b00a0",
+                  "on-surface-variant": "#a3aac4",
+                  "inverse-surface": "#faf8ff",
+                  "on-secondary": "#25006b",
+                  "on-error": "#490006",
+                  "error-container": "#9f0519",
+                  "surface-tint": "#81ecff",
+                  "secondary-container": "#591adc",
+                  "on-primary-fixed-variant": "#005762",
+                  "secondary-fixed-dim": "#cabaff",
+                  "primary-dim": "#00d4ec",
+                  "inverse-primary": "#006976",
+                  "secondary-fixed": "#d8caff",
+                  "surface-dim": "#060e20",
+                  "on-error-container": "#ffa8a3",
+                  "tertiary-container": "#fd3e80",
+                  "surface-variant": "#192540",
+                  "on-primary-fixed": "#003840",
+                  "surface": "#060e20",
+                  "on-primary": "#005762",
+                  "primary-fixed": "#00e3fd",
+                  "error-dim": "#d7383b",
+                  "error": "#ff716c",
+                  "inverse-on-surface": "#4d556b",
+                  "on-secondary-fixed-variant": "#591bdc",
+                  "surface-bright": "#1f2b49",
+                  "on-tertiary-container": "#100003",
+                  "primary-container": "#00e3fd",
+                  "on-tertiary-fixed": "#380014",
+                  "surface-container-highest": "#192540",
+                  "surface-container-low": "#091328",
+                  "outline": "#6d758c",
+                  "tertiary-dim": "#ff6c95",
+                  "on-tertiary-fixed-variant": "#770033",
+                  "outline-variant": "#40485d",
+                  "primary": "#81ecff",
+                  "secondary": "#a68cff",
+                  "on-background": "#dee5ff",
+                  "tertiary-fixed": "#ff8fa9",
+                  "tertiary-fixed-dim": "#ff769b",
+                  "on-primary-container": "#004d57",
+                  "surface-container": "#0f1930",
+                  "background": "#060e20",
+                  "on-tertiary": "#48001c"
+          },
+          "borderRadius": {
+                  "DEFAULT": "0.125rem",
+                  "lg": "0.25rem",
+                  "xl": "0.5rem",
+                  "full": "0.75rem"
+          },
+          "fontFamily": {
+                  "headline": ["Space Grotesk"],
+                  "body": ["Inter"],
+                  "label": ["Space Grotesk"],
+                  "mono": ["Fira Code"]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-surface text-on-surface technical-grid min-h-screen">
+<!-- Shared Component: TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-slate-950/60 backdrop-blur-xl shadow-2xl shadow-cyan-900/10">
+<div class="flex justify-between items-center px-8 h-20 w-full max-w-screen-2xl mx-auto font-['Space_Grotesk'] tracking-tight">
+<div class="text-xl font-bold tracking-tighter text-white uppercase">ARCHITECT_OS</div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="text-slate-400 hover:text-white transition-colors" href="#">Home</a>
+<a class="text-cyan-400 font-bold border-b-2 border-cyan-400 pb-1" href="#">Blogs</a>
+<a class="text-slate-400 hover:text-white transition-colors" href="#">About</a>
+</div>
+<div class="flex items-center gap-6">
+<button class="material-symbols-outlined text-cyan-400 hover:bg-white/5 transition-all duration-300 p-2 rounded-full" data-icon="dark_mode">dark_mode</button>
+<img alt="User profile" class="w-10 h-10 rounded-full border border-primary/20" data-alt="portrait of a focused software architect with glasses in a dimly lit workstation with blue neon accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJO708WvVRFEbPqAkQOwzeR3lxQb8Dr0Zcm-PEWzwEL73YRGuymrFZM52kUWai48nceqjMAQgDviLtZYICvTzmMjmMjkvy8OVLc-geVMbaeUsKmSmwh5FaGW_5QZzPu3fNiWyVd2zfIVbrAw4-uVVWh99SL2T5qALvCPsdERK4K7AcSZWlpwduL0MlNF4-nKfNNA-1-MB182hONb_0fWE_VqfjrUfR3A8n9p7KunpsSSH5JOhAco8JnrSpkNVBbN10Z9GXFDObYW6r"/>
+</div>
+</div>
+</nav>
+<main class="pt-32 pb-24 px-8 max-w-screen-2xl mx-auto">
+<!-- Hero & Search -->
+<header class="mb-20 flex flex-col items-center text-center">
+<div class="inline-block py-1 px-3 mb-6 bg-primary/10 border border-primary/20 rounded-lg">
+<span class="font-mono text-xs text-primary tracking-[0.2em] uppercase">Personal_Repos // Alex_Rdrgz</span>
+</div>
+<h1 class="text-7xl md:text-8xl font-bold tracking-tighter mb-8 bg-gradient-to-r from-white via-on-surface to-slate-500 bg-clip-text text-transparent">THE_ARCHIVE</h1>
+<!-- Terminal Style Search -->
+<div class="w-full max-w-3xl relative group">
+<div class="absolute -inset-0.5 bg-gradient-to-r from-primary/50 to-secondary/50 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+<div class="relative flex items-center bg-surface-container-low rounded-xl border border-outline-variant/30 overflow-hidden">
+<span class="pl-6 pr-3 font-mono text-primary text-lg">$</span>
+<input class="w-full py-5 bg-transparent border-none focus:ring-0 text-on-surface font-mono placeholder:text-outline/50" placeholder="search_repositories_or_logs..." type="text"/>
+<div class="pr-6 flex gap-2">
+<span class="text-[10px] font-mono px-2 py-1 bg-surface-container-high rounded text-outline border border-outline-variant/20">⌘K</span>
+<button class="material-symbols-outlined text-primary" data-icon="search">search</button>
+</div>
+</div>
+</div>
+</header>
+<!-- Bento Grid Content -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+<!-- Featured Post (Asymmetric Bleed) -->
+<article class="md:col-span-8 group relative overflow-hidden rounded-xl bg-surface-container transition-all hover:translate-y-[-4px]">
+<div class="flex flex-col md:flex-row h-full">
+<div class="md:w-1/2 relative h-64 md:h-full overflow-hidden">
+<img alt="The Architecture of Tomorrow" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-105" data-alt="abstract 3d mathematical geometry visualization with glowing cyan wires and complex topological structures on black background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqZalGzP-nv6vmEd621BG4EgK9D4AwGjTaZcaegG0nQq5JUk-vfB9lWtAvXRSlzwxxXfa8sJyGRM7eNa-1-bgdNyTUulPy4iSyr8datPkLamUqGqxXvLuXBhjgLTseqtnam_KPFL7qJyQusuTK6q9x8ViBbhvTv-DH15TqIkJNAiRDZvycivkyvyeZNO4jwm4OBhl8AEJ2FbNvXx9bjWh_e3Pp1_u9PvGW9dFG6ZGKNwsV080tVGh8W92WBFmUicP4la40CGUkAtr-"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container via-transparent to-transparent md:bg-gradient-to-r"></div>
+</div>
+<div class="md:w-1/2 p-10 flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-4 mb-4">
+<span class="font-mono text-[10px] text-secondary uppercase tracking-widest bg-secondary/10 px-2 py-1 rounded">Architectural</span>
+<span class="font-mono text-[10px] text-outline uppercase tracking-widest">Oct 24, 2024</span>
+</div>
+<h2 class="text-3xl font-bold leading-tight mb-4 group-hover:text-primary transition-colors">Constructing Scalable Neural Microservices</h2>
+<p class="text-on-surface-variant line-clamp-3 mb-6">Exploring the intersection of LLM orchestrators and highly decoupled serverless infrastructures for the next decade of compute...</p>
+</div>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-mono text-[10px] text-outline">BY ALEX RDRGZ // 12 MIN READ</span>
+</div>
+</div>
+</div>
+</article>
+<!-- Sidebar Artifacts/Stats -->
+<aside class="md:col-span-4 flex flex-col gap-8">
+<div class="p-8 rounded-xl bg-surface-container-low border border-outline-variant/10 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 font-mono text-[8px] text-primary/20">ID: USER_01</div>
+<h3 class="font-headline text-lg font-bold mb-6 text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">person</span>
+            CURATOR_PROFILE
+          </h3>
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-4">
+<img alt="Alex Rdrgz" class="w-16 h-16 rounded-full border-2 border-primary/30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJO708WvVRFEbPqAkQOwzeR3lxQb8Dr0Zcm-PEWzwEL73YRGuymrFZM52kUWai48nceqjMAQgDviLtZYICvTzmMjmMjkvy8OVLc-geVMbaeUsKmSmwh5FaGW_5QZzPu3fNiWyVd2zfIVbrAw4-uVVWh99SL2T5qALvCPsdERK4K7AcSZWlpwduL0MlNF4-nKfNNA-1-MB182hONb_0fWE_VqfjrUfR3A8n9p7KunpsSSH5JOhAco8JnrSpkNVBbN10Z9GXFDObYW6r"/>
+<div>
+<div class="font-headline font-bold text-white">ALEX RDRGZ</div>
+<div class="font-mono text-[10px] text-primary uppercase">Lead Systems Architect</div>
+</div>
+</div>
+<p class="text-sm text-on-surface-variant font-body leading-relaxed">
+            Documenting the evolution of neural infrastructures and low-level system design. A technical log for the next-gen architecture.
+          </p>
+</div>
+</div>
+<!-- Glassmorphism Newsletter -->
+<div class="p-8 rounded-xl glass-card border border-primary/20 flex flex-col justify-center items-center text-center">
+<span class="material-symbols-outlined text-primary text-4xl mb-4" data-icon="alternate_email">alternate_email</span>
+<h4 class="font-headline font-bold text-xl mb-2">JOIN THE CORE</h4>
+<p class="text-sm text-on-surface-variant mb-6">Get technical deep-dives delivered to your terminal weekly.</p>
+<div class="w-full flex">
+<input class="w-full bg-surface-container-highest/50 border border-outline-variant/30 rounded-l-xl px-4 py-3 focus:border-primary focus:ring-0 text-sm font-mono" placeholder="user@architect.os" type="text"/>
+<button class="bg-primary text-on-primary-fixed font-bold px-6 rounded-r-xl text-sm hover:bg-primary-fixed-dim transition-colors">EXECUTE</button>
+</div>
+</div>
+</aside>
+<!-- Standard Blog Grid -->
+<div class="md:col-span-12 grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+<!-- Blog Card 1 -->
+<article class="group bg-surface-container rounded-xl overflow-hidden flex flex-col hover:bg-surface-bright transition-all duration-300 border border-transparent hover:border-outline-variant/30">
+<div class="h-48 overflow-hidden relative">
+<img alt="Post" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-500" data-alt="extreme close up of silicon microchip circuitry with orange and blue reflective lights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-OO4FR5WDpip_MiX7KIjqsifkHjt0Kh5leLNA94Mi31zO2foGyNvB__6n_RLVk93E5ngyhI9vsukEp7pn5ZoAOT7ZKJUUO0QZrpgQjJLdVlULleXceg_sbs3A-ZmvS7lNxotsZBo9bXo9F1vrfUrFk9-zIZbbTruhYUMXa2GI0lIEiZpDs7fpzw_XOKH5Vbpo42jDYXfyQshO8RW_izgnyYLkl2tOU5US-vcfcHoJpUFAhRyf_yrJISHYWs2o6DQxAla5s9vMhUFD"/>
+<div class="absolute top-4 right-4 bg-surface-container-highest/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/5">
+<span class="font-mono text-[10px] text-white">HARDWARE</span>
+</div>
+</div>
+<div class="p-6 flex-grow flex flex-col">
+<div class="flex items-center gap-2 mb-4">
+<span class="font-mono text-[9px] text-outline uppercase">March 12 // 8 MIN</span>
+</div>
+<h3 class="text-xl font-bold mb-4 group-hover:text-primary transition-colors">The Physical Layer: Rethinking Silicon for AI</h3>
+<p class="text-sm text-on-surface-variant line-clamp-3 mb-6">Why traditional GPU architectures are hitting the thermal ceiling and what comes next...</p>
+<div class="mt-auto flex items-center justify-between pt-4 border-t border-outline-variant/10 justify-end">
+<button class="material-symbols-outlined text-outline group-hover:text-primary" data-icon="arrow_forward_ios" style="font-size: 14px;">arrow_forward_ios</button>
+</div>
+</div>
+</article>
+<!-- Blog Card 2 -->
+<article class="group bg-surface-container rounded-xl overflow-hidden flex flex-col hover:bg-surface-bright transition-all duration-300 border border-transparent hover:border-outline-variant/30">
+<div class="h-48 overflow-hidden relative">
+<img alt="Post" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-500" data-alt="cybersecurity concept background with digital padlock icon and flowing binary code data streams" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiA6zGMaaqua7ftIklEK7OTfnAekHCXfeqkhTEtdQ2yay5DhXNRB3SWx_AWjkHMiLUuekHBqLBBHXm7BuTI1Zb7SYxCUx1BZN4BsQlcb4pRmEZwTu_XSQoKRhkKz0xdNGpneRESwlnVSu-mntkmLG6FNQQcgMq22n3qvujTGBSTwiM-8ma5FhczPy_v3AEOjQO28gNWTnzyNbuLIFCS9At5IZsVc88xyUdmAD_BEjHDGzMv5W0mNbSgmKGjTFJ4uSwLVflqnCtb0g9"/>
+<div class="absolute top-4 right-4 bg-surface-container-highest/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/5">
+<span class="font-mono text-[10px] text-white">SECURITY</span>
+</div>
+</div>
+<div class="p-6 flex-grow flex flex-col">
+<div class="flex items-center gap-2 mb-4">
+<span class="font-mono text-[9px] text-outline uppercase">Feb 28 // 15 MIN</span>
+</div>
+<h3 class="text-xl font-bold mb-4 group-hover:text-primary transition-colors">Zero-Trust in Distributed Edge Clusters</h3>
+<p class="text-sm text-on-surface-variant line-clamp-3 mb-6">A deep dive into mutual TLS and identity-aware proxies for edge computing environments.</p>
+<div class="mt-auto flex items-center justify-between pt-4 border-t border-outline-variant/10 justify-end">
+<button class="material-symbols-outlined text-outline group-hover:text-primary" data-icon="arrow_forward_ios" style="font-size: 14px;">arrow_forward_ios</button>
+</div>
+</div>
+</article>
+<!-- Blog Card 3 -->
+<article class="group bg-surface-container rounded-xl overflow-hidden flex flex-col hover:bg-surface-bright transition-all duration-300 border border-transparent hover:border-outline-variant/30">
+<div class="h-48 overflow-hidden relative">
+<img alt="Post" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-500" data-alt="industrial server room with glowing blue server racks and neat cabling in a modern data center" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyeeu5pTdrvJm7eJ7X11l3e7gWnpMgaIsPVAwmnqFwoW3Xt33iipN5EfMzx488T7jg7sBhdvYHQNiDJoEsDVAN_wMnXvYxgToaoU6SL_IDUQQBk12byeMcfBK_6TmcwmmX8BF788bxWC69RJQsPnsHsNiqKQIQbCQHR7BWGTX9yUVhPPFWhC5uWqpeLfcn4yds9Doz9qdvLwdKXYtgTfGJ-xeLNwnZSuig1vyaaadc3YSVoA4PXJMmXQEuc-n1RbtWz7MZrQmX_b51"/>
+<div class="absolute top-4 right-4 bg-surface-container-highest/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/5">
+<span class="font-mono text-[10px] text-white">INFRA</span>
+</div>
+</div>
+<div class="p-6 flex-grow flex flex-col">
+<div class="flex items-center gap-2 mb-4">
+<span class="font-mono text-[9px] text-outline uppercase">Feb 15 // 5 MIN</span>
+</div>
+<h3 class="text-xl font-bold mb-4 group-hover:text-primary transition-colors">Auto-Scaling: The Hidden Latency Cost</h3>
+<p class="text-sm text-on-surface-variant line-clamp-3 mb-6">Why reactive scaling might be killing your user experience and how to move to predictive models.</p>
+<div class="mt-auto flex items-center justify-between pt-4 border-t border-outline-variant/10 justify-end">
+<button class="material-symbols-outlined text-outline group-hover:text-primary" data-icon="arrow_forward_ios" style="font-size: 14px;">arrow_forward_ios</button>
+</div>
+</div>
+</article>
+</div>
+</div>
+<!-- Sleek Pagination -->
+<div class="mt-20 flex justify-center">
+<nav class="flex items-center gap-2 p-1 bg-surface-container-low rounded-xl border border-outline-variant/20">
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/5 text-outline transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="chevron_left">chevron_left</span>
+</button>
+<div class="flex items-center gap-1">
+<button class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary text-on-primary-fixed font-bold font-mono text-sm">01</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/5 text-on-surface-variant font-mono text-sm transition-colors">02</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/5 text-on-surface-variant font-mono text-sm transition-colors">03</button>
+<span class="w-10 h-10 flex items-center justify-center text-outline-variant">...</span>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/5 text-on-surface-variant font-mono text-sm transition-colors">12</button>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/5 text-outline transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="chevron_right">chevron_right</span>
+</button>
+</nav>
+</div>
+</main>
+<!-- Shared Component: Footer -->
+<footer class="bg-black w-full pt-48 pb-16 px-8 border-t border-white/5 relative overflow-hidden">
+<div class="absolute inset-x-0 bottom-1/3 translate-y-1/2 flex justify-center opacity-[0.02] select-none pointer-events-none">
+<h2 class="text-[20rem] md:text-[35rem] font-bold tracking-tighter leading-none whitespace-nowrap">NAMBIAR</h2>
+</div>
+<div class="max-w-7xl mx-auto relative z-10 flex flex-col items-center">
+<div class="text-center mb-24 w-full">
+<h3 class="text-7xl md:text-[12rem] font-bold mb-8 tracking-tighter uppercase leading-none holographic-text">
+                Arjun Nambiar
+            </h3>
+<div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
+<div class="h-px w-12 bg-primary/30 hidden md:block"></div>
+<p class="mono-font uppercase tracking-[0.8em] text-[11px] text-on-surface-variant/80 font-medium">
+                Technical Curator &amp; Systems Architect
+            </p>
+<div class="h-px w-12 bg-primary/30 hidden md:block"></div>
+</div>
+</div>
+<div class="flex flex-col items-center gap-12 w-full max-w-4xl">
+<div class="flex space-x-12">
+<a class="text-white/20 hover:text-primary transition-all duration-500 hover:-translate-y-2 group" href="#">
+<span class="material-symbols-outlined text-3xl group-hover:drop-shadow-[0_0_8px_rgba(0,229,255,0.5)]">rss_feed</span>
+</a>
+<a class="text-white/20 hover:text-primary transition-all duration-500 hover:-translate-y-2 group" href="#">
+<span class="material-symbols-outlined text-3xl group-hover:drop-shadow-[0_0_8px_rgba(0,229,255,0.5)]">alternate_email</span>
+</a>
+<a class="text-white/20 hover:text-primary transition-all duration-500 hover:-translate-y-2 group" href="#">
+<span class="material-symbols-outlined text-3xl group-hover:drop-shadow-[0_0_8px_rgba(0,229,255,0.5)]">terminal</span>
+</a>
+<a class="text-white/20 hover:text-primary transition-all duration-500 hover:-translate-y-2 group" href="#">
+<span class="material-symbols-outlined text-3xl group-hover:drop-shadow-[0_0_8px_rgba(0,229,255,0.5)]">fingerprint</span>
+</a>
+</div>
+<div class="flex flex-wrap justify-center gap-x-16 gap-y-6 mono-font uppercase tracking-[0.4em] text-[10px] text-white/30 border-y border-white/[0.03] py-8 w-full max-w-2xl">
+<a class="hover:text-white transition-colors duration-300" href="#">System_RSS</a>
+<a class="hover:text-white transition-colors duration-300" href="#">Core_Mail</a>
+<a class="hover:text-white transition-colors duration-300" href="#">Source_Repo</a>
+<a class="hover:text-white transition-colors duration-300" href="#">Privacy_Prot</a>
+</div>
+</div>
+<div class="mt-32 w-full flex flex-col md:flex-row justify-between items-center gap-8 px-4 opacity-30">
+<p class="text-[9px] mono-font uppercase tracking-widest">© 2024 / DIGITAL_SIGNATURE_VERIFIED</p>
+<p class="text-[9px] mono-font uppercase tracking-widest">DESIGNED_FOR_THE_FUTURE</p>
+</div>
+</div>
+</footer>
+</body></html>
