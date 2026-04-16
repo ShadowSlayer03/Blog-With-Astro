@@ -1,0 +1,402 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Building the Future of Dev Blogs | ARCHITECT_OS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "secondary-dim": "#7e51ff",
+                  "primary-fixed-dim": "#00d4ec",
+                  "surface-container-lowest": "#000000",
+                  "surface-container-high": "#141f38",
+                  "on-surface": "#dee5ff",
+                  "tertiary": "#ff6c95",
+                  "on-secondary-container": "#e4daff",
+                  "on-secondary-fixed": "#3b00a0",
+                  "on-surface-variant": "#a3aac4",
+                  "inverse-surface": "#faf8ff",
+                  "on-secondary": "#25006b",
+                  "on-error": "#490006",
+                  "error-container": "#9f0519",
+                  "surface-tint": "#81ecff",
+                  "secondary-container": "#591adc",
+                  "on-primary-fixed-variant": "#005762",
+                  "secondary-fixed-dim": "#cabaff",
+                  "primary-dim": "#00d4ec",
+                  "inverse-primary": "#006976",
+                  "secondary-fixed": "#d8caff",
+                  "surface-dim": "#060e20",
+                  "on-error-container": "#ffa8a3",
+                  "tertiary-container": "#fd3e80",
+                  "surface-variant": "#192540",
+                  "on-primary-fixed": "#003840",
+                  "surface": "#060e20",
+                  "on-primary": "#005762",
+                  "primary-fixed": "#00e3fd",
+                  "error-dim": "#d7383b",
+                  "error": "#ff716c",
+                  "inverse-on-surface": "#4d556b",
+                  "on-secondary-fixed-variant": "#591bdc",
+                  "surface-bright": "#1f2b49",
+                  "on-tertiary-container": "#100003",
+                  "primary-container": "#00e3fd",
+                  "on-tertiary-fixed": "#380014",
+                  "surface-container-highest": "#192540",
+                  "surface-container-low": "#091328",
+                  "outline": "#6d758c",
+                  "tertiary-dim": "#ff6c95",
+                  "on-tertiary-fixed-variant": "#770033",
+                  "outline-variant": "#40485d",
+                  "primary": "#81ecff",
+                  "secondary": "#a68cff",
+                  "on-background": "#dee5ff",
+                  "tertiary-fixed": "#ff8fa9",
+                  "tertiary-fixed-dim": "#ff769b",
+                  "on-primary-container": "#004d57",
+                  "surface-container": "#0f1930",
+                  "background": "#060e20",
+                  "on-tertiary": "#48001c"
+          },
+          "borderRadius": {
+                  "DEFAULT": "0.125rem",
+                  "lg": "0.25rem",
+                  "xl": "0.5rem",
+                  "full": "0.75rem"
+          },
+          "fontFamily": {
+                  "headline": ["Space Grotesk"],
+                  "body": ["Inter"],
+                  "label": ["Space Grotesk"],
+                  "mono": ["JetBrains Mono"]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body { font-family: 'Inter', sans-serif; background-color: #060e20; }
+    .headline-font { font-family: 'Space Grotesk', sans-serif; }
+    .mono-font { font-family: 'JetBrains Mono', monospace; }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .prose code { font-family: 'JetBrains Mono', monospace; }
+    html { scroll-behavior: smooth; }
+    .technical-grid {
+      background-size: 40px 40px;
+      background-image: linear-gradient(to right, rgba(129, 236, 255, 0.03) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(129, 236, 255, 0.03) 1px, transparent 1px);
+    }
+    .text-glow {
+      text-shadow: 0 0 30px rgba(129, 236, 255, 0.3);
+    }
+    .holographic-text {
+        background: linear-gradient(
+            45deg, 
+            #a68cff 0%, 
+            #ffffff 25%, 
+            #81ecff 50%, 
+            #ff6c95 75%, 
+            #a68cff 100%
+        );
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shine 10s linear infinite;
+    }
+    @keyframes shine {
+        to { background-position: 200% center; }
+    }
+    .toc-active {
+        color: #81ecff !important;
+        text-shadow: 0 0 8px rgba(129, 236, 255, 0.5);
+    }
+    .toc-active::before {
+        content: '_';
+        margin-right: 4px;
+        animation: blink 1s step-end infinite;
+    }
+    @keyframes blink {
+        from, to { opacity: 1; }
+        50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary/30 technical-grid">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-slate-950/40 backdrop-blur-xl border-b border-white/5">
+<div class="flex justify-between items-center px-8 py-5 max-w-7xl mx-auto">
+<div class="text-2xl font-bold tracking-tighter text-white uppercase headline-font" style="">ARCHITECT_OS</div>
+<div class="hidden md:flex items-center space-x-10 headline-font uppercase tracking-[0.2em] text-[10px]">
+<a class="text-slate-400 hover:text-primary transition-colors" href="#" style="">Home</a>
+<a class="text-primary font-bold" href="#" style="">Blogs</a>
+<a class="text-slate-400 hover:text-primary transition-colors" href="#" style="">About</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary cursor-pointer hover:bg-primary/10 p-2 rounded-lg transition-all duration-300" style="">dark_mode</button>
+<div class="w-10 h-10 rounded-full border border-primary/20 overflow-hidden">
+<img alt="User profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2CdeDsp6Kn86DwWUlpo7fVRV58OFAwrlj89xXGxtL8zNMo4bpRbXK_pYrDXOO0z9HBbvpyMdmCKcAdkS5W8c9wrjL_Z9EUufSBi08n4Lj1rofCosrpsGTkn-fQZ2SXDzifU9egwBGrKn-Cdm8D8f22j0g1Qv41V5uIiMi3CqIztvoUTw3DZpBwKMjiOSNREx3zeiclKubE9VAW2HqvcLwTICpjrns2VfT3Mm7VflUNIJE7FFc2ujm5fCtdKCVv4DsD9KSkEF3rYRa" style="">
+</div>
+</div>
+</div>
+</nav>
+<main class="pt-32">
+<!-- Hero Section -->
+<header class="relative min-h-[500px] flex flex-col justify-center overflow-hidden border-b border-white/5">
+<div class="absolute inset-0 z-0">
+<div class="absolute inset-0 bg-gradient-to-t from-surface via-surface/60 to-surface/20 z-10"></div>
+<img class="w-full h-full object-cover opacity-30 mix-blend-screen" data-alt="abstract 3d architectural structure with glowing cyan wireframe lines and floating geometric particles in a deep obsidian void" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAW25azETbsRZ5vRIH92oNUmqRFg0VLGE8Gcsv5yCcQyhOq5JfYu5_j2r2s25CEL7zZ_C3MLsn0d4pNa9WIkCUR6qEssIQxf78zCFHmau1zsBGRZTGkRL8ytSQpuj1xBWTompvtNuhCgPiCOO_gPMqKfF4VYGSN6tHJY8CbucPiLWXYQmX1x1-OE53Ff_Mh_iEdRYxlFLmFH8u1d7M-Crq5LNG6NWq9pbgDCCwExPQvTXiIl7dftN_khkr5qppqZ8LKV3jaTZoWYhl9" style="">
+</div>
+<div class="relative z-20 max-w-4xl mx-auto w-full px-6 py-20 text-center">
+<div class="flex items-center justify-center gap-3 mb-8">
+<span class="mono-font text-[10px] uppercase tracking-[0.3em] px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-lg" style="">TECHNOLOGY</span>
+<span class="mono-font text-[10px] uppercase tracking-[0.3em] text-on-surface-variant" style="">NOV 24, 2026</span>
+</div>
+<h1 class="headline-font text-5xl md:text-8xl font-bold tracking-tighter text-white mb-10 leading-[0.9] uppercase" style="">
+          Building the Future <br>
+<span class="text-primary italic" style="">of Dev Blogs</span>
+</h1>
+<div class="flex flex-wrap items-center justify-center gap-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full border border-primary/30 p-0.5">
+<img class="w-full h-full rounded-full object-cover" data-alt="professional portrait of alex rodriguez, a focused tech architect with short dark hair and modern tech aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkQ4jTw4YdxHKiExNP4v1J1qqVKYvM0tM92qTnz5ZHWCeEIzHkTP3OFZfu-maR-Oe2oFt0kvLG65Yp0cCdzfmZBJIAYu_oI1eHE6Pz1eqOJTo3QDimXRkS7M7dKwU2oiVzXpBUIxivcZHgC4H69P4zJb3Cvz3fUIpYK2wT6daZL60idytuS_6iq3oo8oBAUNFid5liq9nAFeE0zBcvBYtqiG4PkqggAQlmIfjtCsPz6x8aDcGGNZoJqeThABGCwRGk4jukLi_vpJxR" style="">
+</div>
+<div class="text-left">
+<p class="headline-font text-sm font-bold text-white" style="">ALEX RDRGZ</p>
+<p class="mono-font text-[10px] text-primary uppercase tracking-widest" style="">ARCHITECT</p>
+</div>
+</div>
+<div class="h-6 w-px bg-white/10 hidden sm:block"></div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg" data-icon="schedule" style="">schedule</span>
+<span class="mono-font text-[10px] text-on-surface-variant uppercase tracking-widest" style="">12 min read</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-lg" data-icon="database" style="">database</span>
+<span class="mono-font text-[10px] text-on-surface-variant uppercase tracking-widest" style="">v2.0.4-stable</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Article Content Wrapper with Dual Sidebars -->
+<div class="max-w-7xl mx-auto px-6 relative">
+<div class="flex flex-col lg:flex-row gap-12">
+<!-- Module Index Sidebar (Left) -->
+<aside class="hidden lg:block w-64 pt-20 sticky top-24 h-fit">
+<div class="flex items-center gap-2 mb-6">
+<div class="w-1 h-4 bg-primary rounded-full"></div>
+<h5 class="headline-font text-[10px] font-bold text-white uppercase tracking-[0.3em]" style=""><br></h5>
+</div>
+<nav class="space-y-4">
+<div class="block mono-font text-[10px] text-on-surface-variant uppercase tracking-widest" style=""><br></div>
+<div class="block mono-font text-[10px] text-on-surface-variant uppercase tracking-widest" style=""><br></div>
+<div class="block mono-font text-[10px] text-on-surface-variant uppercase tracking-widest" style=""><br></div>
+</nav>
+</aside>
+<!-- Main Blog Column -->
+<section class="flex-1 max-w-3xl mx-auto py-20">
+<article class="space-y-12">
+<div class="prose prose-invert prose-lg max-w-none headline-font">
+<p class="text-xl md:text-2xl font-light leading-relaxed text-on-surface opacity-90 first-letter:text-5xl first-letter:font-bold first-letter:text-primary first-letter:mr-3 first-letter:float-left" style="">
+            The era of cluttered developer dashboards is fading. We are entering the age of the Technical Curator—where code is not just functional text, but an artifact to be presented with architectural precision and editorial intent.
+          </p>
+<h2 class="text-3xl md:text-5xl font-bold text-white tracking-tighter mt-16 mb-8 uppercase section-target" id="no-line-philosophy" style="">The "No-Line" Philosophy</h2>
+<p class="body-font text-on-surface-variant leading-loose mb-10 text-lg" style="">
+            For years, UI design relied on 1px solid borders to define boundaries. In the ARCHITECT_OS system, we reject this. Boundaries are achieved through tonal shifts and vertical space. By layering <code class="bg-surface-variant/50 px-2 py-0.5 rounded text-primary mono-font text-sm">surface_container_low</code> against a base <code class="bg-surface-variant/50 px-2 py-0.5 rounded text-primary mono-font text-sm">surface</code>, we create psychological breaks that feel organic rather than rigid.
+          </p>
+<figure class="my-16 rounded-xl overflow-hidden shadow-2xl border border-white/5 bg-surface-container-low/40 p-1">
+<img class="w-full aspect-video object-cover rounded-lg" data-alt="close up of sophisticated dark glass interface panels with holographic glowing data visualizations and subtle depth effects" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2wOkyvpU7EaAG2eAigG4722twiDDDMEvuKTfe_cOoVw2ICxUuKjQC9OojWQZy97QRVVdaKtG7Wdg96I1oK7S272CdhRseI8ZSnnDR73rDOzQZEzE-dkVauYU_VxmxA_eTeWRw6P_HIU2W0x_0fsbeI17eCr4hJHzHisgmAC1bknPoqfB_9B6-WKN5IDPkZj8nVXFI3FfzGmblRVyzJ_UY4Ya2-wCpbvrZmFtlouRG2CAz9c4hphpyU9vA7vWqruHR3lCMgprQ2lTs" style="">
+<figcaption class="mono-font text-[10px] text-center mt-4 text-on-surface-variant tracking-widest uppercase" style="">Fig 1.1 // Tonal_Depth_Visualization</figcaption>
+</figure>
+<h3 class="text-2xl md:text-4xl font-bold text-white tracking-tighter mt-16 mb-6 uppercase section-target" id="code-experience" style="">Implementing the Code Experience</h3>
+<p class="body-font text-on-surface-variant leading-loose mb-8 text-lg" style="">
+            Code snippets should feel like looking through a terminal window into the core of the system. We use a glassmorphism approach for the code containers:
+          </p>
+<div class="relative group my-10">
+<div class="absolute -inset-1 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-xl blur opacity-25 group-hover:opacity-40 transition duration-1000"></div>
+<div class="relative bg-surface-container-lowest/80 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden">
+<div class="flex items-center justify-between px-6 py-3 bg-white/5 border-b border-white/5">
+<div class="flex gap-1.5">
+<div class="w-2.5 h-2.5 rounded-full bg-error-dim/60"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-secondary-dim/60"></div>
+<div class="w-2.5 h-2.5 rounded-full bg-primary-dim/60"></div>
+</div>
+<span class="mono-font text-[10px] text-primary uppercase tracking-widest opacity-80" style="">architect.ts // core_module</span>
+</div>
+<div class="p-6 md:p-8 mono-font text-sm leading-relaxed overflow-x-auto">
+<pre class="text-on-surface"><code><span class="text-secondary" style="">interface</span> <span class="text-primary" style="">BlogSystem</span> {
+  title: <span class="text-tertiary" style="">string</span>;
+  curationLevel: <span class="text-primary-fixed-dim" style="">'high-end'</span> | <span class="text-primary-fixed-dim" style="">'architectural'</span>;
+  render(): <span class="text-secondary" style="">void</span>;
+}
+
+<span class="text-on-surface-variant" style="">// Initialize the Next-Gen Layer</span>
+<span class="text-secondary" style="">const</span> obsidianCore = <span class="text-secondary" style="">new</span> <span class="text-primary" style="">ArchitectEngine</span>({
+  shadowDepth: <span class="text-tertiary" style="">50</span>,
+  tonalShift: <span class="text-tertiary" style="">true</span>,
+  glassBlur: <span class="text-primary-fixed-dim" style="">'24px'</span>
+});</code></pre>
+</div>
+</div>
+</div>
+<p class="body-font text-on-surface-variant leading-loose mt-12 text-lg" style="">
+            By shifting from pure black backgrounds to atmospheric obsidian with subtle glows, we reduce eye strain while maintaining the high-tech aesthetic that developers crave.
+          </p>
+</div>
+<!-- Personal Author Banner -->
+<section class="mt-24 p-6 md:p-10 rounded-xl bg-surface-container/30 border border-white/5 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-5 pointer-events-none group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-[100px] rotate-12" data-icon="architecture" style="">architecture</span>
+</div>
+<div class="relative z-10 flex flex-col md:flex-row items-center gap-8 md:gap-12">
+<div class="relative">
+<div class="absolute -inset-2 bg-primary/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<img class="relative w-24 h-24 md:w-32 md:h-32 rounded-full border-2 border-primary/20 object-cover shadow-2xl" data-alt="professional portrait of alex rodriguez, a tech architect and lead designer for next-gen digital systems" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA75l0SZyT48sQdJQxP1DG6CcE7xsGcdspdheATt3GN_KkN93XiOdHwC0kaiLpQVqfZBAD-jgUniwg_p9XN_42Q71DM-2uJMphY-w-8ChmEy3CCBSTO9EjMsuRm6lNiZXQU66kRXCx09GJHskqQLengUNMDH8iHXPhrd-tl0C9i0BXC58n5uxDhnVf57BuwDSVLJaS9LmsqWStMqn9zJvZMhTtmqlmp2QvCioZ7mi3udKKefVDybuj87wKNC-7PH_nINnrXSlPadzg5" style="">
+</div>
+<div class="text-center md:text-left">
+<h4 class="headline-font text-2xl font-bold text-white mb-1 uppercase tracking-tight" style="">ALEX RDRGZ</h4>
+<p class="mono-font text-[10px] text-primary uppercase tracking-[0.4em] mb-4" style="">Lead_Architect // ARCHITECT_OS</p>
+<p class="body-font text-on-surface-variant text-sm leading-relaxed max-w-lg" style="">
+                Alex is a designer-turned-engineer obsessed with the intersection of brutalist digital architecture and smooth UX patterns. Currently building the future of documentation at Scale.
+              </p>
+<div class="flex justify-center md:justify-start gap-8 mt-6">
+<a class="text-slate-500 hover:text-primary transition-all duration-500 hover:-translate-y-1 group/link" href="#" style=""><span class="material-symbols-outlined text-xl group-hover/link:drop-shadow-[0_0_8px_rgba(129,236,255,0.5)]" style="">alternate_email</span></a>
+<a class="text-slate-500 hover:text-primary transition-all duration-500 hover:-translate-y-1 group/link" href="#" style=""><span class="material-symbols-outlined text-xl group-hover/link:drop-shadow-[0_0_8px_rgba(129,236,255,0.5)]" style="">language</span></a>
+<a class="text-slate-500 hover:text-primary transition-all duration-500 hover:-translate-y-1 group/link" href="#" style=""><span class="material-symbols-outlined text-xl group-hover/link:drop-shadow-[0_0_8px_rgba(129,236,255,0.5)]" style="">terminal</span></a>
+</div>
+</div>
+</div>
+</section>
+<!-- Comments Section -->
+<section class="mt-20 pt-16 border-t border-white/5 section-target" id="discussions">
+<div class="flex items-center justify-between mb-10">
+<h3 class="headline-font text-2xl font-bold text-white tracking-tight uppercase" style="">System_Discussions</h3>
+<span class="mono-font text-[10px] text-on-surface-variant uppercase tracking-widest" style="">[4_NODE_RESPONSES]</span>
+</div>
+<div class="bg-surface-container-low/40 rounded-2xl p-12 border border-white/[0.03] text-center relative overflow-hidden group">
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
+<div class="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-primary/10 mb-6 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-3xl text-primary" style="">forum</span>
+</div>
+<p class="headline-font text-2xl text-white font-bold mb-3 uppercase tracking-tight" style="">Initialize Connection</p>
+<p class="body-font text-on-surface-variant mb-10 max-w-sm mx-auto leading-relaxed" style="">Join the discussion on GitHub to share your architectural insights with the core system.</p>
+<button class="px-10 py-4 bg-white text-surface font-bold rounded-xl hover:bg-primary transition-all duration-300 active:scale-95 shadow-xl shadow-primary/10 headline-font tracking-widest text-xs uppercase" style="">
+              Sign_In_With_GitHub
+            </button>
+</div>
+</section>
+</article>
+</section>
+<!-- Table of Contents Sidebar (Right) - Scroll Spy Target -->
+<aside class="hidden xl:block w-64 pt-20 sticky top-24 h-fit">
+<div class="flex items-center gap-2 mb-6">
+<div class="w-1 h-4 bg-primary rounded-full"></div>
+<h5 class="headline-font text-[10px] font-bold text-white uppercase tracking-[0.3em]" style="">On this page</h5>
+</div>
+<nav class="space-y-4" id="toc-nav">
+<a class="block mono-font text-[10px] text-on-surface-variant hover:text-white transition-all duration-300 uppercase tracking-widest toc-link" data-target="no-line-philosophy" href="#no-line-philosophy" style="">01_No_Line_Philosophy</a>
+<a class="block mono-font text-[10px] text-on-surface-variant hover:text-white transition-all duration-300 uppercase tracking-widest toc-link" data-target="code-experience" href="#code-experience" style="">02_Implementing_Code</a>
+<a class="block mono-font text-[10px] text-on-surface-variant hover:text-white transition-all duration-300 uppercase tracking-widest toc-link toc-active" data-target="discussions" href="#discussions" style="">03_System_Nodes</a>
+</nav>
+</aside>
+</div>
+</div>
+</main>
+<!-- Refined Technical Footer (Aligned with SCREEN_21) -->
+<footer class="bg-black w-full pt-48 pb-16 px-8 border-t border-white/5 relative overflow-hidden mt-32">
+<!-- Massive Background Text -->
+<div class="absolute inset-x-0 bottom-1/3 translate-y-1/2 flex justify-center opacity-[0.02] select-none pointer-events-none">
+<h2 class="text-[20rem] md:text-[35rem] font-bold tracking-tighter leading-none whitespace-nowrap headline-font" style="">NAMBIAR</h2>
+</div>
+<div class="max-w-7xl mx-auto relative z-10 flex flex-col items-center">
+<div class="text-center mb-24 w-full">
+<h3 class="text-7xl md:text-[12rem] font-bold mb-8 tracking-tighter uppercase leading-none holographic-text headline-font" style="">
+                Arjun Nambiar
+            </h3>
+<div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
+<div class="h-px w-12 bg-primary/30 hidden md:block"></div>
+<p class="mono-font uppercase tracking-[0.8em] text-[11px] text-on-surface-variant/80 font-medium" style="">
+                Technical Curator &amp; Systems Architect
+            </p>
+<div class="h-px w-12 bg-primary/30 hidden md:block"></div>
+</div>
+</div>
+<div class="flex flex-col items-center gap-12 w-full max-w-4xl">
+<div class="flex space-x-12">
+<a class="text-white/20 hover:text-primary transition-all duration-500 hover:-translate-y-2 group" href="#" style="">
+<span class="material-symbols-outlined text-3xl group-hover:drop-shadow-[0_0_8px_rgba(129,236,255,0.5)]" style="">rss_feed</span>
+</a>
+<a class="text-white/20 hover:text-primary transition-all duration-500 hover:-translate-y-2 group" href="#" style="">
+<span class="material-symbols-outlined text-3xl group-hover:drop-shadow-[0_0_8px_rgba(129,236,255,0.5)]" style="">alternate_email</span>
+</a>
+<a class="text-white/20 hover:text-primary transition-all duration-500 hover:-translate-y-2 group" href="#" style="">
+<span class="material-symbols-outlined text-3xl group-hover:drop-shadow-[0_0_8px_rgba(129,236,255,0.5)]" style="">terminal</span>
+</a>
+<a class="text-white/20 hover:text-primary transition-all duration-500 hover:-translate-y-2 group" href="#" style="">
+<span class="material-symbols-outlined text-3xl group-hover:drop-shadow-[0_0_8px_rgba(129,236,255,0.5)]" style="">fingerprint</span>
+</a>
+</div>
+<div class="flex flex-wrap justify-center gap-x-16 gap-y-6 mono-font uppercase tracking-[0.4em] text-[10px] text-white/30 border-y border-white/[0.03] py-8 w-full max-w-2xl">
+<a class="hover:text-white transition-colors duration-300" href="#" style="">System_RSS</a>
+<a class="hover:text-white transition-colors duration-300" href="#" style="">Core_Mail</a>
+<a class="hover:text-white transition-colors duration-300" href="#" style="">Source_Repo</a>
+<a class="hover:text-white transition-colors duration-300" href="#" style="">Privacy_Prot</a>
+</div>
+</div>
+<div class="mt-32 w-full flex flex-col md:flex-row justify-between items-center gap-8 px-4 opacity-30">
+<p class="text-[9px] mono-font uppercase tracking-widest" style="">© 2026 / DIGITAL_SIGNATURE_VERIFIED</p>
+<p class="text-[9px] mono-font uppercase tracking-widest" style="">BUILT_FOR_THE_NEXT_WEB</p>
+</div>
+</div>
+</footer>
+<script>
+    // Scroll Spy Functionality
+    document.addEventListener('DOMContentLoaded', () => {
+        const sections = document.querySelectorAll('.section-target');
+        const navLinks = document.querySelectorAll('.toc-link');
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px 0px -40% 0px',
+            threshold: 0
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('toc-active');
+                        if (link.getAttribute('href').substring(1) === entry.target.id) {
+                            link.classList.add('toc-active');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => observer.observe(section));
+
+        // Smooth scroll for TOC links
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 120,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    });
+</script>
+</body></html>
