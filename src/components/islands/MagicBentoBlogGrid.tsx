@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { cn } from '../../lib/utils';
+import useTheme from '../../lib/useTheme';
 
 type ArchiveGridPost = {
   slug: string;
@@ -73,6 +74,7 @@ const useIsMobile = (): boolean => {
 type BentoCardProps = {
   post: ArchiveGridPost;
   index: number;
+  theme: 'dark' | 'light';
   textAutoHide: boolean;
   shouldDisableAnimations: boolean;
   enableTilt: boolean;
@@ -86,6 +88,7 @@ type BentoCardProps = {
 const BentoCard: React.FC<BentoCardProps> = ({
   post,
   index,
+  theme,
   textAutoHide,
   shouldDisableAnimations,
   enableTilt,
@@ -100,6 +103,7 @@ const BentoCard: React.FC<BentoCardProps> = ({
   const timeoutsRef = useRef<number[]>([]);
   const particlesRef = useRef<HTMLDivElement[]>([]);
   const particleTweensRef = useRef<gsap.core.Tween[]>([]);
+  const cardShadow = theme === 'dark' ? '0 18px 50px rgba(0, 0, 0, 0.22)' : '0 18px 40px rgba(15, 23, 42, 0.08)';
 
   // Staggered entrance animation on mount
   useEffect(() => {
@@ -277,12 +281,12 @@ const BentoCard: React.FC<BentoCardProps> = ({
     // Reset shadow
     if (cardRef.current && !shouldDisableAnimations) {
       gsap.to(cardRef.current, {
-        boxShadow: '0 18px 50px rgba(0, 0, 0, 0.22)',
+        boxShadow: cardShadow,
         duration: 0.3,
         ease: 'power2.out',
       });
     }
-  }, [clearParticles, resetTransforms, shouldDisableAnimations]);
+  }, [cardShadow, clearParticles, resetTransforms, shouldDisableAnimations]);
 
   const handleClick = useCallback(
     (event: React.MouseEvent<HTMLAnchorElement>) => {
@@ -332,6 +336,9 @@ const BentoCard: React.FC<BentoCardProps> = ({
       className={cn(
         'magic-bento-card group relative flex h-full min-h-72 flex-col overflow-hidden rounded-[20px] border border-white/6 bg-[#091224]/90 transition-colors duration-300',
         enableBorderGlow && 'magic-bento-card--glow',
+        theme === 'dark'
+          ? 'border-white/6 bg-[#091224]/90'
+          : 'border-slate-200/90 bg-white/95 shadow-[0_16px_38px_rgba(15,23,42,0.08)]',
       )}
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
@@ -347,54 +354,98 @@ const BentoCard: React.FC<BentoCardProps> = ({
       {/* Shimmer overlay */}
       <div
         ref={shimmerRef}
-        className="pointer-events-none absolute inset-0 z-4opacity-0"
+          className="pointer-events-none absolute inset-0 z-4 opacity-0"
         style={{
           background: `linear-gradient(105deg, transparent 40%, rgba(${glowColor}, 0.07) 50%, transparent 60%)`,
         }}
       />
 
-      <div className="relative overflow-hidden border-b border-white/5 bg-[#050b14] pt-[54%]">
+      <div className={cn(
+        'relative overflow-hidden border-b pt-[54%]',
+        theme === 'dark' ? 'border-white/5 bg-[#050b14]' : 'border-slate-200/90 bg-slate-100'
+      )}>
         <div className="magic-bento-scanline" />
         <div className="magic-bento-vignette" />
         {post.heroImage ? (
           <img
             src={post.heroImage}
             alt={post.title}
-            className="absolute inset-0 h-full w-full object-cover opacity-85 saturate-75 mix-blend-luminosity transition-transform duration-700 group-hover:scale-[1.04]"
+            className={cn(
+              'absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]',
+              theme === 'dark'
+                ? 'opacity-85 saturate-75 mix-blend-luminosity'
+                : 'opacity-95 saturate-100'
+            )}
             loading="lazy"
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center bg-[radial-gradient(circle_at_center,rgba(103,232,249,0.14),transparent_52%),linear-gradient(180deg,#040914_0%,#0a1324_100%)]">
-            <svg className="h-12 w-12 text-cyan-900/80" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1">
+          <div className={cn(
+            'absolute inset-0 flex items-center justify-center',
+            theme === 'dark'
+              ? 'bg-[radial-gradient(circle_at_center,rgba(103,232,249,0.14),transparent_52%),linear-gradient(180deg,#040914_0%,#0a1324_100%)]'
+              : 'bg-[radial-gradient(circle_at_center,rgba(15,23,42,0.08),transparent_52%),linear-gradient(180deg,#f8fafc_0%,#e2e8f0_100%)]'
+          )}>
+            <svg className={cn('h-12 w-12', theme === 'dark' ? 'text-cyan-900/80' : 'text-slate-500')} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
             </svg>
           </div>
         )}
 
-        <div className="absolute inset-0 bg-linear-to-t from-[#091224] via-[#091224]/25 to-transparent" />
-        <div className="absolute left-4 top-4 flex items-center gap-2 font-mono text-[8px] uppercase tracking-[0.24em] text-slate-500">
+        <div className={cn(
+          'absolute inset-0 bg-linear-to-t',
+          theme === 'dark' ? 'from-[#091224] via-[#091224]/25 to-transparent' : 'from-white/95 via-white/15 to-transparent'
+        )} />
+        <div className={cn(
+          'absolute left-4 top-4 flex items-center gap-2 font-mono text-[8px] uppercase tracking-[0.24em]',
+          theme === 'dark' ? 'text-slate-500' : 'text-slate-400'
+        )}>
           <span>{post.date}</span>
-          <span className="text-slate-700">//</span>
+          <span className={theme === 'dark' ? 'text-slate-700' : 'text-slate-300'}>//</span>
           <span>{post.readingTime?.toString().padStart(2, '0')} MIN</span>
         </div>
-        <div className="absolute right-4 top-4 rounded-full border border-white/10 bg-[#111d32]/85 px-3 py-1 font-mono text-[8px] uppercase tracking-[0.24em] text-slate-200 shadow-[0_0_18px_rgba(0,0,0,0.35)]">
+        <div className={cn(
+          'absolute right-4 top-4 rounded-full border px-3 py-1 font-mono text-[8px] uppercase tracking-[0.24em]',
+          theme === 'dark'
+            ? 'border-white/10 bg-[#111d32]/85 text-slate-200 shadow-[0_0_18px_rgba(0,0,0,0.35)]'
+            : 'border-slate-200 bg-white/90 text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,0.08)]'
+        )}>
           {post.tag}
         </div>
       </div>
 
       <div className="relative flex flex-1 flex-col p-6">
-        <h3 className={cn('mb-3 text-[1.55rem] font-bold leading-[1.15] text-white transition-colors duration-200 group-hover:text-cyan-50', textAutoHide && 'line-clamp-2')}>
+        <h3 className={cn(
+          'mb-3 text-[1.55rem] font-bold leading-[1.15] transition-colors duration-200',
+          theme === 'dark' ? 'text-white group-hover:text-cyan-50' : 'text-slate-950 group-hover:text-slate-700',
+          textAutoHide && 'line-clamp-2'
+        )}>
           {post.title}
         </h3>
-        <p className={cn('mb-8 text-[0.9rem] leading-7 text-slate-400 transition-colors duration-200 group-hover:text-slate-300', textAutoHide && 'line-clamp-3')}>
+        <p className={cn(
+          'mb-8 text-[0.9rem] leading-7 transition-colors duration-200',
+          theme === 'dark' ? 'text-slate-400 group-hover:text-slate-300' : 'text-slate-600 group-hover:text-slate-500',
+          textAutoHide && 'line-clamp-3'
+        )}>
           {post.description}
         </p>
 
-        <div className="mt-auto flex items-center justify-between font-mono text-[9px] uppercase tracking-[0.24em] text-slate-500">
-          <span className="transition-colors duration-200 group-hover:text-cyan-400">OPEN NODE</span>
+        <div className={cn(
+          'mt-auto flex items-center justify-between font-mono text-[9px] uppercase tracking-[0.24em]',
+          theme === 'dark' ? 'text-slate-500' : 'text-slate-400'
+        )}>
+          <span className={cn(
+            'transition-colors duration-200',
+            theme === 'dark' ? 'group-hover:text-cyan-400' : 'group-hover:text-slate-700'
+          )}>OPEN NODE</span>
           <div className="flex items-center gap-1.5 transition-all duration-300 group-hover:gap-2.5">
-            <span className="h-px w-0 bg-cyan-400/60 transition-all duration-300 group-hover:w-4" />
-            <svg className="h-4 w-4 transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+            <span className={cn(
+              'h-px w-0 transition-all duration-300 group-hover:w-4',
+              theme === 'dark' ? 'bg-cyan-400/60' : 'bg-slate-700/60'
+            )} />
+            <svg className={cn(
+              'h-4 w-4 transition-all duration-300 group-hover:translate-x-0.5',
+              theme === 'dark' ? 'group-hover:text-cyan-300' : 'group-hover:text-slate-700'
+            )} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
             </svg>
           </div>
@@ -419,9 +470,11 @@ const MagicBentoBlogGrid: React.FC<MagicBentoBlogGridProps> = ({
 }) => {
   const gridRef = useRef<HTMLDivElement>(null);
   const spotlightRef = useRef<HTMLDivElement>(null);
+  const theme = useTheme();
   const isMobile = useIsMobile();
   const shouldReduceMotion = useShouldReduceMotion();
   const shouldDisableAnimations = disableAnimations || isMobile || shouldReduceMotion;
+  const activeGlowColor = glowColor || (theme === 'dark' ? DEFAULT_GLOW_COLOR : '15, 23, 42');
 
   useEffect(() => {
     if (!enableSpotlight || shouldDisableAnimations || !gridRef.current || !spotlightRef.current) {
@@ -494,7 +547,12 @@ const MagicBentoBlogGrid: React.FC<MagicBentoBlogGridProps> = ({
 
   if (posts.length === 0) {
     return (
-      <div className="rounded-3xl border border-dashed border-white/10 bg-[#071121]/70 px-8 py-20 text-center font-mono text-sm uppercase tracking-[0.24em] text-slate-500">
+      <div className={cn(
+        'rounded-3xl border border-dashed px-8 py-20 text-center font-mono text-sm uppercase tracking-[0.24em]',
+        theme === 'dark'
+          ? 'border-white/10 bg-[#071121]/70 text-slate-500'
+          : 'border-slate-200 bg-slate-50 text-slate-500'
+      )}>
         No archive entries available.
       </div>
     );
@@ -512,7 +570,7 @@ const MagicBentoBlogGrid: React.FC<MagicBentoBlogGridProps> = ({
           content: '';
           position: absolute;
           inset: 0;
-          background: radial-gradient(460px circle at var(--glow-x) var(--glow-y), rgba(${glowColor}, calc(var(--glow-intensity) * 0.12)) 0%, transparent 58%);
+          background: radial-gradient(460px circle at var(--glow-x) var(--glow-y), rgba(${activeGlowColor}, calc(var(--glow-intensity) * 0.12)) 0%, transparent 58%);
           pointer-events: none;
           opacity: 1;
           z-index: 0;
@@ -524,7 +582,7 @@ const MagicBentoBlogGrid: React.FC<MagicBentoBlogGridProps> = ({
           inset: 0;
           border-radius: inherit;
           padding: 1px;
-          background: radial-gradient(var(--glow-radius) circle at var(--glow-x) var(--glow-y), rgba(${glowColor}, calc(var(--glow-intensity) * 0.95)) 0%, rgba(${glowColor}, calc(var(--glow-intensity) * 0.25)) 35%, transparent 62%);
+          background: radial-gradient(var(--glow-radius) circle at var(--glow-x) var(--glow-y), rgba(${activeGlowColor}, calc(var(--glow-intensity) * 0.95)) 0%, rgba(${activeGlowColor}, calc(var(--glow-intensity) * 0.25)) 35%, transparent 62%);
           -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
           -webkit-mask-composite: xor;
           mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -550,7 +608,7 @@ const MagicBentoBlogGrid: React.FC<MagicBentoBlogGridProps> = ({
         .magic-bento-card .magic-bento-scanline {
           position: absolute;
           inset: 0;
-          background: linear-gradient(180deg, transparent 0%, rgba(${glowColor}, 0.06) 50%, transparent 100%);
+          background: linear-gradient(180deg, transparent 0%, rgba(${activeGlowColor}, 0.06) 50%, transparent 100%);
           height: 35%;
           opacity: 0;
           transform: translateY(-100%);
@@ -582,9 +640,9 @@ const MagicBentoBlogGrid: React.FC<MagicBentoBlogGridProps> = ({
       {enableSpotlight && !shouldDisableAnimations && (
         <div
           ref={spotlightRef}
-          className="pointer-events-none absolute z-0 h-112 w-112 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-0 blur-3xl"
+          className="pointer-events-none absolute z-0 h-md w-md -translate-x-1/2 -translate-y-1/2 rounded-full opacity-0 blur-3xl"
           style={{
-            background: `radial-gradient(circle, rgba(${glowColor}, 0.18) 0%, rgba(${glowColor}, 0.08) 24%, rgba(${glowColor}, 0.03) 42%, transparent 68%)`,
+            background: `radial-gradient(circle, rgba(${activeGlowColor}, 0.18) 0%, rgba(${activeGlowColor}, 0.08) 24%, rgba(${activeGlowColor}, 0.03) 42%, transparent 68%)`,
           }}
         />
       )}
@@ -595,6 +653,7 @@ const MagicBentoBlogGrid: React.FC<MagicBentoBlogGridProps> = ({
             key={post.slug}
             post={post}
             index={index}
+            theme={theme === 'dark' ? 'dark' : 'light'}
             textAutoHide={textAutoHide}
             shouldDisableAnimations={shouldDisableAnimations}
             enableTilt={enableTilt}
@@ -602,7 +661,7 @@ const MagicBentoBlogGrid: React.FC<MagicBentoBlogGridProps> = ({
             clickEffect={clickEffect}
             enableBorderGlow={enableBorderGlow}
             particleCount={particleCount}
-            glowColor={glowColor}
+            glowColor={activeGlowColor}
           />
         ))}
       </div>
