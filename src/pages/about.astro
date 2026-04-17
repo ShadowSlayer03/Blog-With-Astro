@@ -1,172 +1,400 @@
 ---
 export const prerender = true;
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { SITE, SOCIALS, PROJECT_STACK } from '../lib/constants';
-import GradientText from '../components/ui/GradientText';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { SITE, SOCIALS, PROJECT_STACK } from "../lib/constants";
+import GradientText from "../components/ui/GradientText";
+import BorderGlow from "../components/ui/BorderGlow";
+import { AnimatedBeam } from "../components/ui/AnimatedBeam";
+import { ShimmerButton } from "../components/ui/ShimmerButton";
+import { Particles } from "../components/ui/Particles";
 ---
 
-<BaseLayout title={`About - ${SITE.title}`} description={`Learn more about ${SITE.author} and the tech behind ${SITE.title}.`}>
-  <section class="relative py-16 md:py-24 overflow-hidden border-b border-gray-200 dark:border-cyan-500/10 dark:bg-black/50">
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(34,211,238,0.08),transparent_60%)] pointer-events-none hidden dark:block"></div>
-    <div class="absolute inset-0 bg-linear-to-b from-gray-50 to-white pointer-events-none dark:hidden"></div>
-    <div class="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-cyan-500/30 to-transparent hidden dark:block"></div>
+<BaseLayout
+  title={`About - ${SITE.title}`}
+  description={`Learn more about ${SITE.author}.`}
+>
+  <div class="about-page mx-auto max-w-6xl px-6 py-14 md:py-18 lg:py-20">
+    <section class="mb-24">
+      <div class="flex flex-col items-start">
+        <GradientText
+          animationSpeed={6}
+          showBorder={false}
+          client:load
+        >
+          <h1
+            class="font-heading text-[11vw] md:text-[9vw] tracking-normal uppercase leading-none"
+          >
+            ABOUT
+          </h1>
+        </GradientText>
 
-    <div class="relative z-10 mx-auto max-w-6xl px-6 text-center ">
-      <span class="inline-block font-mono text-[10px] tracking-[0.3em] uppercase border rounded-full px-4 py-1 mb-6
-        text-cyan-700 border-cyan-600/30 bg-cyan-500/10
-        dark:text-cyan-500 dark:border-cyan-500/30 dark:bg-cyan-500/10">
-        System_Profile: {SITE.author.replace(/\s/g, '_').toUpperCase()}
-      </span>
+        <div class="mt-12 space-y-6">
+          <p
+            class="about-lead text-xl md:text-2xl font-medium text-slate-200 tracking-tight"
+          >
+            I'm <span class="about-accent text-cyan-400">Arjun Nambiar</span>, a dev who's
+            slightly obsessed with how things work under the hood.
+          </p>
 
-      <GradientText
-        client:load
-        colors={["#22d3ee", "#06b6d4", "#0891b2", "#22d3ee"]}
-        animationSpeed={8}
-        showBorder={false}
-        className="text-7xl md:text-8xl font-black tracking-tighter uppercase italic mt-4 dark:drop-shadow-[0_0_40px_rgba(34,211,238,0.2)]"
+          <p
+            class="about-copy max-w-2xl text-base md:text-lg leading-relaxed text-slate-400 font-normal"
+          >
+            I built <strong class="about-strong text-slate-200">this blog</strong> as a digital
+            notebook for my late-night experiments.
+          </p>
+
+          <p
+            class="about-copy max-w-2xl text-base md:text-lg leading-relaxed text-slate-400 font-normal"
+          >
+            No fluff, just honest thoughts on code, design, and building
+            products that actually feel good to use. Thanks for stopping by.
+            Follow me on socials if you like what you read!
+          </p>
+
+          <div
+            class="about-status flex items-center gap-2 font-mono text-[10px] text-cyan-500/50 uppercase tracking-[0.2em] pt-4"
+          >
+            <span class="h-1.5 w-1.5 bg-cyan-500 rounded-full animate-pulse"
+            ></span>
+            Currently learning SpringBoot and Generative AI
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="mb-32">
+      <div
+        class="about-section-divider mb-8 flex items-center justify-between border-b border-white/10 pb-4"
       >
-        ABOUT
-      </GradientText>
-
-      <p class="mt-8 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed text-gray-600 dark:text-slate-400">
-        Hey there! 👋 Welcome to <strong class="text-cyan-700 dark:text-cyan-400 font-bold">{SITE.title}</strong> — a modern blog
-        built with cutting-edge web technologies and deployed on the edge.
-      </p>
-    </div>
-  </section>
-
-  <div class="mx-auto max-w-6xl px-6 py-16 md:py-24">
-
-    <div class="mb-24">
-      <div class="mb-8 flex items-center gap-4">
-        <h2 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white font-mono">Tech Stack</h2>
-        <div class="h-px flex-1 bg-linear-to-r from-gray-200 dark:from-white/10 to-transparent"></div>
+        <h2
+          class="about-section-title text-lg md:text-2xl font-bold tracking-tight text-white uppercase font-mono"
+        >
+          Technology Used
+        </h2>
+        <span class="font-mono text-[10px] text-slate-500"
+          >[{PROJECT_STACK.length}_ITEMS]</span
+        >
       </div>
 
-      <div class="grid gap-4 sm:grid-cols-2">
-        {PROJECT_STACK.map((item) => (
-          <div class="glass-card flex items-start gap-4 p-5 transition-all duration-300 group hover:-translate-y-0.5 hover:border-cyan-500/40 dark:hover:border-cyan-500/30">
-            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg transition-colors
-              bg-gray-100 border border-gray-200 text-cyan-700
-              group-hover:bg-cyan-50 group-hover:border-cyan-300
-              dark:bg-[#0f172a] dark:border-white/10 dark:text-cyan-400
-              dark:group-hover:bg-cyan-950/30 dark:group-hover:border-cyan-500/20"
-              set:html={item.icon} />
-            <div>
-              <h3 class="text-sm font-bold font-mono transition-colors
-                text-gray-900 group-hover:text-cyan-700
-                dark:text-white dark:group-hover:text-cyan-300">{item.name}</h3>
-              <p class="mt-1 text-sm text-gray-500 dark:text-slate-400">{item.desc}</p>
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          PROJECT_STACK.map((item) => (
+            <BorderGlow
+              className="about-stack-card"
+              edgeSensitivity={30}
+              borderRadius={12}
+              glowRadius={40}
+              glowIntensity={0.8}
+              coneSpread={25}
+              client:load
+            >
+              <div class="p-6 transition-all group">
+                <div class="flex items-start gap-4">
+                  <div
+                    class="about-stack-icon flex h-12 w-12 shrink-0 items-center justify-center rounded bg-[#1e293b] text-cyan-400 group-hover:bg-cyan-500 group-hover:text-black transition-colors"
+                    set:html={item.icon}
+                  />
+                  <div>
+                    <h3 class="about-stack-name text-sm font-bold font-mono text-white">
+                      {item.name}
+                    </h3>
+                    <p class="about-stack-desc mt-1 text-xs text-slate-400 leading-relaxed">
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </BorderGlow>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="mb-32">
+      <div class="mb-12 flex items-center gap-4">
+        <h2
+          class="about-section-title text-lg md:text-2xl font-bold tracking-tight text-white uppercase font-mono"
+        >
+          Architecture
+        </h2>
+        <div class="about-section-line h-px flex-1 bg-linear-to-r from-white/10 to-transparent">
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <div class="space-y-8">
+          <div
+            class="group flex gap-4 transition-transform hover:translate-x-2"
+          >
+            <div class="about-accent text-cyan-400 mt-1">
+              <svg
+                width="20"
+                height="20"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                ><path d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg
+              >
             </div>
+            <p class="about-arch-copy text-slate-400 leading-relaxed text-sm">
+              Leveraging <span class="about-accent text-cyan-400 font-mono italic"
+                >Islands Architecture</span
+              >, the site maximizes performance by delivering static HTML and
+              hydrating components only as needed.
+            </p>
           </div>
-        ))}
-      </div>
-    </div>
-
-    <div class="mb-24">
-      <div class="mb-8 flex items-center gap-4">
-        <h2 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white font-mono">Architecture</h2>
-        <div class="h-px flex-1 bg-linear-to-r from-gray-200 dark:from-white/10 to-transparent"></div>
-      </div>
-
-      <div class="glass-card p-8 space-y-6">
-        <div class="relative pl-6 border-l-2 border-cyan-400/40 dark:border-cyan-500/30">
-          <div class="absolute -left-1.25 top-1.5 h-2 w-2 rounded-full bg-cyan-500"></div>
-          <p class="leading-relaxed text-gray-700 dark:text-slate-300">
-            This blog uses Astro's <strong class="text-gray-900 dark:text-white font-semibold">Islands Architecture</strong> — pages are rendered as static
-            HTML by default, and only interactive components (search, comments, like buttons) ship
-            JavaScript. The result is near-perfect Lighthouse scores with zero layout shift.
-          </p>
-        </div>
-
-        <div class="relative pl-6 border-l-2 border-teal-400/40 dark:border-teal-500/30">
-          <div class="absolute -left-1.25 top-1.5 h-2 w-2 rounded-full bg-teal-500"></div>
-          <p class="leading-relaxed text-gray-700 dark:text-slate-300">
-            Content is managed through <strong class="text-gray-900 dark:text-white font-semibold">Keystatic</strong>, a git-based CMS that writes directly
-            to the repository. Search is powered by <strong class="text-gray-900 dark:text-white font-semibold">Pagefind</strong>, generating a static
-            search index at build time — no server required.
-          </p>
-        </div>
-      </div>
-
-      <div class="mt-6 glass-card p-10 relative overflow-hidden group">
-        <div class="absolute inset-0 bg-linear-to-br from-cyan-500/5 to-teal-500/5 opacity-50"></div>
-        <svg class="absolute inset-0 w-full h-full opacity-[0.03] dark:opacity-[0.04]" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid-about" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M0 40V0H40" fill="none" stroke="currentColor" stroke-width="1" class="text-gray-900 dark:text-white"/></pattern></defs><rect width="100%" height="100%" fill="url(#grid-about)"/></svg>
-
-        <div class="relative z-10 flex flex-col items-center">
-          <span class="mb-8 font-mono text-[10px] font-medium tracking-[0.3em] uppercase text-cyan-700 dark:text-cyan-500/80">Deployment_Workflow</span>
-
-          <div class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-0 w-full max-w-lg">
-            <div class="flex flex-col items-center">
-              <div class="flex h-14 w-14 items-center justify-center rounded-xl shadow-lg z-10
-                bg-white border border-gray-200
-                dark:bg-[#0f172a] dark:border-white/10">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-600 dark:text-cyan-400"><path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"/><path d="m21 2-9.6 9.6"/><circle cx="7.5" cy="15.5" r="5.5"/></svg>
-              </div>
-              <span class="mt-3 font-mono text-[9px] tracking-[0.2em] uppercase text-gray-500 dark:text-slate-500">Keystatic CMS</span>
+          <div
+            class="group flex gap-4 transition-transform hover:translate-x-2"
+          >
+            <div class="about-accent text-cyan-400 mt-1">
+              <svg
+                width="20"
+                height="20"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"><path d="M12 2v20m10-10H2"></path></svg
+              >
             </div>
-
-            <div class="h-8 w-px sm:h-px sm:w-16 bg-linear-to-b sm:bg-linear-to-r from-cyan-500/30 to-teal-500/30 relative">
-              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-1 w-1 rounded-full bg-gray-400 dark:bg-slate-600"></div>
-            </div>
-
-            <div class="flex flex-col items-center">
-              <div class="flex h-14 w-14 items-center justify-center rounded-xl shadow-lg z-10
-                bg-white border border-gray-200
-                dark:bg-[#0f172a] dark:border-white/10">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" class="text-cyan-600 dark:text-cyan-400"><path d="M13.13 22.19L11.5 18.36C13.07 17.07 14.14 15.27 14.65 13.19L18.31 16.85L22.15 15.22C21.59 19.61 18.45 21.55 13.13 22.19M5.64 12.5L1.81 10.87C2.45 5.55 4.39 2.41 8.78 1.85L7.15 5.69L10.81 9.35C8.73 9.86 6.93 10.93 5.64 12.5M21.61 2.39C21.61 2.39 16.66 .27 11 5.93C8.81 8.12 7.5 10.53 6.65 12.64C6.26 13.62 6.5 14.72 7.21 15.43L8.57 16.79C9.28 17.5 10.38 17.74 11.36 17.35C13.5 16.53 15.88 15.19 18.07 13C23.73 7.34 21.61 2.39 21.61 2.39M14.54 9.46C13.76 8.68 13.76 7.41 14.54 6.63S16.59 5.85 17.37 6.63C18.14 7.41 18.15 8.68 17.37 9.46C16.59 10.24 15.32 10.24 14.54 9.46Z"/></svg>
-              </div>
-              <span class="mt-3 font-mono text-[9px] tracking-[0.2em] uppercase text-gray-500 dark:text-slate-500">Astro Build</span>
-            </div>
-
-            <div class="h-8 w-px sm:h-px sm:w-16 bg-linear-to-b sm:bg-linear-to-r from-teal-500/30 to-cyan-500/30 relative">
-              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-1 w-1 rounded-full bg-gray-400 dark:bg-slate-600"></div>
-            </div>
-
-            <div class="flex flex-col items-center">
-              <div class="flex h-14 w-14 items-center justify-center rounded-xl shadow-lg z-10
-                bg-white border border-gray-200
-                dark:bg-[#0f172a] dark:border-white/10">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-600 dark:text-cyan-400"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-              </div>
-              <span class="mt-3 font-mono text-[9px] tracking-[0.2em] uppercase text-gray-500 dark:text-slate-500">Edge Network</span>
-            </div>
+            <p class="about-arch-copy text-slate-400 leading-relaxed text-sm">
+              Every content update is a git commit, processed through an
+              automated CI/CD pipeline and deployed to a global <span
+                class="about-accent text-cyan-400 font-mono italic">Edge Network</span
+              >.
+            </p>
           </div>
         </div>
+
+        <div
+          class="about-beam relative flex w-full items-center justify-center overflow-hidden rounded-xl border border-cyan-500/20 bg-[#050505] p-6 sm:p-12"
+          id="beam-container"
+        >
+          <div
+            class="absolute inset-0 opacity-10"
+            style="background-image: radial-gradient(#22d3ee 0.5px, transparent 0.5px); background-size: 10px 10px;"
+          >
+          </div>
+
+          <div
+            class="flex h-full w-full flex-row items-center justify-between gap-4 z-10"
+          >
+            <div
+              id="git-source"
+              class="about-beam-node p-3 bg-black rounded border border-white/5 text-slate-500"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><path
+                  d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"
+                ></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg
+              >
+            </div>
+
+            <div
+              id="astro-core"
+              class="p-5 bg-cyan-500 rounded text-black shadow-[0_0_40px_rgba(34,211,238,0.4)]"
+            >
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                ><path d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg
+              >
+            </div>
+
+            <div
+              id="edge-dest"
+              class="about-beam-node p-3 bg-black rounded border border-white/5 text-slate-500"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><circle cx="12" cy="12" r="10"></circle><line
+                  x1="2"
+                  y1="12"
+                  x2="22"
+                  y2="12"></line><path
+                  d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
+                ></path></svg
+              >
+            </div>
+          </div>
+
+          <AnimatedBeam
+            client:load
+            containerRef="beam-container"
+            fromRef="git-source"
+            toRef="astro-core"
+            duration={3}
+          />
+          <AnimatedBeam
+            client:load
+            containerRef="beam-container"
+            fromRef="astro-core"
+            toRef="edge-dest"
+            duration={3}
+            delay={1.5}
+          />
+
+          <span
+            class="about-beam-status absolute bottom-1 md:bottom-4 font-mono text-[8px] uppercase tracking-[0.4em] text-cyan-400/50"
+          >
+            Data_Pipeline_Active
+          </span>
+        </div>
       </div>
     </div>
 
-    <!-- Get in Touch -->
-    <div class="glass-card p-10 text-center max-w-2xl mx-auto">
-      <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 font-mono">Get in Touch</h2>
-      <p class="text-gray-500 dark:text-slate-400 mb-8 max-w-sm mx-auto text-sm leading-relaxed">
-        Feel free to reach out on Twitter / X, connect on LinkedIn,
-        or check out the source code on GitHub.
-      </p>
+    <div
+      class="about-cta relative overflow-hidden rounded-2xl border border-white/10 bg-linear-to-b from-[#0f172a] to-transparent p-8 sm:p-16 text-center"
+    >
+      <Particles
+        client:load
+        className="absolute inset-0 z-0 h-full w-full"
+        quantity={80}
+        ease={70}
+        staticity={20}
+        size={0.8}
+      />
 
-      <div class="flex flex-wrap justify-center gap-3">
-        <a href={SOCIALS.twitter} target="_blank" rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-mono font-semibold transition-all duration-200 hover:scale-[1.02]
-            bg-white text-gray-900 border border-gray-300 hover:border-cyan-400 hover:bg-cyan-50
-            dark:bg-white dark:text-gray-900 dark:border-transparent dark:hover:bg-gray-100">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-          Twitter / X
-        </a>
-        <a href={SOCIALS.linkedin} target="_blank" rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-mono font-semibold transition-all duration-200 hover:scale-[1.02]
-            bg-gray-900 text-white border border-gray-800 hover:border-cyan-500/50 hover:bg-gray-800
-            dark:bg-[#0f172a] dark:text-white dark:border-white/10 dark:hover:border-cyan-500/30 dark:hover:bg-slate-800">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-          LinkedIn
-        </a>
-        <a href={SOCIALS.github} target="_blank" rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-mono font-semibold transition-all duration-200 hover:scale-[1.02]
-            bg-gray-100 text-gray-900 border border-gray-200 hover:border-cyan-400 hover:bg-cyan-50
-            dark:bg-slate-800/50 dark:text-slate-300 dark:border-white/10 dark:hover:border-cyan-500/30 dark:hover:text-white">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
-          GitHub
-        </a>
+      <div class="relative z-10">
+        <h2
+          class="about-cta-title mb-2 text-xl md:text-3xl font-bold tracking-tight text-white uppercase font-mono"
+        >
+          Initialize Connection
+        </h2>
+        <p class="about-cta-copy mb-10 text-sm text-slate-400">
+          I post fun stuff, mostly about tech and memes. If you're interested,
+          follow along!
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href={SOCIALS.twitter} class="group">
+            <ShimmerButton
+              borderRadius="4px"
+              background="#0c1525"
+              className="px-8! py-3!"
+              client:load
+            >
+              <div
+                class="flex items-center gap-2 font-mono text-xs font-bold uppercase"
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  ><path
+                    d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+                  ></path></svg
+                >
+                Twitter
+              </div>
+            </ShimmerButton>
+          </a>
+          <a href={SOCIALS.linkedin} class="group">
+            <ShimmerButton
+              borderRadius="4px"
+              shimmerColor="#0077b5"
+              background="#071829"
+              className="px-8! py-3!"
+              client:load
+            >
+              <div
+                class="flex items-center gap-2 font-mono text-xs font-bold uppercase"
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  ><path
+                    d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
+                  ></path></svg
+                >
+                LinkedIn
+              </div>
+            </ShimmerButton>
+          </a>
+        </div>
       </div>
     </div>
   </div>
 </BaseLayout>
+
+<style is:global>
+  html:not(.dark) .about-page .about-lead {
+    color: #334155;
+  }
+
+  html:not(.dark) .about-page .about-copy {
+    color: #475569;
+  }
+
+  html:not(.dark) .about-page .about-strong,
+  html:not(.dark) .about-page .about-section-title,
+  html:not(.dark) .about-page .about-stack-name,
+  html:not(.dark) .about-page .about-cta-title {
+    color: #0f172a;
+  }
+
+  html:not(.dark) .about-page .about-accent {
+    color: #0891b2;
+  }
+
+  html:not(.dark) .about-page .about-status,
+  html:not(.dark) .about-page .about-beam-status {
+    color: rgba(8, 145, 178, 0.62);
+  }
+
+  html:not(.dark) .about-page .about-section-divider {
+    border-bottom-color: rgba(226, 232, 240, 0.9);
+  }
+
+  html:not(.dark) .about-page .about-section-line {
+    background-image: linear-gradient(to right, rgba(226, 232, 240, 0.9), transparent);
+  }
+
+  html:not(.dark) .about-page .about-stack-card {
+    border-color: rgba(226, 232, 240, 0.95) !important;
+    box-shadow: 0 18px 38px rgba(15, 23, 42, 0.08);
+  }
+
+  html:not(.dark) .about-page .about-stack-icon {
+    background: #f1f5f9;
+    color: #0891b2;
+  }
+
+  html:not(.dark) .about-page .about-stack-desc,
+  html:not(.dark) .about-page .about-arch-copy,
+  html:not(.dark) .about-page .about-cta-copy {
+    color: #475569;
+  }
+
+  html:not(.dark) .about-page .about-beam {
+    background: #f8fafc;
+  }
+
+  html:not(.dark) .about-page .about-beam-node {
+    background: #ffffff;
+    border-color: rgba(226, 232, 240, 0.95);
+    color: #94a3b8;
+  }
+
+  html:not(.dark) .about-page .about-cta {
+    border-color: rgba(226, 232, 240, 0.9);
+    background-image: linear-gradient(to bottom, #f8fafc, transparent);
+  }
+</style>
