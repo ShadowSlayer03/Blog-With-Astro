@@ -16,6 +16,14 @@ get_content_type() {
   esac
 }
 
+escape_sed_pattern() {
+  printf '%s' "$1" | sed 's/[][\\/.^$*+?(){}|]/\\&/g'
+}
+
+escape_sed_replacement() {
+  printf '%s' "$1" | sed 's/[&|\\]/\\&/g'
+}
+
 # ---------------------------------------------------------------------------
 # Find images added/modified in this push.
 # ---------------------------------------------------------------------------
@@ -40,15 +48,20 @@ while IFS= read -r FILE; do
   R2_KEY="${PUBLIC_PATH#/}"
   CDN_URL="${CDN_BASE_URL}/${R2_KEY}"
   CONTENT_TYPE=$(get_content_type "$FILE")
+  SED_PUBLIC_PATH=$(escape_sed_pattern "$PUBLIC_PATH")
+  SED_CDN_URL=$(escape_sed_replacement "$CDN_URL")
 
   echo "→ Uploading: $FILE"
   wrangler r2 object put "${R2_BUCKET_NAME}/${R2_KEY}" \
     --file "$FILE" \
     --content-type "$CONTENT_TYPE"
 
+  echo "→ Verifying remote upload: ${R2_BUCKET_NAME}/${R2_KEY}"
+  wrangler r2 object get "${R2_BUCKET_NAME}/${R2_KEY}" --remote --pipe > /dev/null
+
   echo "→ Replacing '$PUBLIC_PATH' with '$CDN_URL' in markdown"
-  grep -rl "$PUBLIC_PATH" src/content/blog/ | while IFS= read -r MD_FILE; do
-    sed -i "s|${PUBLIC_PATH}|${CDN_URL}|g" "$MD_FILE"
+  grep -rlF -- "$PUBLIC_PATH" src/content/blog/ | while IFS= read -r MD_FILE; do
+    sed -i "s|${SED_PUBLIC_PATH}|${SED_CDN_URL}|g" "$MD_FILE"
   done
 
   echo "→ Removing local file: $FILE"
