@@ -2,13 +2,14 @@ import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import queryClient from "../../lib/queryClient";
 import { useMutation } from "@tanstack/react-query";
+import QueryClientWrapper from "./QueryClientWrapper";
 
 type TrackPageViewProps = {
     slug: string;
     readingTime: number;
 }
 
-const TrackPageView = ({ slug, readingTime }: TrackPageViewProps) => {
+const TrackPageViewInner = ({ slug, readingTime }: TrackPageViewProps) => {
     const activeSecondsRef = useRef(0);
     const hasFiredRef = useRef(false);
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -96,6 +97,14 @@ const TrackPageView = ({ slug, readingTime }: TrackPageViewProps) => {
     }, [slug]);
 
     return null;
+}
+
+function TrackPageView(props: TrackPageViewProps) {
+    return (
+    <QueryClientWrapper>
+        <TrackPageViewInner {...props} />
+    </QueryClientWrapper>
+    );
 }
 
 export default TrackPageView;

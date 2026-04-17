@@ -67,18 +67,25 @@ function LikeButtonInner({ slug }: Props) {
     <button
       onClick={handleLike}
       disabled={hasLiked || isPending}
-      className={`group inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium transition-all duration-200 ${hasLiked
-        ? 'border-pink-200/60 bg-pink-50 text-pink-600 dark:border-pink-500/20 dark:bg-pink-500/10 dark:text-pink-400'
-        : 'border-gray-200/80 bg-white text-gray-500 hover:border-pink-200 hover:bg-pink-50 hover:text-pink-600 dark:border-white/5 dark:bg-white/5 dark:text-gray-400 dark:hover:border-pink-500/20 dark:hover:bg-pink-500/10 dark:hover:text-pink-400'
+      className={`group inline-flex items-center gap-2 rounded-full border px-4 py-2 font-mono text-[11px] uppercase tracking-[0.22em] transition-all duration-200 ${hasLiked
+        ? 'border-pink-500/25 bg-pink-500/12 text-pink-300'
+        : 'border-white/8 bg-[#08111f]/90 text-slate-300 hover:border-cyan-400/25 hover:bg-[#0d1727] hover:text-white'
         }`}
       aria-label={hasLiked ? `Liked (${count})` : 'Like this article'}
     >
-      <span
-        className={`inline-block transition-transform ${isPending ? 'scale-125' : ''
-          }`}
+      <svg
+        className={`h-3.5 w-3.5 transition-transform ${isPending ? 'scale-125' : ''}`}
+        fill={hasLiked ? 'currentColor' : 'none'}
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth="1.8"
       >
-        {hasLiked ? '❤️' : '🤍'}
-      </span>
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M21.435 6.582a5.94 5.94 0 00-8.403 0L12 7.614l-1.032-1.032a5.94 5.94 0 10-8.403 8.403L12 24l9.435-9.015a5.94 5.94 0 000-8.403z"
+        />
+      </svg>
       <span>{count === null ? '…' : count > 0 ? count : 'Like'}</span>
     </button>
   );

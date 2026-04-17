@@ -14,7 +14,7 @@ import pagefind from "astro-pagefind";
 const isCloudflare = !!process.env.CF_PAGES;
 
 export default defineConfig({
-  site: 'https://blog.arjunnambiar.dev',
+  site: 'https://arjunnambiar.dev',
   // Set `export const prerender = true` for prerendering(SSG) in the blog pages.
   // output:'server' lets Keystatic's OAuth API routes stay server-side(SSR).
   output: 'server',

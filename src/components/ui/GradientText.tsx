@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { motion, useMotionValue, useAnimationFrame, useTransform } from 'motion/react';
+import useTheme from '../../lib/useTheme';
 
 interface GradientTextProps {
   children: ReactNode;
@@ -16,7 +17,7 @@ interface GradientTextProps {
 export default function GradientText({
   children,
   className = '',
-  colors = ['#5227FF', '#FF9FFC', '#B19EEF'],
+  colors,
   animationSpeed = 8,
   showBorder = false,
   direction = 'horizontal',
@@ -27,6 +28,13 @@ export default function GradientText({
   const progress = useMotionValue(0);
   const elapsedRef = useRef(0);
   const lastTimeRef = useRef<number | null>(null);
+  const theme = useTheme();
+
+  const defaultColors = theme === 'dark' 
+    ? ['#22d3ee', '#ffffff', '#0891b2', '#22d3ee'] 
+    : ['#0891b2', '#0f172a', '#22d3ee', '#0891b2'];
+  
+  const activeColors = colors || defaultColors;
 
   const animationDuration = animationSpeed * 1000;
 
@@ -55,7 +63,6 @@ export default function GradientText({
         progress.set(100 - ((cycleTime - animationDuration) / animationDuration) * 100);
       }
     } else {
-      // Continuously increase position for seamless looping
       progress.set((elapsedRef.current / animationDuration) * 100);
     }
   });
@@ -71,7 +78,6 @@ export default function GradientText({
     } else if (direction === 'vertical') {
       return `50% ${p}%`;
     } else {
-      // For diagonal, move only horizontally to avoid interference patterns
       return `${p}% 50%`;
     }
   });
@@ -86,8 +92,7 @@ export default function GradientText({
 
   const gradientAngle =
     direction === 'horizontal' ? 'to right' : direction === 'vertical' ? 'to bottom' : 'to bottom right';
-  // Duplicate first color at the end for seamless looping
-  const gradientColors = [...colors, colors[0]].join(', ');
+  const gradientColors = [...activeColors, activeColors[0]].join(', ');
 
   const gradientStyle = {
     backgroundImage: `linear-gradient(${gradientAngle}, ${gradientColors})`,
@@ -97,7 +102,7 @@ export default function GradientText({
 
   return (
     <motion.div
-      className={`relative mx-auto flex max-w-fit flex-row items-center justify-center rounded-[1.25rem] font-medium backdrop-blur transition-shadow duration-500 overflow-hidden cursor-pointer ${showBorder ? 'py-1 px-2' : ''} ${className}`}
+      className={`relative flex max-w-fit flex-row items-center justify-center rounded-[1.25rem] font-medium backdrop-blur transition-shadow duration-500 overflow-hidden cursor-pointer ${showBorder ? 'py-1 px-2' : ''} ${className}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >

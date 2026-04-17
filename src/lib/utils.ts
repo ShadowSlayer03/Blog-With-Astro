@@ -1,3 +1,7 @@
+import { clsx } from "clsx";
+import type { ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
 /**
  * Formats a Date object to a human-readable string.
  * @param style 'long' → "April 5, 2026" | 'short' → "Apr 5, 2026"
@@ -19,3 +23,12 @@ export function getReadingTime(content: string): number {
   const words = content.trim().split(/\s+/).length;
   return Math.max(1, Math.ceil(words / 200));
 }
+
+/**
+ * Combines clsx and tailwind-merge for optimal class merging.
+ * @param inputs - Class names or conditional class values.
+ * @returns A single string with merged class names.
+ */
+export const cn = (...inputs: ClassValue[]): string => {
+  return twMerge(clsx(inputs));
+};

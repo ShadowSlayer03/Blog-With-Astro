@@ -31,16 +31,13 @@
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.2.2",
     "@tanstack/react-query": "^5.96.0",
-    "@types/three": "^0.183.1",
     "astro": "^6.0.8",
     "astro-pagefind": "^1.8.6",
     "clsx": "^2.1.1",
     "dotenv": "^17.4.0",
     "drizzle-orm": "^0.45.2",
-    "face-api.js": "^0.22.2",
     "gsap": "^3.15.0",
     "motion": "^12.38.0",
-    "ogl": "^1.0.11",
     "postprocessing": "^6.39.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
@@ -48,8 +45,7 @@
     "satori-html": "^0.3.2",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.5.0",
-    "tailwindcss": "^4.2.2",
-    "three": "^0.183.2"
+    "tailwindcss": "^4.2.2"
   },
   "devDependencies": {
     "@types/react": "^19.2.14",
