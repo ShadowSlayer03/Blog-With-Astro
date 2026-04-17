@@ -1,243 +1,498 @@
 ---
 export const prerender = true;
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import BlogCard from '../../components/BlogCard.astro';
-import { SITE } from '../../lib/constants';
-import { getCollection } from 'astro:content';
-import Search from 'astro-pagefind/components/Search';
-import { getReadingTime, formatDate } from '../../lib/utils';
-import { GridScan } from '../../components/ui/GridScan';
-import GradientText from '../../components/ui/GradientText';
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { SITE } from "../../lib/constants";
+import { getCollection } from "astro:content";
+import Search from "astro-pagefind/components/Search";
+import { getReadingTime, formatDate } from "../../lib/utils";
+import MagicBentoBlogGrid from "../../components/islands/MagicBentoBlogGrid";
+import GradientText from "../../components/ui/GradientText";
+import MagicFeaturedBlogCard from "../../components/islands/MagicFeaturedBlogCard";
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 
 const postsWithMetadata = await Promise.all(
   posts.map(async (post) => {
     const readingTime = post.body ? getReadingTime(post.body) : 1;
     return { ...post, readingTime };
-  })
+  }),
 );
 
-const allTags = [...new Set(posts.flatMap((post) => post.data.tags))].sort();
+const featuredPost = postsWithMetadata[0];
+const featuredArchivePost = featuredPost
+  ? {
+      slug: featuredPost.id,
+      title: featuredPost.data.title,
+      description: featuredPost.data.description,
+      heroImage: featuredPost.data.heroImage ?? null,
+      tag: featuredPost.data.tags[0] ?? "GENERAL",
+      date: formatDate(featuredPost.data.pubDate, "short").toUpperCase(),
+      readingTime: featuredPost.readingTime,
+      authorHandle: SITE.author.toUpperCase().replace(/\s+/g, "_"),
+    }
+  : null;
+
+const remainingPosts = postsWithMetadata.slice(1);
+
+const archivePosts = remainingPosts.map((post) => {
+  const wordCount = post.body ? post.body.trim().split(/\s+/).length : 0;
+  const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
+  return {
+    slug: post.id,
+    title: post.data.title,
+    description: post.data.description,
+    heroImage: post.data.heroImage ?? null,
+    tag: post.data.tags[0] ?? "GENERAL",
+    date: formatDate(post.data.pubDate, "short").toUpperCase(),
+    readingTime: readingMinutes,
+  };
+});
+
+const authorHandle = SITE.author.toUpperCase().replace(/\s+/g, "_");
+
+const allTags = [...new Set(posts.flatMap((post) => post.data.tags))]
+  .sort()
+  .slice(0, 4);
+const tagCounts = new Map<string, number>();
+posts.forEach((post) =>
+  post.data.tags.forEach((tag) =>
+    tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1),
+  ),
+);
 ---
 
 <BaseLayout
   title={`Blog - ${SITE.title}`}
   description="All blog posts about web development, side projects, and building in public."
 >
-  <div class="fixed inset-0 -z-10 pointer-events-none opacity-15 dark:opacity-35 transition-opacity duration-500">
-    <GridScan
-      client:load
-      sensitivity={0.55}
-      lineThickness={1}
-      linesColor="#0e4f5c"
-      gridScale={0.1}
-      scanColor="#22d3ee"
-      scanOpacity={0.35}
-      enablePost
-      bloomIntensity={0.5}
-      chromaticAberration={0.002}
-      noiseIntensity={0.01}
-    />
+  <div
+    class="archive-backdrop fixed inset-0 -z-10 pointer-events-none overflow-hidden bg-[#040916]"
+  >
+    <div
+      class="archive-backdrop-grid absolute inset-0 opacity-35"
+      style="background-image: linear-gradient(rgba(34, 211, 238, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 211, 238, 0.03) 1px, transparent 1px); background-size: 32px 32px;"
+    >
+    </div>
+    <div
+      class="archive-backdrop-gradient absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(8,145,178,0.14),transparent_34%),linear-gradient(180deg,#040916_0%,#071121_55%,#050b16_100%)]"
+    >
+    </div>
+    <div
+      class="archive-backdrop-orb absolute left-1/2 top-0 h-160 w-160 -translate-x-1/2 rounded-full bg-cyan-500/10 blur-[120px]"
+    >
+    </div>
   </div>
 
-  <section class="mx-auto max-w-6xl px-6 py-12 relative z-10">
-
-    <div class="text-center mb-16">
-      <span class="inline-block font-mono text-[10px] tracking-[0.3em]
-        text-cyan-600 dark:text-cyan-500
-        border border-cyan-500/40 dark:border-cyan-500/30
-        bg-cyan-500/10 dark:bg-cyan-500/10
-        rounded-full px-4 py-1 uppercase mb-6">
-        System_Active: Directory_Root
-      </span>
-
-      <div class="mt-2">
-        <GradientText
-          client:load
-          colors={["#22d3ee", "#06b6d4", "#0e7490", "#22d3ee"]}
-          animationSpeed={8}
-          showBorder={false}
-          className="text-7xl md:text-8xl font-black tracking-tighter uppercase italic
-            drop-shadow-[0_0_30px_rgba(34,211,238,0.25)] dark:drop-shadow-[0_0_30px_rgba(34,211,238,0.4)]"
+  <section
+    class="archive-page relative z-10 mx-auto max-w-6xl px-6 py-16 md:py-20"
+  >
+    <div class="mb-16 flex flex-col items-center text-center md:mb-18">
+      <div
+        class="archive-eyebrow mb-8 inline-flex flex-wrap items-center justify-center gap-3 rounded-sm border border-cyan-500/20 bg-[#091426]/85 px-3 py-2 font-mono text-[9px] font-bold uppercase tracking-[0.24em] shadow-[0_10px_30px_rgba(0,0,0,0.22)] sm:px-4 sm:tracking-[0.32em]"
+      >
+        <span class="archive-eyebrow-label text-cyan-400">PERSONAL_BLOGS</span>
+        <span class="archive-eyebrow-slash text-slate-600">//</span>
+        <span class="archive-eyebrow-handle text-slate-300">{authorHandle}</span
         >
-          Blogs
-        </GradientText>
+      </div>
+
+      <GradientText animationSpeed={6} showBorder={false} client:load>
+        <h1
+          class="font-heading text-[9vw] md:text-[7vw] tracking-normal uppercase leading-none"
+        >
+          THE_ARCHIVE
+        </h1>
+      </GradientText>
+    </div>
+
+    <div class="relative mx-auto mb-20 max-w-2xl md:mb-24">
+      <div
+        id="search-wrapper"
+        class="archive-search-shell group relative overflow-hidden rounded-[14px] border border-cyan-500/12 bg-[#081121]/95 shadow-[0_14px_40px_rgba(0,0,0,0.28)] transition-all duration-300 focus-within:border-cyan-500/30 focus-within:shadow-[0_14px_40px_rgba(34,211,238,0.08)]"
+      >
+        <Search
+          id="search"
+          className="pagefind-ui"
+          uiOptions={{ showImages: false, resetStyles: false }}
+        />
       </div>
     </div>
 
-    <div class="max-w-2xl mx-auto mb-20 relative">
-      <div class="relative group rounded-xl
-        bg-white/80 dark:bg-slate-900
-        border border-cyan-500/20 dark:border-cyan-500/20
-        shadow-[0_0_30px_rgba(34,211,238,0.04)] dark:shadow-[0_0_30px_rgba(34,211,238,0.05)]
-        overflow-hidden backdrop-blur-sm">
-        <span class="absolute left-4 top-1/2 -translate-y-1/2 font-mono text-cyan-600 dark:text-cyan-500 z-10 select-none">$</span>
-          <Search id="search" className="pagefind-ui" uiOptions={{ showImages: false }} />
-        </div>
-      </div>
-    </div>
+    <div class="mb-10 grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] xl:gap-10">
+      {
+        featuredArchivePost && (
+          <MagicFeaturedBlogCard
+            client:load
+            post={featuredArchivePost}
+            enableBorderGlow={true}
+            enableTilt={true}
+            enableMagnetism={false}
+            clickEffect={true}
+            particleCount={15}
+          />
+        )
+      }
 
-    <div class="grid lg:grid-cols-12 gap-8">
-
-      <div class="lg:col-span-8 space-y-8">
-
-        {postsWithMetadata.slice(0, 1).map(post => (
-          <a
-            href={`/blog/${post.id}`}
-            class="glass-card overflow-hidden group block
-              hover:border-cyan-500/30 dark:hover:border-cyan-500/30
-              transition-colors duration-300"
-          >
-            <div class="flex flex-col md:flex-row h-full">
-              <!-- Image half -->
-              <div class="md:w-1/2 aspect-square md:aspect-auto overflow-hidden
-                bg-gray-100 dark:bg-slate-800">
-                {post.data.heroImage ? (
-                  <img
-                    src={post.data.heroImage}
-                    alt={post.data.title}
-                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105
-                      opacity-90 dark:opacity-80 dark:mix-blend-luminosity"
-                  />
-                ) : (
-                  <div class="w-full h-full flex items-center justify-center bg-linear-to-br from-cyan-500/10 to-slate-800">
-                    <svg class="h-16 w-16 text-cyan-500/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                    </svg>
-                  </div>
-                )}
-              </div>
-
-              <!-- Content half -->
-              <div class="p-8 flex flex-col justify-center md:w-1/2
-                bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm">
-                <div class="flex items-center justify-between mb-4">
-                  <span class="bg-cyan-500/10 dark:bg-[#293250] text-cyan-700 dark:text-[#8ea4ff]
-                    font-mono text-[9px] px-2 py-0.5 rounded uppercase tracking-widest border border-cyan-500/20 dark:border-transparent">
-                    {post.data.tags[0] || 'General'}
-                  </span>
-                  <span class="font-mono text-[9px] text-gray-400 dark:text-slate-500 uppercase tracking-widest">
-                    {formatDate(post.data.pubDate, 'short')}
-                  </span>
-                </div>
-
-                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4
-                  group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors leading-tight">
-                  {post.data.title}
-                </h2>
-
-                <p class="text-gray-500 dark:text-slate-400 text-sm leading-relaxed line-clamp-3 mb-8">
-                  {post.data.description}
-                </p>
-
-                <div class="mt-auto flex items-center justify-between">
-                  <div class="flex items-center gap-2">
-                    <div class="w-6 h-6 rounded-full bg-cyan-900 border border-cyan-500/50 flex items-center justify-center overflow-hidden shrink-0">
-                      <img src="/avatar.png" alt="Arjun Nambiar" class="w-full h-full object-cover" onerror="this.style.display='none'" />
-                    </div>
-                    <span class="font-mono tracking-widest text-[9px] text-gray-600 dark:text-slate-300 uppercase">
-                      Arjun_Nambiar
-                    </span>
-                  </div>
-                  <span class="font-mono text-[9px] text-gray-400 dark:text-slate-500 uppercase tracking-widest">
-                    {post.readingTime} min read
-                  </span>
-                </div>
-              </div>
+      <div class="flex flex-col gap-6">
+        <div
+          class="archive-topics-card flex flex-1 flex-col rounded-[22px] border border-white/6 bg-[#0c1421]/92 p-6 shadow-[0_20px_50px_rgba(0,0,0,0.22)] backdrop-blur-sm"
+        >
+          <div class="mb-5 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <svg
+                class="w-4 h-4 text-cyan-400"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"
+                ></path>
+                <line x1="7" y1="7" x2="7.01" y2="7"></line>
+              </svg>
+              <h3
+                class="archive-topics-title font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-white"
+              >
+                HOT_TOPICS
+              </h3>
             </div>
-          </a>
-        ))}
-
-        <div class="grid md:grid-cols-2 gap-6">
-          {postsWithMetadata.slice(1).map((post) => (
-            <BlogCard post={post} readingTime={post.readingTime} />
-          ))}
-        </div>
-
-        {postsWithMetadata.length === 0 && (
-          <div class="rounded-2xl border border-dashed border-gray-200 dark:border-white/10 py-20 text-center">
-            <p class="text-gray-400 dark:text-slate-500 font-mono text-sm">No posts found in system.</p>
+            <span
+              class="archive-topics-count font-mono text-[8px] uppercase tracking-[0.3em] text-slate-600"
+            >
+              {allTags.length} TAGS
+            </span>
           </div>
-        )}
-      </div>
 
-      <aside class="lg:col-span-4 space-y-6">
-
-        <div class="glass-card p-6
-          bg-white/70 dark:bg-slate-900/80
-          backdrop-blur-sm">
-          <h3 class="font-mono text-xs uppercase text-cyan-600 dark:text-cyan-500 mb-6 flex items-center gap-2">
-            <div class="w-1.5 h-3 bg-cyan-500 rounded-sm"></div>
-            Trending_Topics
-          </h3>
-          {allTags.length > 0 ? (
-            <ul class="space-y-4 font-mono text-[10px] uppercase tracking-widest">
-              {allTags.slice(0, 5).map((tag, i) => (
-                <li>
-                  <a
-                    href={`/blog/tag/${tag}`}
-                    class="flex items-center group text-gray-500 dark:text-slate-400
-                      hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
-                  >
-                    <span class="text-gray-300 dark:text-slate-600 mr-2 group-hover:text-cyan-500 dark:group-hover:text-cyan-600 transition-colors">
-                      #{String(i + 1).padStart(2, '0')}_
-                    </span>
-                    {tag.replace(/\s+/g, '_')}
-                  </a>
-                </li>
-              ))}
+          <div class="archive-topics-divider border-t border-white/5 pt-4">
+            <ul class="space-y-2">
+              {
+                allTags.map((tag, i) => (
+                  <li>
+                    <a
+                      href={`/blog/tag/${tag}`}
+                      class="archive-topic-link group/tag flex items-center gap-3 rounded-lg px-3 py-2.5 font-mono text-[10px] uppercase tracking-[0.2em] text-slate-400 transition-all duration-200 hover:bg-cyan-500/5 hover:text-cyan-300"
+                    >
+                      <span class="archive-topic-index text-slate-600 transition-colors group-hover/tag:text-cyan-500">
+                        #{String(i + 1).padStart(2, "0")}_
+                      </span>
+                      <span class="flex-1">{tag.replace(/\s+/g, "_")}</span>
+                      <span class="archive-topic-chip flex h-5 w-5 items-center justify-center rounded bg-[#0f1a2e] text-[8px] text-slate-500 transition-colors group-hover/tag:bg-cyan-500/10 group-hover/tag:text-cyan-400">
+                        {tagCounts.get(tag) || 0}
+                      </span>
+                      <svg
+                        class="archive-topic-chevron h-3 w-3 text-slate-700 transition-all duration-200 group-hover/tag:translate-x-0.5 group-hover/tag:text-cyan-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </a>
+                  </li>
+                ))
+              }
             </ul>
-          ) : (
-            <p class="font-mono text-[10px] text-gray-400 dark:text-slate-600 uppercase tracking-widest">No tags yet.</p>
-          )}
-        </div>
-
-        <div class="glass-card p-8 text-center relative overflow-hidden group
-          bg-cyan-50/80 dark:bg-cyan-950/20
-          border-cyan-200/60 dark:border-cyan-500/20">
-          <div class="absolute inset-0
-            bg-cyan-500/5 dark:bg-cyan-500/5
-            translate-y-full group-hover:translate-y-0
-            transition-transform duration-500 pointer-events-none">
-          </div>
-
-          <div class="relative z-10">
-            <div class="w-12 h-12 rounded-full
-              bg-cyan-100 dark:bg-cyan-500/10
-              border border-cyan-300 dark:border-cyan-500/30
-              flex items-center justify-center
-              text-cyan-600 dark:text-cyan-400 text-xl mx-auto mb-4">
-              @
-            </div>
-            <h3 class="text-gray-900 dark:text-white font-black uppercase tracking-tight text-xl mb-2">
-              Join the Core
-            </h3>
-            <p class="text-[11px] text-gray-500 dark:text-slate-400 mb-6 leading-relaxed">
-              Get dev deep-dives and project updates delivered weekly.
-            </p>
-            <div class="flex gap-2">
-              <input
-                type="email"
-                placeholder="you@dev.os"
-                class="bg-white dark:bg-black
-                  border border-gray-200 dark:border-white/10
-                  rounded px-3 py-2 flex-1 text-[10px] font-mono outline-none
-                  focus:border-cyan-500 dark:focus:border-cyan-500
-                  text-gray-900 dark:text-cyan-100
-                  placeholder:text-gray-400 dark:placeholder:text-slate-600
-                  transition-colors w-full"
-              />
-              <button class="bg-cyan-500 hover:bg-cyan-400 text-slate-900 font-bold px-4 py-2 text-[10px] uppercase tracking-wider rounded transition-colors whitespace-nowrap cursor-pointer">
-                Execute
-              </button>
-            </div>
           </div>
         </div>
 
-      </aside>
+        <div
+          class="archive-join-card flex flex-1 flex-col justify-center rounded-[22px] border border-white/6 bg-[#0a121e]/88 p-6 text-center shadow-[0_20px_50px_rgba(0,0,0,0.22)] backdrop-blur-sm"
+        >
+          <div
+            class="archive-join-icon mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-full border border-cyan-500/20 bg-[#132238] text-cyan-400"
+          >
+            <span class="font-mono text-lg leading-none">@</span>
+          </div>
+          <h3
+            class="archive-join-title mb-2 text-[15px] font-bold uppercase tracking-wider text-white"
+          >
+            JOIN THE CORE
+          </h3>
+          <p
+            class="archive-join-copy mb-6 text-xs leading-relaxed text-slate-400"
+          >
+            Get technical deep-dives delivered to your terminal weekly.
+          </p>
+          <div class="flex flex-col gap-2 sm:flex-row">
+            <input
+              type="email"
+              placeholder="user@architect.os"
+              class="archive-join-input w-full rounded border border-white/10 bg-[#050b14] px-4 py-2 text-xs font-mono text-white placeholder-slate-600 focus:border-cyan-500/50 focus:outline-none"
+            />
+            <button
+              class="archive-join-button rounded border border-transparent bg-[#67e8f9] px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-wider whitespace-nowrap text-black transition-colors hover:border-[#67e8f9] hover:bg-[#a5f3fc] sm:self-auto"
+            >
+              EXECUTE
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <div class="mb-16">
+      <MagicBentoBlogGrid
+        client:load
+        posts={archivePosts}
+        textAutoHide={true}
+        enableSpotlight={true}
+        enableBorderGlow={true}
+        enableTilt={true}
+        enableMagnetism={false}
+        clickEffect={true}
+        spotlightRadius={400}
+        particleCount={12}
+        disableAnimations={false}
+      />
+    </div>
+
+    {
+      remainingPosts.length > 5 && (
+        <div class="mt-12 mb-16 flex justify-center">
+          <div class="archive-pagination-shell flex items-center gap-2 rounded border border-white/10 bg-[#071121] px-2 py-1 font-mono text-[10px] opacity-80 shadow-lg backdrop-blur-sm">
+            <button class="archive-pagination-arrow flex h-8 w-8 items-center justify-center text-slate-500 hover:text-white transition-colors">
+              &lt;
+            </button>
+            <div class="flex items-center gap-1">
+              <span class="archive-pagination-current flex h-8 w-8 items-center justify-center bg-cyan-400 text-slate-950 font-bold rounded-sm">
+                01
+              </span>
+              <span class="archive-pagination-page flex h-8 w-8 items-center justify-center text-slate-400 hover:text-white transition-colors cursor-pointer">
+                02
+              </span>
+              <span class="archive-pagination-page flex h-8 w-8 items-center justify-center text-slate-400 hover:text-white transition-colors cursor-pointer">
+                03
+              </span>
+              <span class="archive-pagination-dots flex h-8 w-8 items-center justify-center text-slate-600">
+                ...
+              </span>
+              <span class="archive-pagination-page flex h-8 w-8 items-center justify-center text-slate-400 hover:text-white transition-colors cursor-pointer">
+                12
+              </span>
+            </div>
+            <button class="archive-pagination-arrow flex h-8 w-8 items-center justify-center text-slate-500 hover:text-white transition-colors">
+              &gt;
+            </button>
+          </div>
+        </div>
+      )
+    }
   </section>
 </BaseLayout>
+
+<style is:global>
+
+  /* — Pagefind wrapper — */
+  #search-wrapper {
+    --pagefind-ui-primary: #22d3ee;
+    --pagefind-ui-text: #94a3b8;
+    --pagefind-ui-background: transparent;
+    --pagefind-ui-border: transparent;
+    --pagefind-ui-tag: #22d3ee;
+    --pagefind-ui-border-width: 0px;
+    --pagefind-ui-border-radius: 12px;
+    --pagefind-ui-image-border-radius: 12px;
+    --pagefind-ui-image-box-ratio: 0;
+    --pagefind-ui-font: ui-monospace, "JetBrains Mono", monospace;
+    --pagefind-ui-scale: 0.7;
+  }
+
+  #search-wrapper .pagefind-ui__drawer {
+    border: 1px solid rgba(34, 211, 238, 0.1) !important;
+    box-shadow:
+      0 24px 48px rgba(0, 0, 0, 0.55),
+      0 0 32px rgba(34, 211, 238, 0.04);
+    z-index: 50;
+    padding: 0 1rem;
+  }
+
+  #search-wrapper .pagefind-ui__search-input::placeholder {
+    color: #979ca3;
+  }
+
+  #search-wrapper .pagefind-ui__results-area {
+    margin-top: 0 !important;
+  }
+
+  #search-wrapper .pagefind-ui__result:first-child {
+    border-top: rgba(34, 211, 238, 0.1) solid 1px !important;
+  }
+
+  html:not(.dark) .archive-backdrop {
+    background: #f8fafc;
+  }
+
+  html:not(.dark) .archive-backdrop-grid {
+    opacity: 0.45;
+    background-image:
+      linear-gradient(rgba(15, 23, 42, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(15, 23, 42, 0.04) 1px, transparent 1px) !important;
+  }
+
+  html:not(.dark) .archive-backdrop-gradient {
+    background:
+      radial-gradient(circle at top, rgba(14, 116, 144, 0.12), transparent 34%),
+      linear-gradient(180deg, #f8fafc 0%, #eef4fb 52%, #f8fafc 100%) !important;
+  }
+
+  html:not(.dark) .archive-backdrop-orb {
+    background: rgba(14, 165, 233, 0.1);
+  }
+
+  html:not(.dark) .archive-page .archive-eyebrow {
+    border-color: rgba(148, 163, 184, 0.35);
+    background: rgba(255, 255, 255, 0.86);
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+  }
+
+  html:not(.dark) .archive-page .archive-eyebrow-label {
+    color: #0f766e;
+  }
+
+  html:not(.dark) .archive-page .archive-eyebrow-slash {
+    color: #94a3b8;
+  }
+
+  html:not(.dark) .archive-page .archive-eyebrow-handle {
+    color: #334155;
+  }
+
+  html:not(.dark) .archive-page .archive-search-shell {
+    border-color: rgba(148, 163, 184, 0.28);
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+  }
+
+  html:not(.dark) .archive-page .archive-topics-card,
+  html:not(.dark) .archive-page .archive-join-card,
+  html:not(.dark) .archive-page .archive-pagination-shell {
+    border-color: rgba(226, 232, 240, 0.95);
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: 0 20px 46px rgba(15, 23, 42, 0.08);
+  }
+
+  html:not(.dark) .archive-page .archive-topics-title,
+  html:not(.dark) .archive-page .archive-join-title {
+    color: #0f172a;
+  }
+
+  html:not(.dark) .archive-page .archive-topics-count,
+  html:not(.dark) .archive-page .archive-pagination-dots {
+    color: #94a3b8;
+  }
+
+  html:not(.dark) .archive-page .archive-topics-divider {
+    border-top-color: rgba(226, 232, 240, 0.95);
+  }
+
+  html:not(.dark) .archive-page .archive-topic-link {
+    color: #475569;
+  }
+
+  html:not(.dark) .archive-page .archive-topic-link:hover {
+    background: rgba(14, 165, 233, 0.06);
+    color: #0f172a;
+  }
+
+  html:not(.dark) .archive-page .archive-topic-index,
+  html:not(.dark) .archive-page .archive-topic-chevron,
+  html:not(.dark) .archive-page .archive-pagination-arrow,
+  html:not(.dark) .archive-page .archive-pagination-page {
+    color: #94a3b8;
+  }
+
+  html:not(.dark) .archive-page .archive-topic-chip {
+    background: #f1f5f9;
+    color: #475569;
+  }
+
+  html:not(.dark) .archive-page .archive-join-icon {
+    border-color: rgba(14, 165, 233, 0.18);
+    background: #f1f5f9;
+    color: #0f766e;
+  }
+
+  html:not(.dark) .archive-page .archive-join-copy {
+    color: #475569;
+  }
+
+  html:not(.dark) .archive-page .archive-join-input {
+    border-color: rgba(226, 232, 240, 0.95);
+    background: #f8fafc;
+    color: #0f172a;
+  }
+
+  html:not(.dark) .archive-page .archive-join-input::placeholder {
+    color: #94a3b8;
+  }
+
+  html:not(.dark) .archive-page .archive-join-button {
+    background: #0f172a;
+    color: #f8fafc;
+  }
+
+  html:not(.dark) .archive-page .archive-join-button:hover {
+    border-color: #0f172a;
+    background: #1e293b;
+  }
+
+  html:not(.dark) .archive-page .archive-pagination-current {
+    background: #0f172a;
+    color: #f8fafc;
+  }
+
+  html:not(.dark) #search-wrapper {
+    --pagefind-ui-primary: #0f172a;
+    --pagefind-ui-text: #475569;
+    --pagefind-ui-tag: #0f172a;
+  }
+
+  html:not(.dark) #search-wrapper .pagefind-ui__drawer {
+    background: rgba(255, 255, 255, 0.98) !important;
+    border-color: rgba(226, 232, 240, 0.95) !important;
+    box-shadow: 0 22px 48px rgba(15, 23, 42, 0.12) !important;
+  }
+</style>
+
+<script>
+  function initSearchShortcut() {
+    const focusSearch = () => {
+      const wrapper = document.getElementById("search-wrapper");
+      if (!wrapper) return;
+      const input = wrapper.querySelector<HTMLInputElement>(
+        ".pagefind-ui__search-input",
+      );
+      if (input) {
+        input.focus();
+        input.select();
+      }
+    };
+
+    // Ctrl+K / Cmd+K keyboard shortcut
+    document.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+        e.preventDefault();
+        focusSearch();
+      }
+    });
+
+    const btn = document.getElementById("search-shortcut-btn");
+    btn?.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      focusSearch();
+    });
+  }
+
+  initSearchShortcut();
+  document.addEventListener("astro:after-swap", initSearchShortcut);
+</script>
