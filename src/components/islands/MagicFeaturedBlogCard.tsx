@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { cn } from '../../lib/utils';
+import useTheme from '../../lib/useTheme';
 
 type ArchiveGridPost = {
   slug: string;
@@ -74,15 +75,17 @@ const MagicFeaturedBlogCard: React.FC<MagicFeaturedBlogCardProps> = ({
   clickEffect = true,
   disableAnimations = false,
   particleCount = 12,
-  glowColor = DEFAULT_GLOW_COLOR,
+  glowColor,
 }) => {
   const cardRef = useRef<HTMLAnchorElement>(null);
   const shimmerRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const theme = useTheme();
   
   const isMobile = useIsMobile();
   const shouldReduceMotion = useShouldReduceMotion();
   const shouldDisableAnimations = disableAnimations || isMobile || shouldReduceMotion;
+  const activeGlowColor = glowColor || (theme === 'dark' ? DEFAULT_GLOW_COLOR : '15, 23, 42');
 
   const timeoutsRef = useRef<number[]>([]);
   const particlesRef = useRef<HTMLDivElement[]>([]);
@@ -137,7 +140,7 @@ const MagicFeaturedBlogCard: React.FC<MagicFeaturedBlogCardProps> = ({
         const particle = createParticleElement(
           Math.random() * rect.width,
           Math.random() * rect.height,
-          glowColor,
+          activeGlowColor,
         );
 
         cardRef.current.appendChild(particle);
@@ -161,7 +164,7 @@ const MagicFeaturedBlogCard: React.FC<MagicFeaturedBlogCardProps> = ({
 
       timeoutsRef.current.push(timeoutId);
     }
-  }, [glowColor, particleCount, shouldDisableAnimations]);
+  }, [activeGlowColor, particleCount, shouldDisableAnimations]);
 
   const resetTransforms = useCallback(() => {
     if (!cardRef.current || shouldDisableAnimations) return;
@@ -231,12 +234,12 @@ const MagicFeaturedBlogCard: React.FC<MagicFeaturedBlogCardProps> = ({
 
     if (cardRef.current && !shouldDisableAnimations) {
       gsap.to(cardRef.current, {
-        boxShadow: `0 24px 60px rgba(0,0,0,0.35), 0 0 40px rgba(${glowColor}, 0.08)`,
+        boxShadow: `0 24px 60px rgba(0,0,0,0.35), 0 0 40px rgba(${activeGlowColor}, 0.08)`,
         duration: 0.3,
         ease: 'power2.out',
       });
     }
-  }, [spawnParticles, shouldDisableAnimations, glowColor]);
+  }, [spawnParticles, shouldDisableAnimations, activeGlowColor]);
 
   const handleMouseLeave = useCallback(() => {
     if (!cardRef.current) return;
@@ -274,7 +277,7 @@ const MagicFeaturedBlogCard: React.FC<MagicFeaturedBlogCardProps> = ({
       ripple.style.top = `${y - maxDistance}px`;
       ripple.style.width = `${maxDistance * 2}px`;
       ripple.style.height = `${maxDistance * 2}px`;
-      ripple.style.background = `radial-gradient(circle, rgba(${glowColor}, 0.28) 0%, rgba(${glowColor}, 0.12) 35%, transparent 70%)`;
+      ripple.style.background = `radial-gradient(circle, rgba(${activeGlowColor}, 0.28) 0%, rgba(${activeGlowColor}, 0.12) 35%, transparent 70%)`;
 
       cardRef.current.appendChild(ripple);
 
@@ -290,11 +293,11 @@ const MagicFeaturedBlogCard: React.FC<MagicFeaturedBlogCardProps> = ({
         },
       );
     },
-    [clickEffect, glowColor, shouldDisableAnimations],
+    [clickEffect, activeGlowColor, shouldDisableAnimations],
   );
 
   return (
-    <div className="magic-bento-shell relative w-full h-full" ref={containerRef}>
+    <div className="magic-bento-shell relative h-full w-full" ref={containerRef}>
       <style>{`
         .magic-bento-card {
           transform-style: preserve-3d;
@@ -304,7 +307,7 @@ const MagicFeaturedBlogCard: React.FC<MagicFeaturedBlogCardProps> = ({
           content: '';
           position: absolute;
           inset: 0;
-          background: radial-gradient(460px circle at var(--glow-x) var(--glow-y), rgba(${glowColor}, calc(var(--glow-intensity) * 0.12)) 0%, transparent 58%);
+          background: radial-gradient(460px circle at var(--glow-x) var(--glow-y), rgba(${activeGlowColor}, calc(var(--glow-intensity) * 0.12)) 0%, transparent 58%);
           pointer-events: none;
           opacity: 1;
           z-index: 0;
@@ -315,7 +318,7 @@ const MagicFeaturedBlogCard: React.FC<MagicFeaturedBlogCardProps> = ({
           inset: 0;
           border-radius: inherit;
           padding: 1px;
-          background: radial-gradient(var(--glow-radius) circle at var(--glow-x) var(--glow-y), rgba(${glowColor}, calc(var(--glow-intensity) * 0.95)) 0%, rgba(${glowColor}, calc(var(--glow-intensity) * 0.25)) 35%, transparent 62%);
+          background: radial-gradient(var(--glow-radius) circle at var(--glow-x) var(--glow-y), rgba(${activeGlowColor}, calc(var(--glow-intensity) * 0.95)) 0%, rgba(${activeGlowColor}, calc(var(--glow-intensity) * 0.25)) 35%, transparent 62%);
           -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
           -webkit-mask-composite: xor;
           mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -335,12 +338,15 @@ const MagicFeaturedBlogCard: React.FC<MagicFeaturedBlogCardProps> = ({
           height: 3px;
         }
       `}</style>
-      
+
       <a
         ref={cardRef}
         href={`/blog/${post.slug}`}
         className={cn(
-          'magic-bento-card group flex flex-col overflow-hidden rounded-[22px] border border-white/6 bg-[#10192b]/92 shadow-[0_20px_55px_rgba(0,0,0,0.24)] transition-colors duration-300 md:flex-row relative z-10 h-full',
+          'magic-bento-card group relative z-10 flex h-full flex-col overflow-hidden rounded-[22px] transition-colors duration-300 md:flex-row',
+          theme === 'dark'
+            ? 'border border-white/6 bg-[#10192b]/92 shadow-[0_20px_55px_rgba(0,0,0,0.24)]'
+            : 'border border-slate-200/90 bg-white/95 shadow-[0_20px_55px_rgba(15,23,42,0.10)]',
           enableBorderGlow && 'magic-bento-card--glow'
         )}
         onMouseMove={handleMouseMove}
@@ -358,21 +364,40 @@ const MagicFeaturedBlogCard: React.FC<MagicFeaturedBlogCardProps> = ({
           ref={shimmerRef}
           className="pointer-events-none absolute inset-0 z-4 opacity-0"
           style={{
-            background: `linear-gradient(105deg, transparent 40%, rgba(${glowColor}, 0.07) 50%, transparent 60%)`,
+            background: `linear-gradient(105deg, transparent 40%, rgba(${activeGlowColor}, 0.07) 50%, transparent 60%)`,
           }}
         />
 
-        <div className="relative h-72 shrink-0 overflow-hidden border-b border-white/5 bg-[#070e1a] md:h-auto md:w-[46%] md:border-b-0 md:border-r">
+        <div
+          className={cn(
+            'relative h-72 shrink-0 overflow-hidden md:h-auto md:w-[46%] md:border-b-0 md:border-r',
+            theme === 'dark'
+              ? 'border-b border-white/5 bg-[#070e1a]'
+              : 'border-b border-slate-200/90 bg-slate-100 md:border-r'
+          )}
+        >
           {post.heroImage ? (
             <img
               src={post.heroImage}
               alt={post.title}
-              className="absolute inset-0 h-full w-full object-cover opacity-80 saturate-75 mix-blend-luminosity transition-transform duration-700 group-hover:scale-[1.03]"
+              className={cn(
+                'absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]',
+                theme === 'dark'
+                  ? 'opacity-80 saturate-75 mix-blend-luminosity'
+                  : 'opacity-95 saturate-100'
+              )}
             />
           ) : (
-            <div className="absolute inset-0 flex items-center justify-center bg-[radial-gradient(circle_at_center,rgba(103,232,249,0.14),transparent_52%),linear-gradient(180deg,#040914_0%,#0a1324_100%)]">
+            <div
+              className={cn(
+                'absolute inset-0 flex items-center justify-center',
+                theme === 'dark'
+                  ? 'bg-[radial-gradient(circle_at_center,rgba(103,232,249,0.14),transparent_52%),linear-gradient(180deg,#040914_0%,#0a1324_100%)]'
+                  : 'bg-[radial-gradient(circle_at_center,rgba(15,23,42,0.08),transparent_52%),linear-gradient(180deg,#f8fafc_0%,#e2e8f0_100%)]'
+              )}
+            >
               <svg
-                className="h-14 w-14 text-cyan-900/80"
+                className={cn('h-14 w-14', theme === 'dark' ? 'text-cyan-900/80' : 'text-slate-500')}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -386,32 +411,63 @@ const MagicFeaturedBlogCard: React.FC<MagicFeaturedBlogCardProps> = ({
               </svg>
             </div>
           )}
-          <div className="absolute inset-0 bg-linear-to-t from-[#10192b] via-[#10192b]/20 to-transparent" />
+          <div
+            className={cn(
+              'absolute inset-0 bg-linear-to-t',
+              theme === 'dark'
+                ? 'from-[#10192b] via-[#10192b]/20 to-transparent'
+                : 'from-white/90 via-white/15 to-transparent'
+            )}
+          />
         </div>
-        <div className="flex flex-1 flex-col justify-center p-8 lg:p-10 xl:p-12 relative z-10">
-          <div className="mb-6 flex items-center gap-3 font-mono text-[9px] uppercase tracking-[0.25em] text-slate-400">
-            <span className="rounded-sm border border-cyan-500/10 bg-[#1d2740] px-3 py-1.5 text-cyan-300 shadow-[0_0_10px_rgba(34,211,238,0.1)]">
+
+        <div className="relative z-10 flex flex-1 flex-col justify-center p-6 sm:p-8 lg:p-10 xl:p-12">
+          <div
+            className={cn(
+              'mb-6 flex items-center gap-3 font-mono text-[9px] uppercase tracking-[0.25em]',
+              theme === 'dark' ? 'text-slate-400' : 'text-slate-500'
+            )}
+          >
+            <span
+              className={cn(
+                'rounded-sm border px-3 py-1.5 shadow-[0_0_10px_rgba(34,211,238,0.1)]',
+                theme === 'dark'
+                  ? 'border-cyan-500/10 bg-[#1d2740] text-cyan-300'
+                  : 'border-slate-200 bg-slate-100 text-slate-700 shadow-none'
+              )}
+            >
               {post.tag}
             </span>
-            <span className="text-slate-500">
-              {post.date}
-            </span>
+            <span className={theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}>{post.date}</span>
           </div>
 
-          <h2 className="mb-5 max-w-[14ch] text-3xl font-bold leading-[1.08] tracking-tight text-white transition-colors group-hover:text-cyan-100 lg:text-[2.75rem]">
+          <h2
+            className={cn(
+              'mb-5 max-w-[14ch] text-3xl font-bold leading-[1.08] tracking-tight transition-colors lg:text-[2.75rem]',
+              theme === 'dark' ? 'text-white group-hover:text-cyan-100' : 'text-slate-950 group-hover:text-slate-700'
+            )}
+          >
             {post.title}
           </h2>
 
-          <p className="mb-10 max-w-[52ch] text-[15px] leading-8 text-slate-400 line-clamp-3">
+          <p
+            className={cn(
+              'mb-10 max-w-[52ch] text-[15px] leading-8 line-clamp-3',
+              theme === 'dark' ? 'text-slate-400' : 'text-slate-600'
+            )}
+          >
             {post.description}
           </p>
 
-          <div className="mt-auto flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.25em] text-slate-500">
+          <div
+            className={cn(
+              'mt-auto flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.25em]',
+              theme === 'dark' ? 'text-slate-500' : 'text-slate-400'
+            )}
+          >
             <span>BY {post.authorHandle}</span>
-            <span className="text-slate-600">//</span>
-            <span>
-              {String(post.readingTime).padStart(2, "0")} MIN READ
-            </span>
+            <span className={theme === 'dark' ? 'text-slate-600' : 'text-slate-300'}>//</span>
+            <span>{String(post.readingTime).padStart(2, '0')} MIN READ</span>
           </div>
         </div>
       </a>
