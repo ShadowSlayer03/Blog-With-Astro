@@ -4,6 +4,18 @@ import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 import { SITE } from '../../../lib/constants';
 
+let fontBoldCache: ArrayBuffer | null = null;
+let fontRegularCache: ArrayBuffer | null = null;
+
+async function getFonts(): Promise<[ArrayBuffer, ArrayBuffer]> {
+  if (fontBoldCache && fontRegularCache) return [fontBoldCache, fontRegularCache];
+  [fontBoldCache, fontRegularCache] = await Promise.all([
+    fetch('https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-700-normal.woff').then((r) => r.arrayBuffer()),
+    fetch('https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-400-normal.woff').then((r) => r.arrayBuffer()),
+  ]);
+  return [fontBoldCache, fontRegularCache];
+}
+
 export const prerender = true;
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -27,15 +39,8 @@ export const GET: APIRoute = async ({ params }) => {
   const fontSize = title.length > 50 ? 48 : 56;
   const domain = SITE.url.replace('https://', '');
 
-  // Fetch Inter font files
-  const [fontBold, fontRegular] = await Promise.all([
-    fetch('https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-700-normal.woff').then(
-      (r) => r.arrayBuffer()
-    ),
-    fetch('https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-400-normal.woff').then(
-      (r) => r.arrayBuffer()
-    ),
-  ]);
+  // Fetch Inter font files (cached across requests within the same Worker instance)
+  const [fontBold, fontRegular] = await getFonts();
 
   // Build Satori virtual DOM — every element with >1 child needs display:flex
   const element = {
