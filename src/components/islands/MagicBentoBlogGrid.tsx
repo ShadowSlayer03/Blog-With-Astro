@@ -105,7 +105,6 @@ const BentoCard: React.FC<BentoCardProps> = ({
   const particleTweensRef = useRef<gsap.core.Tween[]>([]);
   const cardShadow = theme === 'dark' ? '0 18px 50px rgba(0, 0, 0, 0.22)' : '0 18px 40px rgba(15, 23, 42, 0.08)';
 
-  // Staggered entrance animation on mount
   useEffect(() => {
     if (!cardRef.current || shouldDisableAnimations) return;
 
@@ -250,7 +249,6 @@ const BentoCard: React.FC<BentoCardProps> = ({
     cardRef.current.style.setProperty('--glow-intensity', '1');
     spawnParticles();
 
-    // Shimmer sweep on hover
     if (shimmerRef.current && !shouldDisableAnimations) {
       gsap.fromTo(
         shimmerRef.current,
@@ -259,7 +257,6 @@ const BentoCard: React.FC<BentoCardProps> = ({
       );
     }
 
-    // Subtle scale lift
     if (cardRef.current && !shouldDisableAnimations) {
       gsap.to(cardRef.current, {
         boxShadow: `0 24px 60px rgba(0,0,0,0.35), 0 0 40px rgba(${glowColor}, 0.08)`,
@@ -278,7 +275,6 @@ const BentoCard: React.FC<BentoCardProps> = ({
     clearParticles();
     resetTransforms();
 
-    // Reset shadow
     if (cardRef.current && !shouldDisableAnimations) {
       gsap.to(cardRef.current, {
         boxShadow: cardShadow,
