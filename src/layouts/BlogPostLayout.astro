@@ -14,6 +14,7 @@ import GiscusComments from "../components/islands/GiscusComments";
 import BackToTop from "../components/islands/BackToTop";
 import TrackPageView from "../components/islands/TrackPageView";
 import ViewCount from "../components/islands/ViewCount";
+import GradientText from "../components/ui/GradientText";
 
 type Props = CollectionEntry<"blog">["data"] & {
   slug: string;
@@ -51,73 +52,119 @@ const ogImage = heroImage || `/og/${slug}.png`;
 >
   <TrackPageView client:idle slug={slug} readingTime={readingMinutes} />
   <ScrollProgress client:idle />
-  <TableOfContents client:idle />
-
-  <!-- Hero Header Section -->
-  <div
-    class="relative py-20 md:py-28 overflow-hidden border-b border-gray-200 dark:border-cyan-500/10"
-  >
-    <!-- Mesh / Glow background (dark mode only) -->
-    <div
-      class="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(34,211,238,0.08),transparent_60%)] pointer-events-none hidden dark:block"
-    >
-    </div>
-    <!-- Light mode subtle gradient -->
-    <div
-      class="absolute inset-0 bg-linear-to-b from-gray-50 to-white pointer-events-none dark:hidden"
-    >
-    </div>
-    <div
-      class="absolute top-0 left-0 w-full h-px bg-linear-to-r from-transparent via-cyan-500/30 to-transparent hidden dark:block"
-    >
-    </div>
-
-    <div class="max-w-3xl mx-auto px-6 relative text-center z-10">
-      <span
-        class="inline-block font-mono text-[9px] tracking-[0.4em] text-cyan-600 dark:text-cyan-500/60 uppercase border border-cyan-500/30 dark:border-cyan-500/20 rounded-full px-4 py-1.5 mb-8 bg-cyan-50 dark:bg-transparent"
-      >
-        {formattedPubDate.toUpperCase()}
-        {
-          formattedUpdatedDate && (
-            <span> &middot; Updated {formattedUpdatedDate.toUpperCase()}</span>
-          )
-        }
-      </span>
-
-      <h1
-        class="text-balance text-4xl md:text-6xl font-black text-gray-900 dark:text-white mt-4 mb-8 leading-tight tracking-tighter"
-      >
-        {title}
-      </h1>
-
-      <p
-        class="text-lg text-gray-500 dark:text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed"
-      >
-        {description}
-      </p>
-
+  <div class="blog-layout isolate relative overflow-clip">
+    <div class="blog-backdrop pointer-events-none absolute inset-0 -z-10">
       <div
-        class="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-[10px] font-mono text-gray-500 dark:text-slate-400 uppercase tracking-widest"
+        class="blog-backdrop-grid absolute inset-0 opacity-80"
+        style="background-image: linear-gradient(rgba(34, 211, 238, 0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 211, 238, 0.025) 1px, transparent 1px); background-size: 28px 28px;"
       >
-        <div class="flex items-center gap-2">
+      </div>
+      <div
+        class="blog-backdrop-orb absolute left-1/2 top-0 h-128 w-lg -translate-x-1/2 rounded-full bg-cyan-500/12 blur-3xl"
+      >
+      </div>
+      <div
+        class="blog-backdrop-gradient absolute inset-x-0 top-0 h-48 bg-linear-to-b from-cyan-500/8 to-transparent"
+      >
+      </div>
+    </div>
+
+    <section class="blog-header-section relative border-b border-slate-200 dark:border-white/6">
+      <div class="mx-auto max-w-6xl px-6 pb-16 pt-16 md:pb-20 md:pt-24">
+        <div class="mx-auto max-w-4xl text-center">
           <div
-            class="w-6 h-6 rounded-full border border-gray-300 dark:border-cyan-500/50 overflow-hidden bg-gray-200 dark:bg-cyan-900"
+            class="blog-date-pill mb-8 inline-flex flex-wrap items-center justify-center gap-3 rounded-full border border-slate-200 dark:border-cyan-500/15 bg-white/90 dark:bg-[#08111f]/90 px-4 py-2 font-mono text-[9px] uppercase tracking-[0.35em] text-cyan-700/80 dark:text-cyan-300/75 shadow-[0_4px_14px_rgba(15,23,42,0.06)] dark:shadow-[0_0_0_1px_rgba(8,145,178,0.08)]"
           >
-            <img
-              src="/avatar.png"
-              class="w-full h-full object-cover"
-              onerror="this.style.display='none'"
-            />
+            <span>{formattedPubDate.toUpperCase()}</span>
+            {
+              formattedUpdatedDate && (
+                <>
+                  <span class="text-slate-400 dark:text-slate-600">/</span>
+                  <span>Updated {formattedUpdatedDate.toUpperCase()}</span>
+                </>
+              )
+            }
           </div>
-          <span class="text-gray-900 dark:text-white font-semibold"
-            >{SITE.author}</span
+
+          <GradientText animationSpeed={6} showBorder={false} client:load>
+            <h1
+              class="blog-title font-heading text-balance text-4xl md:text-7xl font-black uppercase leading-[0.92] tracking-wider"
+            >
+              {title}
+            </h1>
+          </GradientText>
+
+          <p
+            class="blog-description mx-auto mt-8 max-w-2xl text-sm md:text-lg leading-8 text-slate-600 dark:text-slate-400"
           >
+            {description}
+          </p>
+
+          <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
+            <div
+              class="blog-meta-author inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-white/8 bg-white/90 dark:bg-[#08111f]/90 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.28em] text-slate-600 dark:text-slate-300"
+            >
+              <div
+                class="h-6 w-6 overflow-hidden rounded-full border border-slate-200 dark:border-cyan-500/40 bg-slate-100 dark:bg-cyan-950"
+              >
+                <img
+                  src={import.meta.env.PUBLIC_AUTHOR_DP}
+                  class="h-full w-full object-cover"
+                  onerror="this.style.display='none'"
+                />
+              </div>
+              <span>{SITE.author}</span>
+            </div>
+            {
+              wordCount > 0 && (
+                <div class="blog-meta-read inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-white/8 bg-white/90 dark:bg-[#08111f]/90 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.28em] text-slate-600 dark:text-slate-300">
+                  <svg
+                    class="h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <span>{readingMinutes} min read</span>
+                </div>
+              )
+            }
+            <div
+              class="blog-meta-views inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-white/8 bg-white/90 dark:bg-[#08111f]/90 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.28em] text-slate-600 dark:text-slate-300"
+            >
+              <ViewCount slug={slug} client:visible />
+            </div>
+          </div>
+
+          {
+            tags && tags.length > 0 && (
+              <div class="mt-8 flex flex-wrap items-center justify-center gap-2">
+                {tags.map((tag) => (
+                  <TagPill tag={tag} size="sm" />
+                ))}
+              </div>
+            )
+          }
         </div>
-        {
-          wordCount > 0 && (
-            <div class="flex items-center gap-1.5">
+      </div>
+    </section>
+
+    <section class="relative mx-auto max-w-7xl px-6 pb-24 pt-10 md:pt-14">
+      <div class="grid gap-10 xl:grid-cols-[180px_minmax(0,1fr)_240px]">
+        <aside class="hidden xl:block">
+          <div class="sticky top-28 space-y-12">
+            <a
+              href="/blog"
+              class="group inline-flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.3em] text-slate-500 transition-colors hover:text-cyan-600 dark:hover:text-cyan-400"
+            >
               <svg
-                class="h-3.5 w-3.5 text-cyan-600 dark:text-cyan-500"
+                class="h-3 w-3 transition-transform group-hover:-translate-x-0.5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -126,134 +173,239 @@ const ogImage = heroImage || `/og/${slug}.png`;
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
+                  d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"></path>
               </svg>
-              {readingMinutes} min read
+              BACK_TO_ROOT
+            </a>
+
+            <div class="blog-sidebar-data">
+              <div class="mb-6 flex items-center gap-2 font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-slate-900 dark:text-white">
+                <span class="block h-3 w-1 bg-cyan-600 dark:bg-cyan-400"></span>
+                SYSTEM_DATA
+              </div>
+              <ul class="space-y-4 font-mono text-[9px] uppercase tracking-[0.2em] text-slate-500 dark:text-slate-500">
+                <li class="group flex items-start gap-1.5 transition-all duration-200">
+                  <span class="text-slate-400 dark:text-slate-700/70 group-hover:text-slate-600 dark:group-hover:text-slate-500 transition-colors">01_</span>
+                  <div class="mt-0.5 leading-[1.4]">
+                    <span class="block mb-0.5 text-slate-700 dark:text-slate-400">PUBLISHED</span>
+                    <span class="text-slate-500 dark:text-slate-400">{formattedPubDate.replace(/\s+/g, '_')}</span>
+                  </div>
+                </li>
+                {
+                  formattedUpdatedDate && (
+                    <li class="group flex items-start gap-1.5 transition-all duration-200">
+                      <span class="text-slate-400 dark:text-slate-700/70 group-hover:text-slate-600 dark:group-hover:text-slate-500 transition-colors">02_</span>
+                      <div class="mt-0.5 leading-[1.4]">
+                        <span class="block mb-0.5 text-slate-700 dark:text-slate-400">UPDATED</span>
+                        <span class="text-slate-500 dark:text-slate-400">{formattedUpdatedDate.replace(/\s+/g, '_')}</span>
+                      </div>
+                    </li>
+                  )
+                }
+                <li class="group flex items-start gap-1.5 transition-all duration-200">
+                  <span class="text-slate-400 dark:text-slate-700/70 group-hover:text-slate-600 dark:group-hover:text-slate-500 transition-colors">
+                    {formattedUpdatedDate ? '03_' : '02_'}
+                  </span>
+                  <div class="mt-0.5 leading-[1.4]">
+                    <span class="block mb-0.5 text-slate-700 dark:text-slate-400">READ_TIME</span>
+                    <span class="text-slate-500 dark:text-slate-400">{readingMinutes}_MIN</span>
+                  </div>
+                </li>
+              </ul>
             </div>
-          )
-        }
-        <ViewCount slug={slug} client:visible />
-      </div>
-
-      {
-        tags && tags.length > 0 && (
-          <div class="mt-8 flex flex-wrap items-center justify-center gap-2">
-            {tags.map((tag) => (
-              <TagPill tag={tag} size="sm" />
-            ))}
           </div>
-        )
-      }
-    </div>
+        </aside>
+
+        <article class="min-w-0" data-pagefind-body>
+          <a
+            href="/blog"
+            class="group mb-8 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.28em] text-slate-500 transition-colors hover:text-cyan-600 dark:hover:text-cyan-400 xl:hidden"
+          >
+            <svg
+              class="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"></path>
+            </svg>
+            Back to all posts
+          </a>
+
+          {
+            heroImage && (
+              <div class="blog-hero-image mb-12 overflow-hidden rounded-[28px] border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-[#050b16] shadow-[0_14px_40px_rgba(15,23,42,0.06)] dark:shadow-[0_24px_80px_rgba(0,0,0,0.35)]">
+                <img
+                  src={heroImage}
+                  alt={title}
+                  class="aspect-video w-full object-cover"
+                  loading="eager"
+                />
+              </div>
+            )
+          }
+
+          <div
+            id="post-content"
+            class="blog-post-prose prose dark:prose-invert max-w-none"
+          >
+            <slot />
+          </div>
+
+          <div
+            class="mt-16 flex flex-wrap items-center gap-3 border-t border-slate-200 dark:border-white/6 pt-8"
+          >
+            <LikeButton client:visible slug={slug} />
+            <ShareButton client:visible title={title} url={currentUrl} />
+          </div>
+
+          <div
+            class="blog-author-note-card relative mt-12 overflow-hidden rounded-[28px] border border-white/6 bg-[#07101c]/90 p-8 backdrop-blur-sm md:p-10"
+          >
+            <div
+              class="blog-author-note-glow absolute -right-16 top-0 h-36 w-36 rounded-full bg-cyan-500/10 blur-3xl"
+            >
+            </div>
+            <div
+              class="relative flex flex-col gap-6 md:flex-row md:items-center"
+            >
+              <div class="shrink-0">
+                <div
+                  class="blog-author-note-avatar h-20 w-20 overflow-hidden rounded-3xl border border-white/10 bg-[#020617]"
+                >
+                  <img
+                    src={import.meta.env.PUBLIC_AUTHOR_DP}
+                    class="h-full w-full object-cover"
+                    onerror="this.style.display='none'"
+                  />
+                </div>
+              </div>
+              <div>
+                <p
+                  class="blog-author-note-eyebrow font-mono text-[9px] uppercase tracking-[0.35em] text-cyan-400/70"
+                >
+                  Author's Note
+                </p>
+                <h4 class="blog-author-note-title mt-2 text-2xl font-bold tracking-tight text-white">
+                  Thanks for reading! 🙏
+                </h4>
+                <p class="blog-author-note-desc mt-3 max-w-2xl text-sm leading-7 text-slate-400">
+                  Found any issues or have suggestions to improve this post? Feel free to reach out or leave a comment below!
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-14">
+            <Newsletter />
+          </div>
+
+          <div class="mt-14 border-t border-slate-200 dark:border-white/6 pt-10">
+            <h3
+              class="mb-6 font-mono text-[10px] uppercase tracking-[0.35em] text-slate-500"
+            >
+              Comments
+            </h3>
+            <GiscusComments client:visible />
+          </div>
+        </article>
+
+        <aside class="hidden xl:block">
+          <TableOfContents client:idle />
+        </aside>
+      </div>
+    </section>
   </div>
-
-  <article class="mx-auto max-w-3xl px-6 pb-4 pt-12" data-pagefind-body>
-    <a
-      href="/blog"
-      class="group mb-10 inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-gray-400 dark:text-slate-500 transition-colors hover:text-cyan-600 dark:hover:text-cyan-400"
-    >
-      <svg
-        class="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"></path>
-      </svg>
-      Back to all posts
-    </a>
-
-    {
-      heroImage && (
-        <img
-          src={heroImage}
-          alt={title}
-          class="mb-12 aspect-video w-full rounded-2xl object-cover shadow-lg ring-1 ring-gray-200 dark:ring-white/10 dark:shadow-none"
-          loading="eager"
-        />
-      )
-    }
-
-    <div
-      class="prose prose-lg prose-gray max-w-none
-      dark:prose-invert
-      prose-headings:scroll-mt-20 prose-headings:font-bold prose-headings:tracking-tight
-      prose-headings:text-gray-900 dark:prose-headings:text-white
-      prose-p:text-gray-600 dark:prose-p:text-slate-300 prose-p:leading-relaxed
-      prose-a:font-medium prose-a:text-cyan-600 dark:prose-a:text-cyan-400 prose-a:no-underline hover:prose-a:text-cyan-500 prose-a:transition-colors
-      prose-img:rounded-xl prose-img:ring-1 prose-img:ring-gray-200 dark:prose-img:ring-white/5
-      prose-pre:rounded-xl prose-pre:border prose-pre:border-gray-200 dark:prose-pre:border-white/10 dark:prose-pre:bg-[#0b1121]
-      prose-code:text-cyan-700 dark:prose-code:text-cyan-300 prose-code:font-mono prose-code:bg-cyan-50 dark:prose-code:bg-cyan-900/20 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none
-      prose-blockquote:border-l-cyan-500 prose-blockquote:bg-cyan-50/50 dark:prose-blockquote:bg-cyan-950/20 prose-blockquote:rounded-r-lg prose-blockquote:not-italic
-      prose-strong:text-gray-900 dark:prose-strong:text-white"
-    >
-      <slot />
-    </div>
-
-    <!-- Post Interactions -->
-    <div
-      class="mt-16 flex flex-wrap items-center gap-3 border-t border-gray-200 dark:border-white/5 pt-8"
-    >
-      <LikeButton client:visible slug={slug} />
-      <ShareButton client:visible title={title} url={currentUrl} />
-    </div>
-
-    <!-- Author Box -->
-    <div
-      class="mt-12 mb-12 rounded-2xl p-8 flex flex-col md:flex-row gap-6 items-center
-      bg-gray-50 border border-gray-200
-      dark:bg-[#070b14] dark:border-cyan-500/10 relative overflow-hidden group"
-    >
-      <div class="shrink-0">
-        <div
-          class="w-20 h-20 rounded-2xl overflow-hidden grayscale border border-gray-200 dark:border-white/10 group-hover:grayscale-0 transition-all duration-500"
-        >
-          <img
-            src="/avatar.png"
-            class="w-full h-full object-cover"
-            onerror="this.style.display='none'"
-          />
-        </div>
-      </div>
-      <div>
-        <h4
-          class="text-gray-900 dark:text-white text-lg font-bold tracking-tight"
-        >
-          {SITE.author}
-        </h4>
-        <p
-          class="text-[10px] font-mono text-cyan-600 dark:text-cyan-500 uppercase tracking-widest mb-2"
-        >
-          Author @ {SITE.title}
-        </p>
-        <p
-          class="text-sm text-gray-500 dark:text-slate-400 leading-relaxed max-w-xl"
-        >
-          {SITE.description}
-        </p>
-      </div>
-    </div>
-
-    <!-- Newsletter -->
-    <div class="mb-12">
-      <Newsletter />
-    </div>
-
-    <!-- Comments Area -->
-    <div
-      class="py-12 border-t border-gray-200 dark:border-dashed dark:border-white/10"
-    >
-      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-8">
-        Comments
-      </h3>
-      <GiscusComments client:visible />
-    </div>
-  </article>
 
   <BackToTop client:idle />
 </BaseLayout>
+
+<style is:global>
+  /* LIGHT MODE OVERRIDES FOR GLOBAL TYPOGRAPHY */
+  html:not(.dark) .blog-backdrop-grid {
+    opacity: 0.45;
+    background-image:
+      linear-gradient(rgba(15, 23, 42, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(15, 23, 42, 0.04) 1px, transparent 1px) !important;
+  }
+  html:not(.dark) .blog-backdrop-gradient {
+    background: radial-gradient(circle at top, rgba(14, 116, 144, 0.12), transparent 34%),
+      linear-gradient(180deg, rgba(248, 250, 252, 0.1) 0%, transparent 100%) !important;
+  }
+  html:not(.dark) .blog-backdrop-orb {
+    background: rgba(14, 165, 233, 0.08);
+  }
+
+  /* Prose Overrides */
+  html:not(.dark) .blog-post-prose {
+    color: #334155;
+  }
+  html:not(.dark) .blog-post-prose > :where(p:first-of-type)::first-letter {
+    color: #0f172a;
+  }
+  html:not(.dark) .blog-post-prose :where(h2),
+  html:not(.dark) .blog-post-prose :where(h3) {
+    color: #0f172a;
+  }
+  html:not(.dark) .blog-post-prose :where(p, li) {
+    color: #334155;
+  }
+  html:not(.dark) .blog-post-prose :where(strong) {
+    color: #0f172a;
+  }
+  html:not(.dark) .blog-post-prose :where(a) {
+    color: #0891b2;
+  }
+  html:not(.dark) .blog-post-prose :where(a:hover) {
+    color: #0e7490;
+  }
+  html:not(.dark) .blog-post-prose :where(img) {
+    border-color: rgba(15, 23, 42, 0.08);
+    background: #f8fafc;
+    box-shadow: inset 0 1px 0 rgba(15, 23, 42, 0.04), 0 20px 46px rgba(15, 23, 42, 0.06);
+  }
+  
+  html:not(.dark) .blog-post-prose :where(pre) {
+    border-color: rgba(15, 23, 42, 0.08);
+    background-color: var(--shiki-light-bg, #f8fafc) !important;
+    color: var(--shiki-light, #334155) !important;
+    box-shadow: inset 0 1px 0 rgba(15, 23, 42, 0.04), 0 20px 46px rgba(15, 23, 42, 0.06);
+  }
+  html:not(.dark) .blog-post-prose :where(pre span) {
+    color: var(--shiki-light) !important;
+  }
+  
+  html.dark .blog-post-prose :where(pre) {
+    background-color: var(--shiki-dark-bg, #040814) !important;
+    color: var(--shiki-dark) !important;
+  }
+  html.dark .blog-post-prose :where(pre span) {
+    color: var(--shiki-dark) !important;
+  }
+
+  html:not(.dark) .blog-author-note-card {
+    background: rgba(255, 255, 255, 0.94);
+    border-color: #e2e8f0;
+    box-shadow: 0 14px 40px rgba(15, 23, 42, 0.06);
+  }
+  html:not(.dark) .blog-author-note-glow {
+    background: rgba(8, 145, 178, 0.05); /* Soft cyan glow */
+  }
+  html:not(.dark) .blog-author-note-avatar {
+    border-color: #e2e8f0;
+    background: #f8fafc;
+  }
+  html:not(.dark) .blog-author-note-title {
+    color: #0f172a;
+  }
+  html:not(.dark) .blog-author-note-desc {
+    color: #475569;
+  }
+  html:not(.dark) .blog-author-note-eyebrow {
+    color: #0891b2;
+  }
+</style>
