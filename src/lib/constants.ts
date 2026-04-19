@@ -13,7 +13,7 @@ export const SOCIALS = {
 } as const;
 
 export const NAV_LINKS = [
-  { href: '/blog', label: 'Blog' },
+  { href: '/blog?page=1', label: 'Blog' },
   { href: '/about', label: 'About' },
 ] as const;
 
