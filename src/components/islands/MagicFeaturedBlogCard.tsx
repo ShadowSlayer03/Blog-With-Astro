@@ -380,6 +380,9 @@ const MagicFeaturedBlogCard: React.FC<MagicFeaturedBlogCardProps> = ({
             <img
               src={post.heroImage}
               alt={post.title}
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
               className={cn(
                 'absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]',
                 theme === 'dark'
