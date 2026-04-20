@@ -1,29 +1,84 @@
 ---
 export const prerender = true;
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { SITE } from '../lib/constants';
+import GradientText from "../components/ui/GradientText";
+import { ShimmerButton } from "../components/ui/ShimmerButton";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { SITE } from "../lib/constants";
 ---
 
-<BaseLayout title={`404 - ${SITE.title}`} description="The page you're looking for doesn't exist.">
-  <section class="mx-auto flex max-w-4xl flex-col items-center justify-center px-4 py-32 text-center">
-    <p class="mb-2 text-sm font-semibold uppercase tracking-widest text-indigo-500">Error 404</p>
-    <h1 class="mb-4 text-7xl font-black text-gray-900 dark:text-white">Page not found</h1>
-    <p class="mb-8 max-w-md text-lg text-gray-600 dark:text-gray-400">
-      Sorry, the page you're looking for doesn't exist or has been moved.
+<BaseLayout
+  title={`404 - ${SITE.title}`}
+  description="The page you're looking for doesn't exist."
+>
+  <div
+    class="error-backdrop fixed inset-0 -z-10 pointer-events-none overflow-hidden bg-[#f8fafc] dark:bg-[#040916]"
+  >
+    <div
+      class="error-backdrop-grid absolute inset-0 opacity-45 dark:opacity-35"
+      style="background-image: linear-gradient(rgba(34, 211, 238, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 211, 238, 0.03) 1px, transparent 1px); background-size: 32px 32px;"
+    >
+    </div>
+    <div
+      class="error-backdrop-gradient absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(14,116,144,0.12),transparent_34%),linear-gradient(180deg,#f8fafc_0%,#eef4fb_52%,#f8fafc_100%)] dark:bg-[radial-gradient(circle_at_top,rgba(8,145,178,0.14),transparent_34%),linear-gradient(180deg,#040916_0%,#071121_55%,#050b16_100%)]"
+    >
+    </div>
+    <div
+      class="error-backdrop-orb absolute left-1/2 top-0 h-160 w-160 -translate-x-1/2 rounded-full bg-cyan-700/10 dark:bg-cyan-500/10 blur-[120px]"
+    >
+    </div>
+  </div>
+
+  <section
+    class="error-page mx-auto flex min-h-[80vh] max-w-4xl flex-col items-center justify-center px-6 py-24 text-center"
+  >
+    <p
+      class="error-code mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-500/20 bg-white/85 dark:bg-[#091426]/85 px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-cyan-700 dark:text-cyan-300 shadow-[0_10px_30px_rgba(0,0,0,0.08)] dark:shadow-[0_10px_30px_rgba(0,0,0,0.22)]"
+    >
+      <span class="h-1.5 w-1.5 rounded-full bg-cyan-500 animate-pulse"></span>
+      ERROR_404
     </p>
-    <div class="flex gap-4">
-      <a
-        href="/"
-        class="rounded-lg bg-indigo-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-indigo-700"
+
+    <GradientText animationSpeed={6} showBorder={false} client:idle>
+      <h1
+        class="blog-title font-heading text-balance text-4xl md:text-7xl font-black uppercase leading-[0.92] tracking-wider"
       >
-        Go Home
-      </a>
-      <a
-        href="/blog"
-        class="rounded-lg border border-gray-300 px-6 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
-      >
-        Browse Blog
+        PAGE_NOT_FOUND
+      </h1>
+    </GradientText>
+
+    <p
+      class="error-copy mt-6 max-w-2xl text-sm leading-7 text-slate-600 dark:text-slate-400 md:text-base"
+    >
+      The route you requested is unavailable, renamed, or no longer exists in
+      this build.
+    </p>
+
+    <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+      <a href="/blog" class="group">
+        <ShimmerButton
+          borderRadius="4px"
+          background="#071121"
+          shimmerColor="#22d3ee"
+          className="px-6! py-3!"
+          client:visible
+        >
+          <span
+            class="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-slate-200"
+          >
+            ALL_BLOGS
+          </span>
+        </ShimmerButton>
       </a>
     </div>
   </section>
 </BaseLayout>
+
+<style is:global>
+  html:not(.dark) .error-title {
+    text-shadow: 0 18px 48px rgba(14, 116, 144, 0.16);
+  }
+
+  html.dark .error-title {
+    text-shadow: 0 18px 56px rgba(34, 211, 238, 0.2);
+  }
+</style>
