@@ -15,6 +15,8 @@ import BackToTop from "../components/islands/BackToTop";
 import TrackPageView from "../components/islands/TrackPageView";
 import ViewCount from "../components/islands/ViewCount";
 import GradientText from "../components/ui/GradientText";
+import { Toaster } from "sonner";
+import Image from "astro/components/Image.astro";
 
 type Props = CollectionEntry<"blog">["data"] & {
   slug: string;
@@ -69,7 +71,9 @@ const ogImage = heroImage || `/og/${slug}.png`;
       </div>
     </div>
 
-    <section class="blog-header-section relative border-b border-slate-200 dark:border-white/6">
+    <section
+      class="blog-header-section relative border-b border-slate-200 dark:border-white/6"
+    >
       <div class="mx-auto max-w-6xl px-6 pb-16 pt-16 md:pb-20 md:pt-24">
         <div class="mx-auto max-w-4xl text-center">
           <div
@@ -86,7 +90,7 @@ const ogImage = heroImage || `/og/${slug}.png`;
             }
           </div>
 
-          <GradientText animationSpeed={6} showBorder={false} client:load>
+          <GradientText animationSpeed={6} showBorder={false} client:idle>
             <h1
               class="blog-title font-heading text-balance text-4xl md:text-7xl font-black uppercase leading-[0.92] tracking-wider"
             >
@@ -107,7 +111,10 @@ const ogImage = heroImage || `/og/${slug}.png`;
               <div
                 class="h-6 w-6 overflow-hidden rounded-full border border-slate-200 dark:border-cyan-500/40 bg-slate-100 dark:bg-cyan-950"
               >
-                <img
+                <Image
+                  width={24}
+                  height={24}
+                  alt="Author profile picture"
                   src={import.meta.env.PUBLIC_AUTHOR_DP}
                   class="h-full w-full object-cover"
                   onerror="this.style.display='none'"
@@ -179,36 +186,66 @@ const ogImage = heroImage || `/og/${slug}.png`;
             </a>
 
             <div class="blog-sidebar-data">
-              <div class="mb-6 flex items-center gap-2 font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-slate-900 dark:text-white">
-                <span class="block h-3 w-1 bg-cyan-600 dark:bg-cyan-400"></span>
-                SYSTEM_DATA
+              <div class="mb-6 flex items-center gap-2">
+                <span class="block h-3 w-1 bg-cyan-400"></span>
+                <span
+                  class="blog-system-data font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-white"
+                  >SYSTEM_DATA</span
+                >
               </div>
-              <ul class="space-y-4 font-mono text-[9px] uppercase tracking-[0.2em] text-slate-500 dark:text-slate-500">
-                <li class="group flex items-start gap-1.5 transition-all duration-200">
-                  <span class="text-slate-400 dark:text-slate-700/70 group-hover:text-slate-600 dark:group-hover:text-slate-500 transition-colors">01_</span>
+              <ul
+                class="space-y-4 font-mono text-[9px] uppercase tracking-[0.2em] text-slate-500 dark:text-slate-500"
+              >
+                <li
+                  class="group flex items-start gap-1.5 transition-all duration-200"
+                >
+                  <span
+                    class="text-slate-400 dark:text-slate-700/70 group-hover:text-slate-600 dark:group-hover:text-slate-500 transition-colors"
+                    >01_</span
+                  >
                   <div class="mt-0.5 leading-[1.4]">
-                    <span class="block mb-0.5 text-slate-700 dark:text-slate-400">PUBLISHED</span>
-                    <span class="text-slate-500 dark:text-slate-400">{formattedPubDate.replace(/\s+/g, '_')}</span>
+                    <span
+                      class="block mb-0.5 text-slate-700 dark:text-slate-400"
+                      >PUBLISHED</span
+                    >
+                    <span class="text-slate-500 dark:text-slate-400"
+                      >{formattedPubDate.replace(/\s+/g, "_")}</span
+                    >
                   </div>
                 </li>
                 {
                   formattedUpdatedDate && (
                     <li class="group flex items-start gap-1.5 transition-all duration-200">
-                      <span class="text-slate-400 dark:text-slate-700/70 group-hover:text-slate-600 dark:group-hover:text-slate-500 transition-colors">02_</span>
+                      <span class="text-slate-400 dark:text-slate-700/70 group-hover:text-slate-600 dark:group-hover:text-slate-500 transition-colors">
+                        02_
+                      </span>
                       <div class="mt-0.5 leading-[1.4]">
-                        <span class="block mb-0.5 text-slate-700 dark:text-slate-400">UPDATED</span>
-                        <span class="text-slate-500 dark:text-slate-400">{formattedUpdatedDate.replace(/\s+/g, '_')}</span>
+                        <span class="block mb-0.5 text-slate-700 dark:text-slate-400">
+                          UPDATED
+                        </span>
+                        <span class="text-slate-500 dark:text-slate-400">
+                          {formattedUpdatedDate.replace(/\s+/g, "_")}
+                        </span>
                       </div>
                     </li>
                   )
                 }
-                <li class="group flex items-start gap-1.5 transition-all duration-200">
-                  <span class="text-slate-400 dark:text-slate-700/70 group-hover:text-slate-600 dark:group-hover:text-slate-500 transition-colors">
-                    {formattedUpdatedDate ? '03_' : '02_'}
+                <li
+                  class="group flex items-start gap-1.5 transition-all duration-200"
+                >
+                  <span
+                    class="text-slate-400 dark:text-slate-700/70 group-hover:text-slate-600 dark:group-hover:text-slate-500 transition-colors"
+                  >
+                    {formattedUpdatedDate ? "03_" : "02_"}
                   </span>
                   <div class="mt-0.5 leading-[1.4]">
-                    <span class="block mb-0.5 text-slate-700 dark:text-slate-400">READ_TIME</span>
-                    <span class="text-slate-500 dark:text-slate-400">{readingMinutes}_MIN</span>
+                    <span
+                      class="block mb-0.5 text-slate-700 dark:text-slate-400"
+                      >READ_TIME</span
+                    >
+                    <span class="text-slate-500 dark:text-slate-400"
+                      >{readingMinutes}_MIN</span
+                    >
                   </div>
                 </li>
               </ul>
@@ -239,7 +276,9 @@ const ogImage = heroImage || `/og/${slug}.png`;
           {
             heroImage && (
               <div class="blog-hero-image mb-12 overflow-hidden rounded-[28px] border border-slate-200 dark:border-white/8 bg-slate-50 dark:bg-[#050b16] shadow-[0_14px_40px_rgba(15,23,42,0.06)] dark:shadow-[0_24px_80px_rgba(0,0,0,0.35)]">
-                <img
+                <Image
+                  width={1200}
+                  height={675}
                   src={heroImage}
                   alt={title}
                   class="aspect-video w-full object-cover"
@@ -275,11 +314,14 @@ const ogImage = heroImage || `/og/${slug}.png`;
             >
               <div class="shrink-0">
                 <div
-                  class="blog-author-note-avatar h-20 w-20 overflow-hidden rounded-3xl border border-white/10 bg-[#020617]"
+                  class="blog-author-note-avatar h-32 w-32 overflow-hidden rounded-3xl border border-white/10 bg-[#020617]"
                 >
-                  <img
+                  <Image
+                    width={128}
+                    height={128}
                     src={import.meta.env.PUBLIC_AUTHOR_DP}
                     class="h-full w-full object-cover"
+                    alt="Author profile picture"
                     onerror="this.style.display='none'"
                   />
                 </div>
@@ -288,13 +330,22 @@ const ogImage = heroImage || `/og/${slug}.png`;
                 <p
                   class="blog-author-note-eyebrow font-mono text-[9px] uppercase tracking-[0.35em] text-cyan-400/70"
                 >
-                  Author's Note
+                  About the Author
                 </p>
-                <h4 class="blog-author-note-title mt-2 text-2xl font-bold tracking-tight text-white">
-                  Thanks for reading! 🙏
+                <h4
+                  class="blog-author-note-title mt-2 text-2xl font-bold tracking-tight text-white"
+                >
+                  Arjun Nambiar
                 </h4>
-                <p class="blog-author-note-desc mt-3 max-w-2xl text-sm leading-7 text-slate-400">
-                  Found any issues or have suggestions to improve this post? Feel free to reach out or leave a comment below!
+                <p
+                  class="blog-author-note-desc mt-3 max-w-2xl text-sm leading-normal text-slate-400"
+                >
+                  Arjun is a writer and developer who enjoys exploring where
+                  technology meets creativity and storytelling. As a software
+                  engineer with a strong eye for design, he builds engaging web
+                  experiences that aim to both inspire and inform people around
+                  the world. Outside of work, you'll likely find him gaming,
+                  hiking, or unwinding with a good cup of tea.
                 </p>
               </div>
             </div>
@@ -304,7 +355,9 @@ const ogImage = heroImage || `/og/${slug}.png`;
             <Newsletter />
           </div>
 
-          <div class="mt-14 border-t border-slate-200 dark:border-white/6 pt-10">
+          <div
+            class="mt-14 border-t border-slate-200 dark:border-white/6 pt-10"
+          >
             <h3
               class="mb-6 font-mono text-[10px] uppercase tracking-[0.35em] text-slate-500"
             >
@@ -322,6 +375,7 @@ const ogImage = heroImage || `/og/${slug}.png`;
   </div>
 
   <BackToTop client:idle />
+  <Toaster client:only="react" theme="system" richColors closeButton />
 </BaseLayout>
 
 <style is:global>
@@ -333,11 +387,16 @@ const ogImage = heroImage || `/og/${slug}.png`;
       linear-gradient(90deg, rgba(15, 23, 42, 0.04) 1px, transparent 1px) !important;
   }
   html:not(.dark) .blog-backdrop-gradient {
-    background: radial-gradient(circle at top, rgba(14, 116, 144, 0.12), transparent 34%),
+    background:
+      radial-gradient(circle at top, rgba(14, 116, 144, 0.12), transparent 34%),
       linear-gradient(180deg, rgba(248, 250, 252, 0.1) 0%, transparent 100%) !important;
   }
   html:not(.dark) .blog-backdrop-orb {
     background: rgba(14, 165, 233, 0.08);
+  }
+
+  html:not(.dark) .blog-system-data {
+    color: var(--color-accent-dark);
   }
 
   /* Prose Overrides */
@@ -348,7 +407,8 @@ const ogImage = heroImage || `/og/${slug}.png`;
     color: #0f172a;
   }
   html:not(.dark) .blog-post-prose :where(h2),
-  html:not(.dark) .blog-post-prose :where(h3) {
+  html:not(.dark) .blog-post-prose :where(h3),
+  html:not(.dark) .blog-post-prose :where(h4) {
     color: #0f172a;
   }
   html:not(.dark) .blog-post-prose :where(p, li) {
@@ -366,19 +426,23 @@ const ogImage = heroImage || `/og/${slug}.png`;
   html:not(.dark) .blog-post-prose :where(img) {
     border-color: rgba(15, 23, 42, 0.08);
     background: #f8fafc;
-    box-shadow: inset 0 1px 0 rgba(15, 23, 42, 0.04), 0 20px 46px rgba(15, 23, 42, 0.06);
+    box-shadow:
+      inset 0 1px 0 rgba(15, 23, 42, 0.04),
+      0 20px 46px rgba(15, 23, 42, 0.06);
   }
-  
+
   html:not(.dark) .blog-post-prose :where(pre) {
     border-color: rgba(15, 23, 42, 0.08);
     background-color: var(--shiki-light-bg, #f8fafc) !important;
     color: var(--shiki-light, #334155) !important;
-    box-shadow: inset 0 1px 0 rgba(15, 23, 42, 0.04), 0 20px 46px rgba(15, 23, 42, 0.06);
+    box-shadow:
+      inset 0 1px 0 rgba(15, 23, 42, 0.04),
+      0 20px 46px rgba(15, 23, 42, 0.06);
   }
   html:not(.dark) .blog-post-prose :where(pre span) {
     color: var(--shiki-light) !important;
   }
-  
+
   html.dark .blog-post-prose :where(pre) {
     background-color: var(--shiki-dark-bg, #040814) !important;
     color: var(--shiki-dark) !important;
