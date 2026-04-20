@@ -5,5 +5,4 @@ compatibility_date = "2024-09-23"
 # Required if any SSR code (non-prerendered pages) imports a Node.js built-in at runtime.
 compatibility_flags = ["nodejs_compat"]
 
-[pages_build_output_dir]
-path = "./dist"
+pages_build_output_dir = "./dist"
