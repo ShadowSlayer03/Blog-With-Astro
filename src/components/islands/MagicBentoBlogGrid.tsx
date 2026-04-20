@@ -3,7 +3,7 @@ import { gsap } from 'gsap';
 import { cn } from '../../lib/utils';
 import useTheme from '../../lib/useTheme';
 
-type ArchiveGridPost = {
+export type ArchiveGridPost = {
   slug: string;
   title: string;
   description: string;
@@ -350,7 +350,7 @@ const BentoCard: React.FC<BentoCardProps> = ({
       {/* Shimmer overlay */}
       <div
         ref={shimmerRef}
-          className="pointer-events-none absolute inset-0 z-4 opacity-0"
+        className="pointer-events-none absolute inset-0 z-4 opacity-0"
         style={{
           background: `linear-gradient(105deg, transparent 40%, rgba(${glowColor}, 0.07) 50%, transparent 60%)`,
         }}
@@ -372,7 +372,9 @@ const BentoCard: React.FC<BentoCardProps> = ({
                 ? 'opacity-85 saturate-75 mix-blend-luminosity'
                 : 'opacity-95 saturate-100'
             )}
-            loading="lazy"
+            loading={index === 0 ? 'eager' : 'lazy'}
+            fetchPriority={index === 0 ? 'high' : 'auto'}
+            decoding="async"
           />
         ) : (
           <div className={cn(
@@ -632,7 +634,6 @@ const MagicBentoBlogGrid: React.FC<MagicBentoBlogGridProps> = ({
           z-index: 1;
         }
       `}</style>
-
       {enableSpotlight && !shouldDisableAnimations && (
         <div
           ref={spotlightRef}
@@ -661,6 +662,7 @@ const MagicBentoBlogGrid: React.FC<MagicBentoBlogGridProps> = ({
           />
         ))}
       </div>
+
     </div>
   );
 };

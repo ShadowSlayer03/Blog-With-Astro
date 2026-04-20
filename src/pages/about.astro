@@ -19,7 +19,7 @@ import { Particles } from "../components/ui/Particles";
         <GradientText
           animationSpeed={6}
           showBorder={false}
-          client:load
+          client:idle
         >
           <h1
             class="font-heading text-[11vw] md:text-[9vw] tracking-normal uppercase leading-none"
@@ -56,7 +56,7 @@ import { Particles } from "../components/ui/Particles";
           >
             <span class="h-1.5 w-1.5 bg-cyan-500 rounded-full animate-pulse"
             ></span>
-            Currently learning SpringBoot and Generative AI
+            Currently exploring SpringBoot and Generative AI
           </div>
         </div>
       </div>
@@ -86,7 +86,7 @@ import { Particles } from "../components/ui/Particles";
               glowRadius={40}
               glowIntensity={0.8}
               coneSpread={25}
-              client:load
+              client:visible
             >
               <div class="p-6 transition-all group">
                 <div class="flex items-start gap-4">
@@ -234,14 +234,14 @@ import { Particles } from "../components/ui/Particles";
           </div>
 
           <AnimatedBeam
-            client:load
+            client:visible
             containerRef="beam-container"
             fromRef="git-source"
             toRef="astro-core"
             duration={3}
           />
           <AnimatedBeam
-            client:load
+            client:visible
             containerRef="beam-container"
             fromRef="astro-core"
             toRef="edge-dest"
@@ -262,7 +262,7 @@ import { Particles } from "../components/ui/Particles";
       class="about-cta relative overflow-hidden rounded-2xl border border-white/10 bg-linear-to-b from-[#0f172a] to-transparent p-8 sm:p-16 text-center"
     >
       <Particles
-        client:load
+        client:visible
         className="absolute inset-0 z-0 h-full w-full"
         quantity={80}
         ease={70}
@@ -286,7 +286,7 @@ import { Particles } from "../components/ui/Particles";
               borderRadius="4px"
               background="#0c1525"
               className="px-8! py-3!"
-              client:load
+              client:visible
             >
               <div
                 class="flex items-center gap-2 font-mono text-xs font-bold uppercase"
@@ -310,7 +310,7 @@ import { Particles } from "../components/ui/Particles";
               shimmerColor="#0077b5"
               background="#071829"
               className="px-8! py-3!"
-              client:load
+              client:visible
             >
               <div
                 class="flex items-center gap-2 font-mono text-xs font-bold uppercase"

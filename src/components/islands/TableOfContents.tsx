@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import useTheme from '../../lib/useTheme';
 
 interface TOCItem {
   id: string;
@@ -9,6 +10,7 @@ interface TOCItem {
 export default function TableOfContents() {
   const [headings, setHeadings] = useState<TOCItem[]>([]);
   const [activeId, setActiveId] = useState<string>('');
+  const theme = useTheme();
 
   useEffect(() => {
     const article = document.querySelector('#post-content');
@@ -41,9 +43,9 @@ export default function TableOfContents() {
 
   return (
     <nav className="sticky top-28">
-      <div className="mb-6 flex items-center gap-2 font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-white">
+      <div className="mb-6 flex items-center gap-2">
         <span className="block h-3 w-1 bg-cyan-400"></span>
-        ON THIS PAGE
+        <span className={`font-mono text-[9px] font-bold uppercase tracking-[0.3em] ${theme === 'dark' ? 'text-white' : 'text-accent-dark'}`}>ON THIS PAGE</span>
       </div>
       <ul className="space-y-3 font-mono text-[9px] uppercase tracking-[0.2em] text-slate-500">
         {headings.map((heading, idx) => {

@@ -33,7 +33,7 @@ const currentPath = Astro.url.pathname;
       </div>
 
       <AnimatedThemeToggler
-        client:load
+        client:idle
         className="site-header-toggle inline-flex h-9 w-9 items-center justify-center rounded border border-white/8 text-slate-500 transition-colors hover:border-cyan-500/30 hover:text-cyan-400"
         aria-label="Toggle theme"
       />
@@ -68,15 +68,3 @@ const currentPath = Astro.url.pathname;
     color: #0891b2;
   }
 </style>
-
-<script>
-  const theme = (() => {
-    if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-      return localStorage.getItem('theme');
-    }
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  })();
-  
-  if (theme === 'light') document.documentElement.classList.remove('dark');
-  else document.documentElement.classList.add('dark');
-</script>
