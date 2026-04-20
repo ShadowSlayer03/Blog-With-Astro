@@ -7,6 +7,7 @@ import { getReadingTime, formatDate } from '../../../lib/utils';
 import MagicBentoBlogGrid from '../../../components/islands/MagicBentoBlogGrid';
 import GradientText from '../../../components/ui/GradientText';
 
+// getStaticPaths is used only when there are dynamic routes.
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
   const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
@@ -18,6 +19,7 @@ export async function getStaticPaths() {
     })
   );
 
+  // Need to generate ahead of time the list of posts for each tag to create static pages for them.
   return tags.map((tag) => {
     const filteredPosts = postsWithMetadata
       .filter((post) => post.data.tags.includes(tag))
@@ -50,45 +52,48 @@ const { tag, posts } = Astro.props;
   description={`All blog posts tagged with "${tag}".`}
 >
   <div
-    class="fixed inset-0 -z-10 pointer-events-none overflow-hidden bg-[#040916]"
+    class="fixed inset-0 -z-10 pointer-events-none overflow-hidden bg-[#f8fafc] dark:bg-[#040916]"
   >
     <div
-      class="absolute inset-0 opacity-35"
+      class="absolute inset-0 opacity-45 dark:opacity-35"
       style="background-image: linear-gradient(rgba(34, 211, 238, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 211, 238, 0.03) 1px, transparent 1px); background-size: 32px 32px;"
     >
     </div>
     <div
-      class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(8,145,178,0.14),transparent_34%),linear-gradient(180deg,#040916_0%,#071121_55%,#050b16_100%)]"
+      class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(14,116,144,0.12),transparent_34%),linear-gradient(180deg,#f8fafc_0%,#eef4fb_52%,#f8fafc_100%)] dark:bg-[radial-gradient(circle_at_top,rgba(8,145,178,0.14),transparent_34%),linear-gradient(180deg,#040916_0%,#071121_55%,#050b16_100%)]"
     >
     </div>
     <div
-      class="absolute left-1/2 top-0 h-160 w-160 -translate-x-1/2 rounded-full bg-cyan-500/10 blur-[120px]"
+      class="absolute left-1/2 top-0 h-160 w-160 -translate-x-1/2 rounded-full bg-cyan-700/10 dark:bg-cyan-500/10 blur-[120px]"
     >
     </div>
   </div>
 
   <section class="relative z-10 mx-auto max-w-6xl px-6 py-10 md:py-12 lg:py-10">
-    <button class="pb-5">
-      <a href="/blog" class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em] text-slate-500 hover:text-cyan-400 transition-colors">
-        ← BACK_TO_ARCHIVE
-      </a>
-    </button>
-    <div class="mb-16 md:mb-24 flex flex-col gap-6">
-      <div class="font-heading text-4xl md:text-7xl lg:text-[5.5rem] tracking-normal uppercase leading-none text-white flex flex-wrap items-baseline gap-x-4 md:gap-x-6">
-        <span>TAGGED_WITH:</span>
+    <a href="/blog" class="pb-5 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em] text-slate-500 hover:text-cyan-700 dark:hover:text-cyan-400 transition-colors">
+      ← BACK_TO_ARCHIVE
+    </a>
+    <div class="tag-archive-header mb-16 md:mb-24 flex flex-col gap-6">
+      <div class="flex flex-wrap items-baseline gap-x-4 gap-y-2 md:gap-x-6">
+        <span class="tag-archive-label font-heading text-4xl md:text-7xl lg:text-[5.5rem] tracking-normal uppercase leading-none">
+          TAGGED_WITH:
+        </span>
         <GradientText
-          colors={["#22d3ee", "#ffffff", "#0891b2", "#22d3ee"]}
           animationSpeed={6}
           showBorder={false}
-          client:load
+          client:idle
           className="inline-block relative -top-1 md:-top-2"
         >
-          {tag.toUpperCase().replace(/\s+/g, '_')}
+          <h1
+            class="font-heading text-4xl md:text-7xl lg:text-[5.5rem] tracking-normal uppercase leading-none"
+          >
+            {tag.toUpperCase().replace(/\s+/g, '_')}
+          </h1>
         </GradientText>
       </div>
 
       <div>
-        <div class="inline-flex rounded border border-white/5 bg-[#091526]/80 px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+        <div class="tag-archive-count inline-flex flex-wrap items-center justify-center gap-3 rounded-full border px-4 py-2 font-mono text-[9px] font-bold uppercase tracking-[0.35em]">
           [ {posts.length}_ENTRIES_FOUND ]
         </div>
       </div>
@@ -96,7 +101,7 @@ const { tag, posts } = Astro.props;
 
     <div>
       <MagicBentoBlogGrid
-        client:load
+        client:visible
         posts={posts}
         textAutoHide={true}
         enableSpotlight={true}
@@ -112,13 +117,37 @@ const { tag, posts } = Astro.props;
     </div>
     
     <div class="mt-20 md:mt-32 flex flex-col items-center">
-      <div class="h-16 w-px bg-linear-to-b from-cyan-500/50 to-transparent"></div>
-      <button class="mt-8 flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.3em] text-slate-500 hover:text-cyan-400 transition-colors cursor-pointer">
+      <div class="h-16 w-px bg-linear-to-b from-cyan-600/30 dark:from-cyan-500/50 to-transparent"></div>
+      <span class="mt-8 flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.3em] text-slate-500">
         FETCH_NEXT_BLOCK
         <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M6 9l6 6 6-6"/>
         </svg>
-      </button>
+      </span>
     </div>
   </section>
 </BaseLayout>
+
+<style is:global>
+  html:not(.dark) .tag-archive-label {
+    color: #0f172a;
+  }
+
+  html.dark .tag-archive-label {
+    color: #ffffff;
+  }
+
+  html:not(.dark) .tag-archive-count {
+    border-color: #e2e8f0;
+    background: rgba(255, 255, 255, 0.92);
+    color: rgba(14, 116, 144, 0.8);
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+  }
+
+  html.dark .tag-archive-count {
+    border-color: rgba(34, 211, 238, 0.15);
+    background: rgba(8, 17, 31, 0.9);
+    color: rgba(165, 243, 252, 0.75);
+    box-shadow: 0 0 0 1px rgba(8, 145, 178, 0.08);
+  }
+</style>
