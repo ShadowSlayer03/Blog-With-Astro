@@ -1,8 +1,12 @@
 import type { APIRoute, GetStaticPaths } from 'astro';
 import { getCollection } from 'astro:content';
 import satori from 'satori';
-import { Resvg } from '@resvg/resvg-js';
+import { Resvg, initWasm } from '@resvg/resvg-wasm';
 import { SITE } from '../../../lib/constants';
+import { readFile } from 'node:fs/promises';
+import { createRequire } from 'node:module';
+
+let wasmInitialized = false;
 
 let fontBoldCache: ArrayBuffer | null = null;
 let fontRegularCache: ArrayBuffer | null = null;
@@ -24,6 +28,14 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const GET: APIRoute = async ({ params }) => {
+  if (!wasmInitialized) {
+    const require = createRequire(import.meta.url);
+    const wasmPath = require.resolve('@resvg/resvg-wasm/index_bg.wasm');
+    const wasmBuffer = await readFile(wasmPath);
+    await initWasm(wasmBuffer);
+    wasmInitialized = true;
+  }
+
   const posts = await getCollection('blog');
   const post = posts.find((p) => p.id === params.slug);
 
