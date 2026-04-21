@@ -81,7 +81,7 @@ const { tag, posts } = Astro.props;
         <GradientText
           animationSpeed={6}
           showBorder={false}
-          client:idle
+          client:only="react"
           className="inline-block relative -top-1 md:-top-2"
         >
           <h1
@@ -101,7 +101,7 @@ const { tag, posts } = Astro.props;
 
     <div>
       <MagicBentoBlogGrid
-        client:visible
+        client:only="react"
         posts={posts}
         textAutoHide={true}
         enableSpotlight={true}

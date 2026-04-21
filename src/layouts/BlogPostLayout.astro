@@ -52,8 +52,8 @@ const ogImage = heroImage || `/og/${slug}.png`;
   article={true}
   isBlogPost={true}
 >
-  <TrackPageView client:idle slug={slug} readingTime={readingMinutes} />
-  <ScrollProgress client:idle />
+  <TrackPageView client:only="react" slug={slug} readingTime={readingMinutes} />
+  <ScrollProgress client:only="react" />
   <div class="blog-layout isolate relative overflow-clip">
     <div class="blog-backdrop pointer-events-none absolute inset-0 -z-10">
       <div
@@ -90,7 +90,7 @@ const ogImage = heroImage || `/og/${slug}.png`;
             }
           </div>
 
-          <GradientText animationSpeed={6} showBorder={false} client:idle>
+          <GradientText animationSpeed={6} showBorder={false} client:only="react">
             <h1
               class="blog-title font-heading text-balance text-4xl md:text-7xl font-black uppercase leading-[0.92] tracking-wider"
             >
@@ -145,7 +145,7 @@ const ogImage = heroImage || `/og/${slug}.png`;
             <div
               class="blog-meta-views inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-white/8 bg-white/90 dark:bg-[#08111f]/90 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.28em] text-slate-600 dark:text-slate-300"
             >
-              <ViewCount slug={slug} client:visible />
+              <ViewCount slug={slug} client:only="react" />
             </div>
           </div>
 
@@ -298,8 +298,8 @@ const ogImage = heroImage || `/og/${slug}.png`;
           <div
             class="mt-16 flex flex-wrap items-center gap-3 border-t border-slate-200 dark:border-white/6 pt-8"
           >
-            <LikeButton client:visible slug={slug} />
-            <ShareButton client:visible title={title} url={currentUrl} />
+            <LikeButton client:only="react" slug={slug} />
+            <ShareButton client:only="react" title={title} url={currentUrl} />
           </div>
 
           <div
@@ -363,18 +363,18 @@ const ogImage = heroImage || `/og/${slug}.png`;
             >
               Comments
             </h3>
-            <GiscusComments client:visible />
+            <GiscusComments client:only="react" />
           </div>
         </article>
 
         <aside class="hidden xl:block">
-          <TableOfContents client:idle />
+          <TableOfContents client:only="react" />
         </aside>
       </div>
     </section>
   </div>
 
-  <BackToTop client:idle />
+  <BackToTop client:only="react" />
   <Toaster client:only="react" theme="system" richColors closeButton />
 </BaseLayout>
 
