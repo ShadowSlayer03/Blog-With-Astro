@@ -1,7 +1,7 @@
 ---
 import { SITE, NAV_LINKS } from '../lib/constants';
 import { AnimatedThemeToggler } from './ui/AnimatedThemeToggler';
-const currentPath = Astro.url.pathname;
+const currentPath = Astro.url?.pathname ?? "/";
 ---
 
 <header class="site-header sticky top-0 z-50 border-b border-white/5 bg-black/80 backdrop-blur-md">
