@@ -1,5 +1,5 @@
 import { defineMiddleware } from "astro:middleware";
-import { API_KEY } from "astro:env/server";
+import { env } from "cloudflare:workers";
 
 export const onRequest = defineMiddleware((context, next) => {
     const url = new URL(context.request.url);
@@ -8,7 +8,7 @@ export const onRequest = defineMiddleware((context, next) => {
 
     const apiKey = context.request.headers.get("x-api-key");
     if (apiKey) {
-        if (apiKey !== API_KEY) {
+        if (!env.API_KEY || apiKey !== env.API_KEY) {
             return new Response(JSON.stringify({ message: "Unauthorized" }), { status: 401 });
         }
         return next();
