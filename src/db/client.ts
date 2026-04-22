@@ -1,5 +1,5 @@
 import { drizzle } from "drizzle-orm/libsql";
-import { createClient } from "@libsql/client";
+import { createClient } from "@libsql/client/web";
 import { env } from "cloudflare:workers";
 
 const url = env.TURSO_DB_URL ?? process.env.TURSO_DB_URL;
