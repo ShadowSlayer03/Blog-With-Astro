@@ -2,8 +2,10 @@ import { drizzle } from "drizzle-orm/libsql";
 import { createClient } from "@libsql/client/web";
 import { env } from "cloudflare:workers";
 
-const url = env.TURSO_DB_URL ?? process.env.TURSO_DB_URL;
-const authToken = env.TURSO_AUTH_TOKEN ?? process.env.TURSO_AUTH_TOKEN;
+const isProduction = process.env.NODE_ENV === 'production';
+
+const url = isProduction ? env.TURSO_DB_URL : import.meta.env.TURSO_DB_URL;
+const authToken = isProduction ? env.TURSO_AUTH_TOKEN : import.meta.env.TURSO_AUTH_TOKEN;
 
 if (!url || !authToken) {
     throw new Error("TURSO_DB_URL and TURSO_AUTH_TOKEN must be set in environment variables.");
