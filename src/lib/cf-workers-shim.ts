@@ -1,6 +1,5 @@
 /**
- * Dev-only shim for `cloudflare:workers`.
- * In production the Cloudflare adapter supplies this module natively.
+ * Shim for `cloudflare:workers` in dev envs.
  * In development (Node adapter) this maps `env` to `process.env` so that
  * middleware and db/client work without modification.
  */
