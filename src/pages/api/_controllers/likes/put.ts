@@ -1,9 +1,9 @@
 import type { APIContext } from "astro";
 import { likes } from "../../../../db/schema";
-import { db } from "../../../../db/client";
 import { eq, sql } from "drizzle-orm";
+import { getDb } from "../../../../db/client";
 
-const putLikes = async ({ params }: APIContext) => {
+const putLikes = async ({ params, locals }: APIContext) => {
     try {
         const { postId } = params;
 
@@ -13,6 +13,8 @@ const putLikes = async ({ params }: APIContext) => {
                 headers: { 'Content-Type': 'application/json' },
             });
         }
+
+        const db = getDb(locals);
 
         const updatedLikeData = await db.update(likes)
             .set({

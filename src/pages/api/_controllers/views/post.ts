@@ -1,6 +1,6 @@
 import type { APIContext } from "astro";
-import { db } from "../../../../db/client";
 import { views } from "../../../../db/schema";
+import { getDb } from "../../../../db/client";
 
 const findValuesToInsert = (existingViewsData: any[], postSlugs: string[]) => {
     const existingSlugs = existingViewsData.map((data) => data.post_slug);
@@ -13,7 +13,7 @@ const findValuesToInsert = (existingViewsData: any[], postSlugs: string[]) => {
     }));
 }
 
-const postViews = async ({ request }: APIContext) => {
+const postViews = async ({ request, locals }: APIContext) => {
     try {
         const { postSlugs } = await request.json();
 
@@ -26,6 +26,8 @@ const postViews = async ({ request }: APIContext) => {
             });
         }
 
+        const db = getDb(locals);
+        
         const viewData = await db.select().from(views);
 
         const valuesToInsert = findValuesToInsert(viewData, postSlugs);
