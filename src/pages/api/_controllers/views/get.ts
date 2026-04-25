@@ -35,7 +35,7 @@ async function getViews({ params }: APIContext) {
         });
     } catch (error) {
         console.error("Error occurred while retrieving view data:", error);
-        return new Response(JSON.stringify({ message: "An error occurred while retrieving view data for this post.", error: error instanceof Error ? error.message : String(error) }), {
+        return new Response(JSON.stringify({ message: "An error occurred while retrieving view data for this post.", error: error instanceof Error ? error : String(error) }), {
             status: 500,
             headers: {
                 'Content-Type': 'application/json',
