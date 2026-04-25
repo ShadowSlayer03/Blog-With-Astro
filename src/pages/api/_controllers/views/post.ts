@@ -13,7 +13,7 @@ const findValuesToInsert = (existingViewsData: any[], postSlugs: string[]) => {
     }));
 }
 
-const postViews = async ({ request }: APIContext) => {
+const postViews = async ({ request, locals }: APIContext) => {
     try {
         const { postSlugs } = await request.json();
 

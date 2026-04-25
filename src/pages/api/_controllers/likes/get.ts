@@ -3,7 +3,7 @@ import { likes } from "../../../../db/schema";
 import { eq } from "drizzle-orm";
 import { getDb } from "../../../../db/client";
 
-const getLikes = async ({ params }: APIContext) => {
+const getLikes = async ({ params, locals }: APIContext) => {
     try {
         const { postId } = params;
 
@@ -26,7 +26,7 @@ const getLikes = async ({ params }: APIContext) => {
                 headers: {
                     'Content-Type': 'application/json',
                 }
-            })
+            });
         }
 
         return new Response(JSON.stringify({ message: `Likes retrieved for this post: ${postId}`, likes: likeData }), {

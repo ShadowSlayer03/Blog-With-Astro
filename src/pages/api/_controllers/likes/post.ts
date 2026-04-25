@@ -13,7 +13,7 @@ const findValuesToInsert = (existingLikesData: any[], postSlugs: string[]) => {
     }));
 }
 
-const postLikes = async ({ request }: APIContext) => {
+const postLikes = async ({ request, locals }: APIContext) => {
     try {
         const { postSlugs } = await request.json();
 
