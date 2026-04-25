@@ -1,9 +1,9 @@
 import type { APIContext } from "astro";
-import { db } from "../../../../db/client";
+import { getDb } from "../../../../db/client";
 import { likes } from "../../../../db/schema";
 import { eq } from "drizzle-orm";
 
-const getLikes = async ({ params }: APIContext) => {
+const getLikes = async ({ params, locals }: APIContext) => {
     try {
         const { postId } = params;
 
@@ -16,6 +16,8 @@ const getLikes = async ({ params }: APIContext) => {
             });
         }
 
+        const db = getDb(locals);
+
         const likeData = await db.select().from(likes).where(eq(likes.post_slug, postId));
 
         if (!likeData || likeData.length === 0) {
@@ -24,7 +26,7 @@ const getLikes = async ({ params }: APIContext) => {
                 headers: {
                     'Content-Type': 'application/json',
                 }
-            })
+            });
         }
 
         return new Response(JSON.stringify({ message: `Likes retrieved for this post: ${postId}`, likes: likeData }), {

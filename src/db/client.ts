@@ -1,20 +1,26 @@
-import { drizzle } from "drizzle-orm/libsql";
-import { createClient } from "@libsql/client/http";
-import { env } from "cloudflare:workers";
+import { drizzle } from "drizzle-orm/libsql"
+import { createClient } from "@libsql/client/http"
+import * as schema from "./schema"
 
-// In Cloudflare Workers, use runtime bindings/secrets.
-// In local dev (Node adapter), the 'cloudflare:workers' module is shimmed
-// to process.env via astro.config.mjs, so env.* works there too.
-const url = env.TURSO_DB_URL || import.meta.env.TURSO_DB_URL;
-const authToken = env.TURSO_AUTH_TOKEN || import.meta.env.TURSO_AUTH_TOKEN;
-
-if (!url || !authToken) {
-    throw new Error("TURSO_DB_URL and TURSO_AUTH_TOKEN must be set in environment variables.");
+type Env = {
+  TURSO_DB_URL: string
+  TURSO_AUTH_TOKEN: string
 }
 
-const turso = createClient({
-  url,
-  authToken,
-});
+export function getDb(locals: App.Locals) {
+  const env: Env = (locals as any)?.runtime?.env ?? {
+    TURSO_DB_URL: import.meta.env.TURSO_DB_URL,
+    TURSO_AUTH_TOKEN: import.meta.env.TURSO_AUTH_TOKEN,
+  }
 
-export const db = drizzle(turso);
+  if (!env.TURSO_DB_URL || !env.TURSO_AUTH_TOKEN) {
+    throw new Error("TURSO_DB_URL and TURSO_AUTH_TOKEN must be set")
+  }
+
+  const turso = createClient({
+    url: env.TURSO_DB_URL,
+    authToken: env.TURSO_AUTH_TOKEN,
+  })
+
+  return drizzle(turso, { schema })
+}

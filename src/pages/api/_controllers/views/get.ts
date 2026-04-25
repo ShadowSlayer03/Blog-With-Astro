@@ -1,9 +1,9 @@
 import type { APIContext } from "astro";
-import { db } from "../../../../db/client";
 import { views } from "../../../../db/schema";
 import { eq } from "drizzle-orm";
+import { getDb } from "../../../../db/client";
 
-async function getViews({ params }: APIContext) {
+async function getViews({ params, locals }: APIContext) {
     try {
         const { postId } = params;
 
@@ -16,6 +16,8 @@ async function getViews({ params }: APIContext) {
             });
         }
 
+        const db = getDb(locals);
+
         const viewData = await db.select().from(views).where(eq(views.post_slug, postId));
 
         if (!viewData || viewData.length === 0) {
@@ -24,7 +26,7 @@ async function getViews({ params }: APIContext) {
                 headers: {
                     'Content-Type': 'application/json',
                 }
-            })
+            });
         }
 
         return new Response(JSON.stringify({ message: `Views retrieved for this post: ${postId}`, views: viewData }), {
