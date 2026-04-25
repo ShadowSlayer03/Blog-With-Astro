@@ -1,7 +1,7 @@
 import type { APIContext } from "astro";
-import { db } from "../../../../db/client";
 import { likes } from "../../../../db/schema";
 import { eq } from "drizzle-orm";
+import { getDb } from "../../../../db/client";
 
 const getLikes = async ({ params }: APIContext) => {
     try {
@@ -15,6 +15,8 @@ const getLikes = async ({ params }: APIContext) => {
                 },
             });
         }
+
+        const db = getDb();
 
         const likeData = await db.select().from(likes).where(eq(likes.post_slug, postId));
 

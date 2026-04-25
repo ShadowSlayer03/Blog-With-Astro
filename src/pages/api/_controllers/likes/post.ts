@@ -1,6 +1,6 @@
 import type { APIContext } from "astro";
 import { likes } from "../../../../db/schema";
-import { db } from "../../../../db/client";
+import { getDb } from "../../../../db/client";
 
 const findValuesToInsert = (existingLikesData: any[], postSlugs: string[]) => {
     const existingSlugs = existingLikesData.map((data) => data.post_slug);
@@ -25,6 +25,8 @@ const postLikes = async ({ request }: APIContext) => {
                 },
             });
         }
+
+        const db = getDb();
 
         const likeData = await db.select().from(likes);
 

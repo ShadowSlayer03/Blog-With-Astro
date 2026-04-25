@@ -1,7 +1,7 @@
 import type { APIContext } from "astro";
-import { db } from "../../../../db/client";
 import { views } from "../../../../db/schema";
 import { eq } from "drizzle-orm";
+import { getDb } from "../../../../db/client";
 
 async function getViews({ params }: APIContext) {
     try {
@@ -15,6 +15,8 @@ async function getViews({ params }: APIContext) {
                 },
             });
         }
+
+        const db = getDb();
 
         const viewData = await db.select().from(views).where(eq(views.post_slug, postId));
 

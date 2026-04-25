@@ -1,17 +1,18 @@
-import { drizzle } from "drizzle-orm/libsql";
-import { createClient } from "@libsql/client/web";
-import { env } from "cloudflare:workers";
+import { drizzle } from "drizzle-orm/libsql"
+import { createClient } from "@libsql/client/http"
+import { env } from "cloudflare:workers"
+import * as schema from "./schema"
 
-const url = env.TURSO_DB_URL ?? process.env.TURSO_DB_URL;
-const authToken = env.TURSO_AUTH_TOKEN ?? process.env.TURSO_AUTH_TOKEN;
+export function getDb() {
+  if (!env.TURSO_DB_URL || !env.TURSO_AUTH_TOKEN) {
+    throw new Error("TURSO_DB_URL and TURSO_AUTH_TOKEN must be set")
+  }
 
-if (!url || !authToken) {
-    throw new Error("TURSO_DB_URL and TURSO_AUTH_TOKEN must be set in environment variables.");
+  const turso = createClient({
+    url: env.TURSO_DB_URL,
+    authToken: env.TURSO_AUTH_TOKEN,
+  });
+
+
+  return drizzle(turso);
 }
-
-const turso = createClient({
-  url,
-  authToken,
-});
-
-export const db = drizzle(turso);

@@ -1,7 +1,7 @@
 import type { APIContext } from "astro";
 import { eq, sql } from "drizzle-orm";
 import { views } from "../../../../db/schema";
-import { db } from "../../../../db/client";
+import { getDb } from "../../../../db/client";
 
 const putViews = async ({ params }: APIContext) => {
     try {
@@ -13,6 +13,8 @@ const putViews = async ({ params }: APIContext) => {
                 headers: { 'Content-Type': 'application/json' },
             });
         }
+
+        const db = getDb();
 
         const updatedViewData = await db.update(views)
             .set({
