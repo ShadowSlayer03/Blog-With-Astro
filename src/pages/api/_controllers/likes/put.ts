@@ -14,7 +14,7 @@ const putLikes = async ({ params, locals }: APIContext) => {
             });
         }
 
-        const db = getDb(locals);
+        const db = getDb();
 
         const updatedLikeData = await db.update(likes)
             .set({

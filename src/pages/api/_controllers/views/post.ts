@@ -26,8 +26,8 @@ const postViews = async ({ request, locals }: APIContext) => {
             });
         }
 
-        const db = getDb(locals);
-        
+        const db = getDb();
+
         const viewData = await db.select().from(views);
 
         const valuesToInsert = findValuesToInsert(viewData, postSlugs);

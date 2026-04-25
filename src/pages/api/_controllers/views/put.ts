@@ -14,7 +14,7 @@ const putViews = async ({ params, locals }: APIContext) => {
             });
         }
 
-        const db = getDb(locals);
+        const db = getDb();
 
         const updatedViewData = await db.update(views)
             .set({

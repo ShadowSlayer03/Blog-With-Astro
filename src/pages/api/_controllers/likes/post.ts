@@ -26,7 +26,7 @@ const postLikes = async ({ request, locals }: APIContext) => {
             });
         }
 
-        const db = getDb(locals);
+        const db = getDb();
 
         const likeData = await db.select().from(likes);
 

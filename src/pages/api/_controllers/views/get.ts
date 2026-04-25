@@ -16,7 +16,7 @@ async function getViews({ params, locals }: APIContext) {
             });
         }
 
-        const db = getDb(locals);
+        const db = getDb();
 
         const viewData = await db.select().from(views).where(eq(views.post_slug, postId));
 
