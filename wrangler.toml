@@ -14,4 +14,4 @@ enabled = true
 invocation_logs = true
 
 [vars]
-TURSO_DB_URL = "libsql://blog-with-astro-shadowslayer03.aws-ap-south-1.turso.io"
+TURSO_DB_URL = "https://blog-with-astro-shadowslayer03.aws-ap-south-1.turso.io"
