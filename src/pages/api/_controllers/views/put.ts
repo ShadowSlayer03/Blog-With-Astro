@@ -3,7 +3,7 @@ import { eq, sql } from "drizzle-orm";
 import { views } from "../../../../db/schema";
 import { getDb } from "../../../../db/client";
 
-const putViews = async ({ params, locals }: APIContext) => {
+const putViews = async ({ params }: APIContext) => {
     try {
         const { postId } = params;
 
