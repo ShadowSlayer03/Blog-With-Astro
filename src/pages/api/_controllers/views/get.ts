@@ -3,7 +3,7 @@ import { views } from "../../../../db/schema";
 import { eq } from "drizzle-orm";
 import { getDb } from "../../../../db/client";
 
-async function getViews({ params, locals }: APIContext) {
+async function getViews({ params }: APIContext) {
     try {
         const { postId } = params;
 
@@ -37,7 +37,7 @@ async function getViews({ params, locals }: APIContext) {
         });
     } catch (error) {
         console.error("Error occurred while retrieving view data:", error);
-        return new Response(JSON.stringify({ message: "An error occurred while retrieving view data for this post.", error: error instanceof Error ? error : String(error) }), {
+        return new Response(JSON.stringify({ message: "An error occurred while retrieving view data for this post.", error: error instanceof Error ? error.message : String(error) }), {
             status: 500,
             headers: {
                 'Content-Type': 'application/json',

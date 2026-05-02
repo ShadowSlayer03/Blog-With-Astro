@@ -3,7 +3,7 @@ import { likes } from "../../../../db/schema";
 import { eq, sql } from "drizzle-orm";
 import { getDb } from "../../../../db/client";
 
-const putLikes = async ({ params, locals }: APIContext) => {
+const putLikes = async ({ params }: APIContext) => {
     try {
         const { postId } = params;
 
