@@ -14,5 +14,5 @@ export function getDb() {
   });
 
 
-  return drizzle(turso);
+  return drizzle(turso, { schema });
 }
