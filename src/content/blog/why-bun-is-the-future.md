@@ -3,7 +3,7 @@ title: "Why Bun is the Future of JavaScript"
 description: "A deep dive into Bun — the all-in-one JavaScript runtime that's challenging Node.js with incredible speed and built-in tooling."
 pubDate: 2026-03-25
 tags: ["javascript", "bun", "runtime"]
-heroImage: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=400&fit=crop"
+heroImage: "https://pub-e9e6d7b1566e4199a52a0c68cec4e410.r2.dev/images/bun-future-js.jpg"
 draft: false
 ---
 

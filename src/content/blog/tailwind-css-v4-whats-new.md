@@ -3,7 +3,7 @@ title: "Tailwind CSS v4: What's New"
 description: "Explore the exciting new features in Tailwind CSS v4, including the new engine, CSS-first configuration, and improved performance."
 pubDate: 2026-03-22
 tags: ["css", "tailwind", "design"]
-heroImage: "https://images.unsplash.com/photo-1507721999472-8ed4421c4af2?w=800&h=400&fit=crop"
+heroImage: "https://pub-e9e6d7b1566e4199a52a0c68cec4e410.r2.dev/images/tailwind-css-v4.jpg"
 ---
 
 ## The New Era of Tailwind

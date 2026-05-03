@@ -3,7 +3,7 @@ title: "Getting Started with Astro 6"
 description: "Learn how to build blazing-fast websites with Astro 6, the modern static site generator that ships zero JavaScript by default."
 pubDate: 2026-03-20
 tags: ["astro", "web development", "tutorial"]
-heroImage: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&h=400&fit=crop"
+heroImage: "https://pub-e9e6d7b1566e4199a52a0c68cec4e410.r2.dev/images/astro-getting-started.jpg"
 ---
 
 ## Why Astro?
