@@ -2,7 +2,7 @@
 export const prerender = true;
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { SITE, SOCIALS, PROJECT_STACK } from "../lib/constants";
-import GradientText from "../components/ui/GradientText";
+import GradientText from "../components/GradientText.astro";
 import BorderGlow from "../components/ui/BorderGlow";
 import { AnimatedBeam } from "../components/ui/AnimatedBeam";
 import { ShimmerButton } from "../components/ui/ShimmerButton";
@@ -19,7 +19,6 @@ import { Particles } from "../components/ui/Particles";
         <GradientText
           animationSpeed={6}
           showBorder={false}
-          client:idle
         >
           <h1
             class="font-heading text-[11vw] md:text-[9vw] tracking-normal uppercase leading-none"
@@ -262,7 +261,7 @@ import { Particles } from "../components/ui/Particles";
       class="about-cta relative overflow-hidden rounded-2xl border border-white/10 bg-linear-to-b from-[#0f172a] to-transparent p-8 sm:p-16 text-center"
     >
       <Particles
-        client:visible
+        client:idle
         className="absolute inset-0 z-0 h-full w-full"
         quantity={80}
         ease={70}
