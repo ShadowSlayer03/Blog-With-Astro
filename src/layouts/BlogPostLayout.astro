@@ -10,10 +10,10 @@ import TableOfContents from "../components/TableOfContents.astro";
 import LikeButton from "../components/islands/LikeButton";
 import ShareButton from "../components/islands/ShareButton";
 import GiscusComments from "../components/islands/GiscusComments";
-import ScrollUI from "../components/islands/ScrollUI";
+import ScrollUI from "../components/ScrollUI.astro";
 import TrackPageView from "../components/islands/TrackPageView";
 import ViewCount from "../components/islands/ViewCount";
-import GradientText from "../components/ui/GradientText";
+import GradientText from "../components/GradientText.astro";
 import { Toaster } from "sonner";
 import { Image } from "astro:assets";
 
@@ -52,7 +52,7 @@ const ogImage = heroImage || `/og/${slug}.png`;
   isBlogPost={true}
 >
   <TrackPageView client:idle slug={slug} readingTime={readingMinutes} />
-  <ScrollUI client:visible />
+  <ScrollUI />
   <div class="blog-layout isolate relative overflow-clip">
     <div class="blog-backdrop pointer-events-none absolute inset-0 -z-10">
       <div
@@ -89,7 +89,7 @@ const ogImage = heroImage || `/og/${slug}.png`;
             }
           </div>
 
-          <GradientText animationSpeed={6} showBorder={false} client:only="react">
+          <GradientText animationSpeed={6} showBorder={false}>
             <h1
               class="blog-title font-heading text-balance text-4xl md:text-7xl font-black uppercase leading-[0.92] tracking-wider"
             >
@@ -144,7 +144,7 @@ const ogImage = heroImage || `/og/${slug}.png`;
             <div
               class="blog-meta-views inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-white/8 bg-white/90 dark:bg-[#08111f]/90 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.28em] text-slate-600 dark:text-slate-300"
             >
-              <ViewCount slug={slug} client:visible />
+              <ViewCount client:visible slug={slug}  />
             </div>
           </div>
 
@@ -297,8 +297,8 @@ const ogImage = heroImage || `/og/${slug}.png`;
           <div
             class="mt-16 flex flex-wrap items-center gap-3 border-t border-slate-200 dark:border-white/6 pt-8"
           >
-            <LikeButton client:only="react" slug={slug} />
-            <ShareButton client:only="react" title={title} url={currentUrl} />
+            <LikeButton client:visible slug={slug} />
+            <ShareButton client:visible title={title} url={currentUrl} />
           </div>
 
           <div
@@ -373,101 +373,64 @@ const ogImage = heroImage || `/og/${slug}.png`;
     </section>
   </div>
 
-  <Toaster client:only="react" theme="system" richColors closeButton />
+  <Toaster client:idle theme="system" richColors closeButton />
 </BaseLayout>
 
-<style is:global>
-  /* LIGHT MODE OVERRIDES FOR GLOBAL TYPOGRAPHY */
-  html:not(.dark) .blog-backdrop-grid {
-    opacity: 0.45;
-    background-image:
-      linear-gradient(rgba(15, 23, 42, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(15, 23, 42, 0.04) 1px, transparent 1px) !important;
-  }
-  html:not(.dark) .blog-backdrop-gradient {
-    background:
-      radial-gradient(circle at top, rgba(14, 116, 144, 0.12), transparent 34%),
-      linear-gradient(180deg, rgba(248, 250, 252, 0.1) 0%, transparent 100%) !important;
-  }
-  html:not(.dark) .blog-backdrop-orb {
-    background: rgba(14, 165, 233, 0.08);
-  }
+<style>
 
-  html:not(.dark) .blog-system-data {
-    color: var(--color-accent-dark);
-  }
+.blog-backdrop-grid {
+  opacity: 0.8;
+}
 
-  /* Prose Overrides */
-  html:not(.dark) .blog-post-prose {
-    color: #334155;
-  }
-  html:not(.dark) .blog-post-prose > :where(p:first-of-type)::first-letter {
-    color: #0f172a;
-  }
-  html:not(.dark) .blog-post-prose :where(h2),
-  html:not(.dark) .blog-post-prose :where(h3),
-  html:not(.dark) .blog-post-prose :where(h4) {
-    color: #0f172a;
-  }
-  html:not(.dark) .blog-post-prose :where(p, li) {
-    color: #334155;
-  }
-  html:not(.dark) .blog-post-prose :where(strong) {
-    color: #0f172a;
-  }
-  html:not(.dark) .blog-post-prose :where(a) {
-    color: #0891b2;
-  }
-  html:not(.dark) .blog-post-prose :where(a:hover) {
-    color: #0e7490;
-  }
-  html:not(.dark) .blog-post-prose :where(img) {
-    border-color: rgba(15, 23, 42, 0.08);
-    background: #f8fafc;
-    box-shadow:
-      inset 0 1px 0 rgba(15, 23, 42, 0.04),
-      0 20px 46px rgba(15, 23, 42, 0.06);
-  }
+/* =====================
+   LIGHT MODE OVERRIDES
+========================= */
 
-  html:not(.dark) .blog-post-prose :where(pre) {
-    border-color: rgba(15, 23, 42, 0.08);
-    background-color: var(--shiki-light-bg, #f8fafc) !important;
-    color: var(--shiki-light, #334155) !important;
-    box-shadow:
-      inset 0 1px 0 rgba(15, 23, 42, 0.04),
-      0 20px 46px rgba(15, 23, 42, 0.06);
-  }
-  html:not(.dark) .blog-post-prose :where(pre span) {
-    color: var(--shiki-light) !important;
-  }
+html:not(.dark) .blog-backdrop-grid {
+  opacity: 0.45;
+  background-image:
+    linear-gradient(rgba(15, 23, 42, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.04) 1px, transparent 1px);
+}
 
-  html.dark .blog-post-prose :where(pre) {
-    background-color: var(--shiki-dark-bg, #040814) !important;
-    color: var(--shiki-dark) !important;
-  }
-  html.dark .blog-post-prose :where(pre span) {
-    color: var(--shiki-dark) !important;
-  }
+html:not(.dark) .blog-backdrop-gradient {
+  background:
+    radial-gradient(circle at top, rgba(14, 116, 144, 0.12), transparent 34%),
+    linear-gradient(180deg, rgba(248, 250, 252, 0.1) 0%, transparent 100%);
+}
 
-  html:not(.dark) .blog-author-note-card {
-    background: rgba(255, 255, 255, 0.94);
-    border-color: #e2e8f0;
-    box-shadow: 0 14px 40px rgba(15, 23, 42, 0.06);
-  }
-  html:not(.dark) .blog-author-note-glow {
-    background: rgba(8, 145, 178, 0.05); /* Soft cyan glow */
-  }
-  html:not(.dark) .blog-author-note-avatar {
-    border-color: #e2e8f0;
-    background: #f8fafc;
-  }
-  html:not(.dark) .blog-author-note-title {
-    color: #0f172a;
-  }
-  html:not(.dark) .blog-author-note-desc {
-    color: #475569;
-  }
-  html:not(.dark) .blog-author-note-eyebrow {
-    color: #0891b2;
-  }
+html:not(.dark) .blog-backdrop-orb {
+  background: rgba(14, 165, 233, 0.08);
+}
+
+/* ============
+   AUTHOR CARD
+=============== */
+
+html:not(.dark) .blog-author-note-card {
+  background: rgba(255, 255, 255, 0.94);
+  border-color: #e2e8f0;
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.06);
+}
+
+html:not(.dark) .blog-author-note-glow {
+  background: rgba(8, 145, 178, 0.05);
+}
+
+html:not(.dark) .blog-author-note-avatar {
+  border-color: #e2e8f0;
+  background: #f8fafc;
+}
+
+html:not(.dark) .blog-author-note-title {
+  color: #0f172a;
+}
+
+html:not(.dark) .blog-author-note-desc {
+  color: #475569;
+}
+
+html:not(.dark) .blog-author-note-eyebrow {
+  color: #0891b2;
+}
 </style>

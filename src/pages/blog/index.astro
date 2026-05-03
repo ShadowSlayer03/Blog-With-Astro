@@ -5,7 +5,7 @@ import { getCollection } from "astro:content";
 import Search from "astro-pagefind/components/Search";
 import { getReadingTime, formatDate } from "../../lib/utils";
 import MagicBentoBlogGrid from "../../components/islands/MagicBentoBlogGrid";
-import GradientText from "../../components/ui/GradientText";
+import GradientText from "../../components/GradientText.astro";
 import MagicFeaturedBlogCard from "../../components/islands/MagicFeaturedBlogCard";
 import { findRemainingPosts, getPaginationBlocks } from "../../lib/utils";
 
@@ -110,7 +110,7 @@ const nextPage = pageNum < totalPages ? pageNum + 1 : null;
         >
       </div>
 
-      <GradientText animationSpeed={6} showBorder={false} client:idle>
+      <GradientText animationSpeed={6} showBorder={false}>
         <h1
           class="font-heading text-[9vw] md:text-[7vw] tracking-normal uppercase leading-none"
         >
@@ -315,7 +315,7 @@ const nextPage = pageNum < totalPages ? pageNum + 1 : null;
     --pagefind-ui-scale: 0.7;
   }
 
-  #search-wrapper .pagefind-ui__drawer {
+  :global(#search-wrapper .pagefind-ui__drawer) {
     border: 1px solid rgba(34, 211, 238, 0.1) !important;
     box-shadow:
       0 24px 48px rgba(0, 0, 0, 0.55),
@@ -324,15 +324,15 @@ const nextPage = pageNum < totalPages ? pageNum + 1 : null;
     padding: 0 1rem;
   }
 
-  #search-wrapper .pagefind-ui__search-input::placeholder {
+  :global(#search-wrapper .pagefind-ui__search-input::placeholder) {
     color: #979ca3;
   }
 
-  #search-wrapper .pagefind-ui__results-area {
+  :global(#search-wrapper .pagefind-ui__results-area) {
     margin-top: 0 !important;
   }
 
-  #search-wrapper .pagefind-ui__result:first-child {
+  :global(#search-wrapper .pagefind-ui__result:first-child) {
     border-top: rgba(34, 211, 238, 0.1) solid 1px !important;
   }
 

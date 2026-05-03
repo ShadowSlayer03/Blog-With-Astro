@@ -367,10 +367,10 @@ const BentoCard: React.FC<BentoCardProps> = ({
             src={post.heroImage}
             alt={post.title}
             className={cn(
-              'absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]',
+              'absolute inset-0 h-full w-full object-cover transition-all duration-500 group-hover:scale-[1.04]',
               theme === 'dark'
-                ? 'opacity-85 saturate-75 mix-blend-luminosity'
-                : 'opacity-95 saturate-100'
+                ? 'grayscale brightness-75 contrast-90 group-hover:grayscale-0 group-hover:brightness-100 group-hover:contrast-100'
+                : 'grayscale group-hover:grayscale-0'
             )}
             loading={index === 0 ? 'eager' : 'lazy'}
             fetchPriority={index === 0 ? 'high' : 'auto'}
