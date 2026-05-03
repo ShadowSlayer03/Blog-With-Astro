@@ -1,0 +1,103 @@
+---
+
+---
+
+<nav class="sticky top-28" id="toc-root" style="display:none;">
+    <div class="mb-6 flex items-center gap-2">
+        <span class="block h-3 w-1 bg-cyan-400"></span>
+        <span
+            class="font-mono text-[9px] font-bold uppercase tracking-[0.3em] dark:text-white text-accent-dark"
+        >
+            ON THIS PAGE
+        </span>
+    </div>
+
+    <ul
+        id="toc-list"
+        class="space-y-3 font-mono text-[9px] uppercase tracking-[0.2em] text-slate-500"
+    >
+    </ul>
+</nav>
+
+<script is:inline>
+  document.addEventListener("DOMContentLoaded", () => {
+    const tocRoot = document.getElementById("toc-root");
+    const tocList = document.getElementById("toc-list");
+    const article = document.querySelector("#post-content");
+
+    if (!article || !tocList || !tocRoot) return;
+
+    const elements = article.querySelectorAll("h2, h3");
+    if (elements.length < 2) return;
+
+    tocRoot.style.display = "block";
+
+    const headings = Array.from(elements).map((el) => ({
+      id: el.id,
+      text: el.textContent || "",
+      level: el.tagName === "H2" ? 2 : 3,
+    }));
+
+    let h2Count = 0;
+
+    headings.forEach((heading) => {
+      if (heading.level === 2) h2Count++;
+
+      const numberPrefix =
+        heading.level === 2
+          ? String(h2Count).padStart(2, "0") + "_"
+          : ".._";
+
+      const li = document.createElement("li");
+
+      const a = document.createElement("a");
+      a.href = `#${heading.id}`;
+      a.className = `group flex items-start gap-1.5 transition-all duration-200 ${
+        heading.level === 3 ? "ml-4" : ""
+      } hover:text-slate-300`;
+
+      const prefix = document.createElement("span");
+      prefix.className =
+        "text-slate-700/70 group-hover:text-slate-500 transition-colors";
+      prefix.textContent = numberPrefix;
+
+      const text = document.createElement("span");
+      text.className = "mt-0.5 leading-[1.4]";
+      text.textContent = heading.text.replace(/\s+/g, "_");
+
+      a.appendChild(prefix);
+      a.appendChild(text);
+      li.appendChild(a);
+      tocList.appendChild(li);
+    });
+
+    const links = tocList.querySelectorAll("a");
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+
+          links.forEach((link) => {
+            link.classList.remove("text-cyan-300");
+            const prefixEl = link.firstElementChild;
+            prefixEl?.classList.remove("text-cyan-500/50");
+          });
+
+          const activeLink = tocList.querySelector(
+            `a[href="#${entry.target.id}"]`
+          );
+
+          if (activeLink) {
+            activeLink.classList.add("text-cyan-300");
+            const prefixEl = activeLink.firstElementChild;
+            prefixEl?.classList.add("text-cyan-500/50");
+          }
+        });
+      },
+      { rootMargin: "-80px 0px -80% 0px" }
+    );
+
+    elements.forEach((el) => observer.observe(el));
+  });
+</script>
