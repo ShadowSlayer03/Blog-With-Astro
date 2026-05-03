@@ -1,0 +1,123 @@
+---
+interface Props {
+  class?: string;
+  colors?: string[];
+  animationSpeed?: number; // seconds
+  showBorder?: boolean;
+  direction?: "horizontal" | "vertical" | "diagonal";
+  pauseOnHover?: boolean;
+}
+
+const {
+  class: className = "",
+  colors,
+  animationSpeed = 8,
+  showBorder = false,
+  direction = "horizontal",
+  pauseOnHover = false
+} = Astro.props;
+
+// default colors (light/dark handled via CSS)
+const gradient = colors?.join(", ") ?? "var(--gradient-colors)";
+const angle =
+  direction === "horizontal"
+    ? "90deg"
+    : direction === "vertical"
+    ? "180deg"
+    : "135deg";
+
+const size =
+  direction === "horizontal"
+    ? "300% 100%"
+    : direction === "vertical"
+    ? "100% 300%"
+    : "300% 300%";
+---
+
+<div
+  class={`gradient-wrapper ${showBorder ? "with-border" : ""} ${
+    pauseOnHover ? "pause-on-hover" : ""
+  } ${className}`}
+  style={`
+    --gradient: linear-gradient(${angle}, ${gradient});
+    --bg-size: ${size};
+    --speed: ${animationSpeed}s;
+  `}
+>
+  {showBorder && <div class="gradient-border"></div>}
+
+  <span class="gradient-text">
+    <slot />
+  </span>
+</div>
+
+<style>
+  /* 🎨 THEME COLORS */
+  :root {
+    --gradient-colors: #0891b2, #0f172a, #22d3ee, #0891b2;
+  }
+
+  :global(html.dark) {
+    --gradient-colors: #22d3ee, #ffffff, #0891b2, #22d3ee;
+  }
+
+  /* WRAPPER */
+  .gradient-wrapper {
+    position: relative;
+    display: inline-flex;
+    border-radius: 1.25rem;
+  }
+
+  .with-border {
+    padding: 2px;
+  }
+
+  /* TEXT */
+  .gradient-text {
+    position: relative;
+    z-index: 2;
+    background: var(--gradient);
+    background-size: var(--bg-size);
+    animation: gradient-move var(--speed) linear infinite alternate;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  /* BORDER */
+  .gradient-border {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--gradient);
+    background-size: var(--bg-size);
+    animation: gradient-move var(--speed) linear infinite alternate;
+  }
+
+  .gradient-border::after {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    border-radius: inherit;
+    background: var(--bg-inner, #020617);
+  }
+
+  :global(html:not(.dark)) .gradient-border::after {
+    --bg-inner: #ffffff;
+  }
+
+  /* ANIMATION */
+  @keyframes gradient-move {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 100% 50%;
+    }
+  }
+
+  /* PAUSE ON HOVER */
+  .pause-on-hover:hover .gradient-text,
+  .pause-on-hover:hover .gradient-border {
+    animation-play-state: paused;
+  }
+</style>
