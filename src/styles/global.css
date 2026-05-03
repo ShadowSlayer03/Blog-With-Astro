@@ -1,46 +1,62 @@
+/* =========================
+   TAILWIND + TYPOGRAPHY
+========================= */
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* =========================
+   DESIGN TOKENS
+========================= */
 @theme {
   --font-heading: "Sekuya", "Outfit", sans-serif;
   --font-sans: "Outfit", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", monospace;
+
   --color-accent: #22d3ee;
   --color-accent-dark: #0891b2;
 }
 
+/* =========================
+   ANIMATION TOKENS (KEEP ALL)
+========================= */
 @theme inline {
-  --animate-shimmer-slide: shimmer-slide var(--speed) ease-in-out infinite
-    alternate;
+  --animate-shimmer-slide: shimmer-slide var(--speed) ease-in-out infinite alternate;
   --animate-spin-around: spin-around calc(var(--speed) * 2) infinite linear;
- 
+
   @keyframes shimmer-slide {
     to {
       transform: translate(calc(100cqw - 100%), 0);
     }
   }
+
   @keyframes spin-around {
     0% {
       transform: translateZ(0) rotate(0);
     }
+
     15%,
     35% {
       transform: translateZ(0) rotate(90deg);
     }
+
     65%,
     85% {
       transform: translateZ(0) rotate(270deg);
     }
+
     100% {
       transform: translateZ(0) rotate(360deg);
     }
   }
 }
 
+/* =========================
+   BASE
+========================= */
 @layer base {
   html {
     scroll-behavior: smooth;
-    background-color: #020617; /* Prevent white flash */
+    background-color: #020617;
   }
 
   body {
@@ -49,11 +65,12 @@
 
   :is(.dark) body {
     @apply bg-[#020617] text-slate-300;
-    /* Clean System Grid Background */
-    background-image: 
+
+    background-image:
       radial-gradient(circle at 50% 0%, rgba(34, 211, 238, 0.08) 0%, transparent 50%),
       linear-gradient(rgba(34, 211, 238, 0.02) 1px, transparent 1px),
       linear-gradient(90deg, rgba(34, 211, 238, 0.02) 1px, transparent 1px);
+
     background-size: 100% 100%, 32px 32px, 32px 32px;
   }
 
@@ -62,10 +79,9 @@
   }
 }
 
-@layer utilities {
-}
-
-/* Typography Overrides for Headings, Paragraphs, and Code */
+/* =========================
+   TYPOGRAPHY SYSTEM
+========================= */
 .prose {
   @apply prose-slate dark:prose-invert max-w-none;
 }
@@ -74,11 +90,14 @@
   @apply rounded bg-cyan-500/10 px-1.5 py-0.5 font-mono text-[0.9em] text-cyan-400 before:content-none after:content-none;
 }
 
+/* =========================
+   BLOG CONTENT (DARK DEFAULT)
+========================= */
 .blog-post-prose {
   color: #cbd5e1;
 }
 
-.blog-post-prose > :where(p:first-of-type)::first-letter {
+.blog-post-prose> :where(p:first-of-type)::first-letter {
   float: left;
   margin-right: 0.55rem;
   margin-top: 0.2rem;
@@ -93,7 +112,6 @@
   margin-bottom: 1.25rem;
   font-size: clamp(1.65rem, 2.6vw, 2.25rem);
   font-weight: 800;
-  line-height: 1;
   letter-spacing: -0.05em;
   text-transform: uppercase;
   color: #f8fafc;
@@ -113,7 +131,6 @@
   margin-bottom: 0.7rem;
   font-size: clamp(1rem, 1.35vw, 1.1rem);
   font-weight: 700;
-  letter-spacing: -0.01em;
   color: #e2e8f0;
 }
 
@@ -149,23 +166,48 @@
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
-.blog-post-prose :where(blockquote) {
-  border-left: 3px solid rgba(34, 211, 238, 0.7);
-  border-radius: 0 20px 20px 0;
-  background: rgba(8, 17, 31, 0.85);
-  padding: 1.2rem 1.4rem;
-  color: #e2e8f0;
+/* =========================
+   LIGHT MODE OVERRIDES (ONLY HERE)
+========================= */
+html:not(.dark) .blog-post-prose {
+  color: #334155;
 }
 
-.blog-post-prose :where(hr) {
-  border-color: rgba(255, 255, 255, 0.08);
+html:not(.dark) .blog-post-prose> :where(p:first-of-type)::first-letter {
+  color: #0f172a;
 }
 
-.blog-post-prose :where(figcaption) {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: #64748b;
-  text-align: center;
+html:not(.dark) .blog-post-prose :where(h2),
+html:not(.dark) .blog-post-prose :where(h3),
+html:not(.dark) .blog-post-prose :where(h4) {
+  color: #0f172a;
+}
+
+html:not(.dark) .blog-post-prose :where(p, li) {
+  color: #334155;
+}
+
+html:not(.dark) .blog-post-prose :where(strong) {
+  color: #0f172a;
+}
+
+html:not(.dark) .blog-post-prose :where(a) {
+  color: #0891b2;
+}
+
+html:not(.dark) .blog-post-prose :where(a:hover) {
+  color: #0e7490;
+}
+
+html:not(.dark) .blog-post-prose :where(img) {
+  border-color: rgba(15, 23, 42, 0.08);
+  background: #f8fafc;
+  box-shadow:
+    inset 0 1px 0 rgba(15, 23, 42, 0.04),
+    0 20px 46px rgba(15, 23, 42, 0.06);
+}
+
+html:not(.dark) .blog-post-prose :where(pre) {
+  background: #f8fafc;
+  color: #334155;
 }
