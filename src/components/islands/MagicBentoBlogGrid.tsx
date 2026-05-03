@@ -474,73 +474,68 @@ const MagicBentoBlogGrid: React.FC<MagicBentoBlogGridProps> = ({
   const shouldDisableAnimations = disableAnimations || isMobile || shouldReduceMotion;
   const activeGlowColor = glowColor || (theme === 'dark' ? DEFAULT_GLOW_COLOR : '15, 23, 42');
 
+  const cardsRef = useRef<HTMLElement[]>([]);
+  const rectsRef = useRef<DOMRect[]>([]);
+  const rafRef = useRef<number | null>(null);
+
   useEffect(() => {
-    if (!enableSpotlight || shouldDisableAnimations || !gridRef.current || !spotlightRef.current) {
-      return;
-    }
+    if (!gridRef.current) return;
 
-    const gridElement = gridRef.current;
-    const spotlightElement = spotlightRef.current;
+    const cards = Array.from(
+      gridRef.current.querySelectorAll<HTMLElement>('.magic-bento-card')
+    );
 
-    const updateGlow = (event: MouseEvent) => {
-      const gridRect = gridElement.getBoundingClientRect();
-      const mouseX = event.clientX - gridRect.left;
-      const mouseY = event.clientY - gridRect.top;
+    cardsRef.current = cards;
+    rectsRef.current = cards.map(c => c.getBoundingClientRect());
+  }, [posts]);
 
-      spotlightElement.style.left = `${mouseX}px`;
-      spotlightElement.style.top = `${mouseY}px`;
+  useEffect(() => {
+    if (!enableSpotlight || shouldDisableAnimations || !gridRef.current) return;
 
-      let highestIntensity = 0;
+    const grid = gridRef.current;
+    const spotlight = spotlightRef.current!;
 
-      gridElement.querySelectorAll<HTMLElement>('.magic-bento-card').forEach((card) => {
-        const rect = card.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        const distance = Math.max(0, Math.hypot(event.clientX - centerX, event.clientY - centerY) - Math.max(rect.width, rect.height) * 0.35);
+    const update = (e: MouseEvent) => {
+      if (rafRef.current) return;
 
-        let intensity = 0;
-        if (distance <= spotlightRadius * 0.4) {
-          intensity = 1;
-        } else if (distance <= spotlightRadius) {
-          intensity = (spotlightRadius - distance) / (spotlightRadius * 0.6);
-        }
+      rafRef.current = requestAnimationFrame(() => {
+        rafRef.current = null;
 
-        const relativeX = ((event.clientX - rect.left) / rect.width) * 100;
-        const relativeY = ((event.clientY - rect.top) / rect.height) * 100;
+        let max = 0;
 
-        card.style.setProperty('--glow-x', `${relativeX}%`);
-        card.style.setProperty('--glow-y', `${relativeY}%`);
-        card.style.setProperty('--glow-intensity', `${Math.max(intensity, Number(card.style.getPropertyValue('--glow-intensity')) || 0)}`);
+        cardsRef.current.forEach((card, i) => {
+          const rect = rectsRef.current[i];
+          if (!rect) return;
 
-        highestIntensity = Math.max(highestIntensity, intensity);
-      });
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
 
-      gsap.to(spotlightElement, {
-        opacity: highestIntensity * 0.9,
-        duration: 0.18,
-        ease: 'power2.out',
-      });
-    };
+          const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
 
-    const resetGlow = () => {
-      gridElement.querySelectorAll<HTMLElement>('.magic-bento-card').forEach((card) => {
-        card.style.setProperty('--glow-intensity', '0');
-      });
+          let intensity = 0;
+          if (dist < spotlightRadius) {
+            intensity = (spotlightRadius - dist) / spotlightRadius;
+          }
 
-      gsap.to(spotlightElement, {
-        opacity: 0,
-        duration: 0.25,
-        ease: 'power2.out',
+          const relX = ((e.clientX - rect.left) / rect.width) * 100;
+          const relY = ((e.clientY - rect.top) / rect.height) * 100;
+
+          card.style.setProperty('--glow-x', `${relX}%`);
+          card.style.setProperty('--glow-y', `${relY}%`);
+          card.style.setProperty('--glow-intensity', `${intensity}`);
+
+          max = Math.max(max, intensity);
+        });
+
+        gsap.to(spotlight, {
+          opacity: max,
+          duration: 0.18,
+        });
       });
     };
 
-    gridElement.addEventListener('mousemove', updateGlow);
-    gridElement.addEventListener('mouseleave', resetGlow);
-
-    return () => {
-      gridElement.removeEventListener('mousemove', updateGlow);
-      gridElement.removeEventListener('mouseleave', resetGlow);
-    };
+    grid.addEventListener('mousemove', update);
+    return () => grid.removeEventListener('mousemove', update);
   }, [enableSpotlight, shouldDisableAnimations, spotlightRadius]);
 
   if (posts.length === 0) {
