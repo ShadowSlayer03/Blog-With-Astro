@@ -5,7 +5,7 @@ import { SITE } from '../../../lib/constants';
 import { getCollection } from 'astro:content';
 import { getReadingTime, formatDate } from '../../../lib/utils';
 import MagicBentoBlogGrid from '../../../components/islands/MagicBentoBlogGrid';
-import GradientText from '../../../components/ui/GradientText';
+import GradientText from '../../../components/GradientText.astro';
 
 // getStaticPaths is used only when there are dynamic routes.
 export async function getStaticPaths() {
@@ -81,8 +81,7 @@ const { tag, posts } = Astro.props;
         <GradientText
           animationSpeed={6}
           showBorder={false}
-          client:only="react"
-          className="inline-block relative -top-1 md:-top-2"
+          class="inline-block relative -top-1 md:-top-2"
         >
           <h1
             class="font-heading text-4xl md:text-7xl lg:text-[5.5rem] tracking-normal uppercase leading-none"
@@ -101,7 +100,7 @@ const { tag, posts } = Astro.props;
 
     <div>
       <MagicBentoBlogGrid
-        client:only="react"
+        client:visible
         posts={posts}
         textAutoHide={true}
         enableSpotlight={true}
