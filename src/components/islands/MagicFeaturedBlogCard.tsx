@@ -195,8 +195,8 @@ const MagicFeaturedBlogCard: React.FC<Props> = ({
       }
 
       if (enableMagnetism) {
-        anim.x = (x - cx) * 0.02;
-        anim.y = (y - cy) * 0.02;
+        anim.x = (x - cx) * 0.03;
+        anim.y = (y - cy) * 0.03;
       }
 
       gsap.killTweensOf(card);
@@ -206,17 +206,27 @@ const MagicFeaturedBlogCard: React.FC<Props> = ({
 
   const handleEnter = () => {
     if (!cardRef.current) return;
-    cardRef.current.style.setProperty('--glow-intensity', '1');
     spawnParticles();
+    gsap.to(cardRef.current, {
+      boxShadow: `0 24px 60px rgba(0,0,0,0.35)`,
+      duration: 0.3,
+      ease: 'power2.out',
+    });
   };
 
   const handleLeave = () => {
     if (!cardRef.current) return;
-    cardRef.current.style.setProperty('--glow-intensity', '0');
     clearParticles();
 
     gsap.killTweensOf(cardRef.current);
     gsap.to(cardRef.current, { rotateX: 0, rotateY: 0, x: 0, y: 0 });
+    gsap.to(cardRef.current, {
+      boxShadow: theme === 'dark'
+        ? '0 20px 55px rgba(0,0,0,0.24)'
+        : '0 20px 55px rgba(15,23,42,0.10)',
+      duration: 0.3,
+      ease: 'power2.out',
+    });
   };
 
   return (
@@ -228,17 +238,10 @@ const MagicFeaturedBlogCard: React.FC<Props> = ({
         theme === 'dark'
           ? 'border border-white/6 bg-[#10192b]/92 shadow-[0_20px_55px_rgba(0,0,0,0.24)]'
           : 'border border-slate-200/90 bg-white/95 shadow-[0_20px_55px_rgba(15,23,42,0.10)]',
-        enableBorderGlow && 'magic-bento-card--glow'
       )}
       onMouseMove={handleMouseMove}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
-      style={{
-        ['--glow-x' as string]: '50%',
-        ['--glow-y' as string]: '50%',
-        ['--glow-intensity' as string]: '0',
-        ['--glow-radius' as string]: '320px',
-      }}
     >
       <div
         ref={shimmerRef}
@@ -264,10 +267,10 @@ const MagicFeaturedBlogCard: React.FC<Props> = ({
             fetchPriority="high"
             decoding="async"
             className={cn(
-              'absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]',
+              'absolute inset-0 h-full w-full object-cover transition-all duration-500 group-hover:scale-[1.03]',
               theme === 'dark'
-                ? 'opacity-80 saturate-75 mix-blend-luminosity'
-                : 'opacity-95 saturate-100'
+                ? 'grayscale brightness-75 contrast-90 group-hover:grayscale-0 group-hover:brightness-100 group-hover:contrast-100'
+                : 'grayscale group-hover:grayscale-0'
             )}
           />
         ) : (
