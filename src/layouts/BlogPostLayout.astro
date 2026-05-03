@@ -6,12 +6,11 @@ import { SITE } from "../lib/constants";
 import { formatDate } from "../lib/utils";
 import type { CollectionEntry } from "astro:content";
 
-import ScrollProgress from "../components/islands/ScrollProgress";
-import TableOfContents from "../components/islands/TableOfContents";
+import TableOfContents from "../components/TableOfContents.astro";
 import LikeButton from "../components/islands/LikeButton";
 import ShareButton from "../components/islands/ShareButton";
 import GiscusComments from "../components/islands/GiscusComments";
-import BackToTop from "../components/islands/BackToTop";
+import ScrollUI from "../components/islands/ScrollUI";
 import TrackPageView from "../components/islands/TrackPageView";
 import ViewCount from "../components/islands/ViewCount";
 import GradientText from "../components/ui/GradientText";
@@ -52,8 +51,8 @@ const ogImage = heroImage || `/og/${slug}.png`;
   article={true}
   isBlogPost={true}
 >
-  <TrackPageView client:only="react" slug={slug} readingTime={readingMinutes} />
-  <ScrollProgress client:only="react" />
+  <TrackPageView client:idle slug={slug} readingTime={readingMinutes} />
+  <ScrollUI client:visible />
   <div class="blog-layout isolate relative overflow-clip">
     <div class="blog-backdrop pointer-events-none absolute inset-0 -z-10">
       <div
@@ -145,7 +144,7 @@ const ogImage = heroImage || `/og/${slug}.png`;
             <div
               class="blog-meta-views inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-white/8 bg-white/90 dark:bg-[#08111f]/90 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.28em] text-slate-600 dark:text-slate-300"
             >
-              <ViewCount slug={slug} client:only="react" />
+              <ViewCount slug={slug} client:visible />
             </div>
           </div>
 
@@ -363,18 +362,17 @@ const ogImage = heroImage || `/og/${slug}.png`;
             >
               Comments
             </h3>
-            <GiscusComments client:only="react" />
+            <GiscusComments client:visible />
           </div>
         </article>
 
         <aside class="hidden xl:block">
-          <TableOfContents client:only="react" />
+          <TableOfContents />
         </aside>
       </div>
     </section>
   </div>
 
-  <BackToTop client:only="react" />
   <Toaster client:only="react" theme="system" richColors closeButton />
 </BaseLayout>
 
