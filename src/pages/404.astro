@@ -1,6 +1,6 @@
 ---
 export const prerender = true;
-import GradientText from "../components/ui/GradientText";
+import GradientText from "../components/GradientText.astro";
 import { ShimmerButton } from "../components/ui/ShimmerButton";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { SITE } from "../lib/constants";
@@ -38,7 +38,7 @@ import { SITE } from "../lib/constants";
       ERROR_404
     </p>
 
-    <GradientText animationSpeed={6} showBorder={false} client:idle>
+    <GradientText animationSpeed={6} showBorder={false}>
       <h1
         class="blog-title font-heading text-balance text-4xl md:text-7xl font-black uppercase leading-[0.92] tracking-wider"
       >
