@@ -1,0 +1,633 @@
+---
+export const prerender = true;
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { projects, SITE, SOCIALS, techStack } from "../lib/constants";
+import GradientText from "../components/GradientText.astro";
+import { getCollection } from "astro:content";
+import { getReadingTime, formatDate } from "../lib/utils";
+import MagicBentoBlogGrid from "../components/islands/MagicBentoBlogGrid";
+import { ShimmerButton } from "../components/ui/ShimmerButton";
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+const recentPosts = await Promise.all(
+  posts.slice(0, 3).map(async (post) => {
+    const readingTime = post.body ? getReadingTime(post.body) : 1;
+    return {
+      slug: post.id,
+      title: post.data.title,
+      description: post.data.description,
+      heroImage: post.data.heroImage ?? null,
+      tag: post.data.tags[0] ?? "GENERAL",
+      date: formatDate(post.data.pubDate, "short").toUpperCase(),
+      readingTime,
+    };
+  }),
+);
+---
+
+<BaseLayout
+  title={`${SITE.title} — Full Stack Developer`}
+  description="Arjun Nambiar is a full-stack developer focused on frontend engineering, performance optimization, developer tooling, and interactive web experiences."
+>
+  <!-- BACKDROP -->
+  <div
+    class="home-backdrop fixed inset-0 -z-10 pointer-events-none overflow-hidden bg-[#040916]"
+  >
+    <div
+      class="home-backdrop-grid absolute inset-0 opacity-35"
+      style="background-image:linear-gradient(rgba(34,211,238,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(34,211,238,0.03) 1px,transparent 1px);background-size:32px 32px;"
+    >
+    </div>
+    <div
+      class="home-backdrop-gradient absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(8,145,178,0.14),transparent_34%),linear-gradient(180deg,#040916_0%,#071121_55%,#050b16_100%)]"
+    >
+    </div>
+    <div
+      class="home-backdrop-orb absolute left-1/2 top-0 h-160 w-160 -translate-x-1/2 rounded-full bg-cyan-500/10 blur-[120px]"
+    >
+    </div>
+  </div>
+
+  <section
+    class="home-page relative z-10 mx-auto max-w-6xl px-6 py-16 md:py-24"
+  >
+    <div
+      class="hero-grid grid md:grid-cols-[1fr_auto] gap-12 items-end border-b border-cyan-500/10 pb-16"
+    >
+      <div class="hero-left">
+        <div
+          class="hero-badge mb-6 inline-flex items-center gap-2 rounded-sm border border-cyan-500/20 bg-[#091426]/85 px-3 py-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.28em]"
+        >
+          <span
+            class="hero-dot inline-block h-1.5 w-1.5 rounded-full bg-cyan-400"
+          ></span>
+
+          <span class="text-cyan-400"> AVAILABLE_FOR_OPPORTUNITIES </span>
+
+          <span class="text-slate-600">//</span>
+
+          <span class="text-slate-400"> BENGALURU, IN </span>
+        </div>
+
+        <div
+          class="mb-5 inline-flex items-center gap-2 rounded-sm border border-fuchsia-500/20 bg-fuchsia-500/8 px-3 py-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.22em] text-fuchsia-300 backdrop-blur-sm"
+        >
+          <span
+            class="inline-block h-1.5 w-1.5 rounded-full bg-fuchsia-400 animate-pulse"
+          ></span>
+
+          PORTFOLIO_V2_IN_PROGRESS
+        </div>
+
+        <div class="mb-5">
+          <GradientText animationSpeed={6} showBorder={false}>
+            <h1
+              class="font-heading text-5xl md:text-6xl lg:text-7xl font-black tracking-tight uppercase leading-none"
+            >
+              ARJUN<br />NAMBIAR
+            </h1>
+          </GradientText>
+        </div>
+
+        <p class="hero-desc max-w-lg text-base leading-relaxed text-slate-400">
+          Full-stack developer building performant web experiences, developer
+          tooling, and modern UI systems.
+        </p>
+
+        <p
+          class="mt-5 max-w-2xl font-mono text-[10px] leading-relaxed tracking-[0.18em] text-slate-500 uppercase"
+        >
+          BUILDING_A_MORE_IMMERSIVE_PORTFOLIO_EXPERIENCE_WITH_GSAP,
+          MOTION,_AND_WEBGL.
+        </p>
+
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/blog">
+            <ShimmerButton
+              borderRadius="4px"
+              background="#0c1525"
+              className="px-6! py-2.5!"
+              client:visible
+            >
+              <span
+                class="font-mono text-xs font-bold uppercase tracking-widest"
+              >
+                READ_THE_BLOG
+              </span>
+            </ShimmerButton>
+          </a>
+
+          <a href="/about">
+            <ShimmerButton
+              borderRadius="4px"
+              shimmerColor="#22d3ee"
+              background="#071829"
+              className="px-6! py-2.5!"
+              client:visible
+            >
+              <span
+                class="font-mono text-xs font-bold uppercase tracking-widest"
+              >
+                ABOUT_ME
+              </span>
+            </ShimmerButton>
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-stats hidden md:flex flex-col gap-5 text-right">
+        {
+          [
+            { label: "YEARS_EXP", value: "01+" },
+            { label: "PROJECTS_SHIPPED", value: "10+" },
+            {
+              label: "BLOG_POSTS",
+              value: posts.length.toString().padStart(2, "0"),
+            },
+          ].map((stat) => (
+            <div class="stat-item">
+              <div class="font-mono text-3xl font-black text-white tabular-nums">
+                {stat.value}
+              </div>
+
+              <div class="font-mono text-[9px] tracking-[0.22em] text-slate-500 uppercase mt-1">
+                {stat.label}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="mt-10 grid grid-cols-2 md:grid-cols-4 gap-3">
+      {
+        [
+          { label: "SPECIALIZATION", value: "FRONTEND_ARCHITECTURE" },
+          { label: "CURRENT_FOCUS", value: "GENERATIVE_AI" },
+          { label: "PROGRAMMING_LANGUAGES", value: "TS • PYTHON • JAVA" },
+          { label: "INTERESTS", value: "MOTION • TOOLING • AI" },
+        ].map((card) => (
+          <div class="info-card">
+            <span class="info-label">{card.label}</span>
+            <span class="info-value">{card.value}</span>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="mt-24">
+      <div class="mb-6 flex items-center gap-4">
+        <div class="h-px flex-1 bg-cyan-500/10"></div>
+
+        <h2 class="section-title">STACK</h2>
+
+        <div class="h-px flex-1 bg-cyan-500/10"></div>
+      </div>
+
+      <div class="stack-marquee" id="stack-marquee">
+        <div class="stack-fade-left"></div>
+
+        <div class="stack-fade-right"></div>
+
+        <div class="stack-track" id="stack-track">
+          {
+            [...techStack, ...techStack].map((tech) => (
+              <span class="stack-item">
+                <span class="stack-dot" />
+                {tech}
+              </span>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-24">
+      <div class="mb-10 flex items-center justify-between">
+        <h2 class="section-title">PROJECTS</h2>
+
+        <span class="font-mono text-[9px] text-slate-600 tracking-widest">
+          [{projects.length}_TOTAL]
+        </span>
+      </div>
+
+      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {
+          projects.map((project) => (
+            <div class="project-card" style={`--accent: ${project.accent};`}>
+              <div class="project-glow" />
+
+              <div class="relative z-10">
+                <div class="mb-3 flex items-center justify-between">
+                  <span class="project-tag">{project.tag}</span>
+
+                  <span class="project-status" data-status={project.status}>
+                    <span class="status-dot" />
+                    {project.status}
+                  </span>
+                </div>
+
+                <div class="project-title">{project.title}</div>
+
+                <p class="project-description">{project.description}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    {
+      recentPosts.length > 0 && (
+        <div class="mt-24">
+          <div class="mb-10 flex items-center justify-between">
+            <h2 class="section-title">RECENT_POSTS</h2>
+
+            <a
+              href="/blog"
+              class="font-mono text-[9px] text-cyan-400/60 hover:text-cyan-400 transition-colors tracking-widest uppercase"
+            >
+              VIEW_ALL →
+            </a>
+          </div>
+
+          <MagicBentoBlogGrid
+            client:visible
+            posts={recentPosts}
+            textAutoHide={true}
+            enableSpotlight={true}
+            enableBorderGlow={true}
+            enableTilt={true}
+            enableMagnetism={false}
+            clickEffect={true}
+            spotlightRadius={400}
+            particleCount={12}
+            disableAnimations={false}
+          />
+        </div>
+      )
+    }
+
+    <div
+      class="mt-28 flex flex-col items-center justify-center border-t border-cyan-500/10 pt-10 text-center gap-5"
+    >
+      <p
+        class="font-mono text-[9px] uppercase tracking-[0.28em] text-slate-600"
+      >
+        ARJUN_NAMBIAR // FULL_STACK_DEV // BENGALURU, IN
+      </p>
+
+      <div class="flex flex-wrap items-center justify-center gap-6">
+        {
+          Object.entries(SOCIALS).map(([name, href]) => (
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="font-mono text-xs uppercase tracking-widest text-slate-500 transition-colors hover:text-cyan-400"
+            >
+              {name}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const marquee = document.getElementById("stack-marquee");
+    const track = document.getElementById("stack-track");
+    if (marquee && track) {
+      marquee.addEventListener("mouseenter", () => {
+        track.style.animationPlayState = "paused";
+      });
+      marquee.addEventListener("mouseleave", () => {
+        track.style.animationPlayState = "running";
+      });
+    }
+  </script>
+
+  <style>
+    /* ── LIGHT MODE ── */
+    html:not(.dark) .home-backdrop {
+      background: #f8fafc;
+    }
+    html:not(.dark) .home-backdrop-grid {
+      opacity: 0.4;
+      background-image:
+        linear-gradient(rgba(15, 23, 42, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15, 23, 42, 0.04) 1px, transparent 1px) !important;
+    }
+    html:not(.dark) .home-backdrop-gradient {
+      background:
+        radial-gradient(
+          circle at top,
+          rgba(14, 116, 144, 0.1),
+          transparent 34%
+        ),
+        linear-gradient(180deg, #f8fafc 0%, #eef4fb 52%, #f8fafc 100%) !important;
+    }
+    html:not(.dark) .home-backdrop-orb {
+      background: rgba(14, 165, 233, 0.07);
+    }
+    html:not(.dark) .hero-badge {
+      border-color: rgba(148, 163, 184, 0.3);
+      background: rgba(255, 255, 255, 0.9);
+    }
+    html:not(.dark) .hero-desc {
+      color: #475569;
+    }
+    html:not(.dark) .info-card {
+      background: rgba(255, 255, 255, 0.85);
+      border-color: rgba(148, 163, 184, 0.2);
+    }
+    html:not(.dark) .info-label {
+      color: #0891b2;
+    }
+    html:not(.dark) .info-value {
+      color: #0f172a;
+    }
+    html:not(.dark) .stack-marquee {
+      background: rgba(248, 250, 252, 0.9);
+    }
+    html:not(.dark) .stack-fade-left {
+      background: linear-gradient(to right, #f8fafc, transparent);
+    }
+    html:not(.dark) .stack-fade-right {
+      background: linear-gradient(to left, #f8fafc, transparent);
+    }
+    html:not(.dark) .stack-item {
+      color: #475569;
+    }
+    html:not(.dark) .stack-item:hover {
+      color: #0891b2;
+    }
+    html:not(.dark) .project-card {
+      background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.95),
+        rgba(241, 245, 249, 0.95)
+      );
+      border-color: rgba(148, 163, 184, 0.2);
+    }
+    html:not(.dark) .project-title {
+      color: #0f172a;
+    }
+    html:not(.dark) .project-description {
+      color: #64748b;
+    }
+    html:not(.dark) .section-title {
+      color: #0f172a;
+    }
+    html:not(.dark) .stat-item .font-mono:first-child {
+      color: #0f172a;
+    }
+
+    /* ── HERO DOT PULSE ── */
+    .hero-dot {
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%,
+      100% {
+        opacity: 1;
+        box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.4);
+      }
+      50% {
+        opacity: 0.5;
+        box-shadow: 0 0 0 5px rgba(34, 211, 238, 0);
+      }
+    }
+
+    /* ── SECTION TITLE ── */
+    .section-title {
+      font-family: monospace;
+      font-size: clamp(13px, 2vw, 17px);
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      color: white;
+      text-transform: uppercase;
+    }
+
+    /* ── STAT ITEMS ── */
+    .stat-item {
+      border-left: 1px solid rgba(34, 211, 238, 0.12);
+      padding-left: 1.25rem;
+    }
+
+    /* ── INFO CARDS ── */
+    .info-card {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(34, 211, 238, 0.1);
+      background: rgba(7, 17, 31, 0.8);
+      padding: 1rem 1.25rem;
+      transition:
+        transform 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+    }
+    .info-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(34, 211, 238, 0.25);
+      box-shadow: 0 8px 20px rgba(34, 211, 238, 0.06);
+    }
+    .info-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-family: monospace;
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      color: rgba(34, 211, 238, 0.65);
+    }
+    .info-value {
+      font-family: monospace;
+      font-size: 12px;
+      color: rgb(226 232 240);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── STACK MARQUEE ── */
+    .stack-marquee {
+      position: relative;
+      overflow: hidden;
+      border-top: 1px solid rgba(34, 211, 238, 0.08);
+      border-bottom: 1px solid rgba(34, 211, 238, 0.08);
+      padding: 1rem 0;
+      background: rgba(7, 17, 31, 0.45);
+    }
+    .stack-fade-left,
+    .stack-fade-right {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 80px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .stack-fade-left {
+      left: 0;
+      background: linear-gradient(to right, #040916, transparent);
+    }
+    .stack-fade-right {
+      right: 0;
+      background: linear-gradient(to left, #040916, transparent);
+    }
+
+    .stack-track {
+      display: flex;
+      width: max-content;
+      animation: marquee 32s linear infinite;
+      will-change: transform;
+    }
+    .stack-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-right: 3rem;
+      font-family: monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: rgba(226, 232, 240, 0.6);
+      white-space: nowrap;
+      cursor: default;
+      transition:
+        color 0.2s ease,
+        text-shadow 0.2s ease;
+      padding: 4px 0;
+    }
+    .stack-item:hover {
+      color: #22d3ee;
+      text-shadow: 0 0 14px rgba(34, 211, 238, 0.55);
+    }
+    .stack-dot {
+      display: inline-block;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: rgba(34, 211, 238, 0.35);
+      flex-shrink: 0;
+      transition:
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+    .stack-item:hover .stack-dot {
+      background: #22d3ee;
+      box-shadow: 0 0 8px rgba(34, 211, 238, 0.9);
+    }
+    @keyframes marquee {
+      from {
+        transform: translateX(0);
+      }
+      to {
+        transform: translateX(-50%);
+      }
+    }
+
+    /* ── PROJECTS ── */
+    .project-card {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(34, 211, 238, 0.1);
+      background: linear-gradient(
+        180deg,
+        rgba(7, 17, 31, 0.92),
+        rgba(5, 11, 22, 0.92)
+      );
+      padding: 1.5rem;
+      transition:
+        transform 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+    }
+    .project-card:hover {
+      transform: translateY(-5px);
+      border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+      box-shadow: 0 14px 36px color-mix(in srgb, var(--accent) 10%, transparent);
+    }
+    .project-glow {
+      position: absolute;
+      inset: -30%;
+      background: radial-gradient(
+        circle,
+        color-mix(in srgb, var(--accent) 12%, transparent),
+        transparent 70%
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+    .project-card:hover .project-glow {
+      opacity: 1;
+    }
+
+    .project-tag {
+      font-family: monospace;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: color-mix(in srgb, var(--accent) 85%, white);
+      background: color-mix(in srgb, var(--accent) 10%, transparent);
+      border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+      padding: 2px 8px;
+      border-radius: 2px;
+    }
+    .project-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: monospace;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      color: rgb(100 116 139);
+    }
+    .project-status[data-status="LIVE"] {
+      color: #34d399;
+    }
+    .project-status[data-status="SHIPPED"] {
+      color: #94a3b8;
+    }
+    .project-status[data-status="IN_PROGRESS"] {
+      color: #fbbf24;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+      flex-shrink: 0;
+    }
+    .project-status[data-status="LIVE"] .status-dot,
+    .project-status[data-status="IN_PROGRESS"] .status-dot {
+      animation: pulse-dot 1.8s ease-in-out infinite;
+    }
+
+    .project-title {
+      margin: 0.85rem 0 0.5rem;
+      font-family: monospace;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: white;
+    }
+    .project-description {
+      font-size: 13px;
+      line-height: 1.65;
+      color: rgb(148 163 184);
+    }
+
+    @media (max-width: 768px) {
+      .stack-item {
+        margin-right: 2rem;
+        font-size: 10px;
+      }
+    }
+  </style>
+</BaseLayout>

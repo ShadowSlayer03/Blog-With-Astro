@@ -1,35 +1,46 @@
 ---
-import { SITE, NAV_LINKS } from '../lib/constants';
-import { AnimatedThemeToggler } from './ui/AnimatedThemeToggler';
+import { SITE, NAV_LINKS } from "../lib/constants";
+import { AnimatedThemeToggler } from "./ui/AnimatedThemeToggler";
 const currentPath = Astro.url?.pathname ?? "/";
 ---
 
-<header class="site-header sticky top-0 z-50 border-b border-white/5 bg-black/80 backdrop-blur-md">
-  <div class="h-px w-full bg-linear-to-r from-transparent via-cyan-500/40 to-transparent"></div>
+<header
+  class="site-header sticky top-0 z-50 border-b border-white/5 bg-black/80 backdrop-blur-md"
+>
+  <div
+    class="h-px w-full bg-linear-to-r from-transparent via-cyan-500/40 to-transparent"
+  >
+  </div>
 
   <nav class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-    <a href="/blog" class="group flex items-center gap-3" aria-label={SITE.title}>
+    <a href="/" class="group flex items-center gap-3" aria-label={SITE.title}>
       <div class="flex h-2 w-2 rounded-full bg-cyan-500 animate-pulse"></div>
-      <span class="site-header-brand font-mono text-xs font-bold tracking-[0.2em] text-white uppercase">
+      <span
+        class="site-header-brand font-mono text-xs font-bold tracking-[0.2em] text-white uppercase"
+      >
         {SITE.title}<span class="text-cyan-500 animate-pulse">_</span>
       </span>
     </a>
 
     <div class="flex items-center gap-8">
       <div class="hidden items-center gap-6 sm:flex">
-        {NAV_LINKS.map((link) => (
-          <a
-            href={link.href}
-            class:list={[
-              'site-header-link relative font-mono text-[10.5px] uppercase tracking-[0.2em] transition-all hover:text-cyan-400',
-              currentPath === link.href || currentPath.startsWith(link.href)
-                ? 'text-cyan-400'
-                : 'text-slate-500',
-            ]}
-          >
-            {link.label}
-          </a>
-        ))}
+        {
+          NAV_LINKS.map((link) => (
+            <a
+              href={link.href}
+              class:list={[
+                "site-header-link relative font-mono text-[10.5px] uppercase tracking-[0.2em] transition-all hover:text-cyan-400",
+                currentPath === link.href.split("?")[0] ||
+                (link.href !== "/" &&
+                  currentPath.startsWith(link.href.split("?")[0]))
+                  ? "text-cyan-400"
+                  : "text-slate-500",
+              ]}
+            >
+              {link.label}
+            </a>
+          ))
+        }
       </div>
 
       <AnimatedThemeToggler
