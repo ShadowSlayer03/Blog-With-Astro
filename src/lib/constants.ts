@@ -9,13 +9,83 @@ export const SITE = {
 export const SOCIALS = {
   twitter: 'https://x.com/ArjunNambiar03',
   github: 'https://github.com/ShadowSlayer03',
-  linkedin: 'https://linkedin.com/in/ArjunNambiar03',
+  linkedin: 'https://www.linkedin.com/in/arjun-nambiar-439aaa255/',
 } as const;
 
 export const NAV_LINKS = [
+  { href: '/', label: 'Home' },
   { href: '/blog?page=1', label: 'Blog' },
   { href: '/about', label: 'About' },
 ] as const;
+
+export const techStack = [
+  "ASTRO",
+  "NEXT.JS",
+  "REACT",
+  "REACT_NATIVE",
+  "TYPESCRIPT",
+  "TAILWIND",
+  "THREE.JS",
+  "GSAP",
+  "NODE.JS",
+  "DRIZZLE",
+  "PRISMA",
+  "TURSO",
+  "CLOUDFLARE",
+  "BUN",
+  "PLAYWRIGHT",
+];
+
+export const projects = [
+  {
+    title: "PRISM",
+    tag: "SAAS",
+    status: "IN_PROGRESS",
+    description:
+      "AI-powered PR review platform with slop detection, security scanning, and codebase Q&A.",
+    accent: "#22d3ee",
+  },
+  {
+    title: "POST4U",
+    tag: "OPEN_SOURCE",
+    status: "SHIPPED",
+    description:
+      "Self-hosted social media scheduler supporting X, LinkedIn, Bluesky, Reddit, and Discord.",
+    accent: "#34d399",
+  },
+  {
+    title: "FIZZI",
+    tag: "THREE.JS",
+    status: "SHIPPED",
+    description:
+      "3D interactive product experience built with Three.js, GSAP scroll animations, and WebGL.",
+    accent: "#a78bfa",
+  },
+  {
+    title: "MI_PURCHASE_PLANNER",
+    tag: "MOBILE",
+    status: "SHIPPED",
+    description:
+      "React Native purchase planning app with budget tracking and smart categorization.",
+    accent: "#fb923c",
+  },
+  {
+    title: "THIS_BLOG",
+    tag: "PERSONAL",
+    status: "LIVE",
+    description:
+      "Built on Astro 5, Turso, Cloudflare Pages. MDX content, Keystatic CMS, Giscus comments.",
+    accent: "#22d3ee",
+  },
+  {
+    title: "OPENFRONTIER_AI",
+    tag: "OPEN_SOURCE",
+    status: "SHIPPED",
+    description:
+      "6 Apify AI agents built with Antriksh Narang under the OpenFrontierAI org. Automated web intelligence pipelines.",
+    accent: "#f472b6",
+  },
+];
 
 export const PROJECT_STACK = [
   {
