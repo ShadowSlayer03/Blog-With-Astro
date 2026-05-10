@@ -69,11 +69,22 @@ while IFS= read -r FILE; do
 
     CDN_URL="${CDN_BASE_URL}/${R2_KEY}"
 
-    echo "Uploading public image to R2..."
+    echo "R2 Key: $R2_KEY"
+    echo "CDN URL: $CDN_URL"
 
-    wrangler r2 object put "${R2_BUCKET_NAME}/${R2_KEY}" \
+    echo "Uploading public image to REAL R2..."
+
+    if wrangler r2 object put "${R2_BUCKET_NAME}/${R2_KEY}" \
+      --remote \
       --file "$FILE" \
-      --content-type "$CONTENT_TYPE"
+      --content-type "$CONTENT_TYPE"; then
+
+      echo "Upload successful."
+
+    else
+      echo "Upload failed for: $FILE"
+      continue
+    fi
 
     echo "Replacing markdown references..."
 
@@ -104,11 +115,22 @@ while IFS= read -r FILE; do
 
     CDN_URL="${CDN_BASE_URL}/${R2_KEY}"
 
-    echo "Uploading Keystatic content image to R2..."
+    echo "R2 Key: $R2_KEY"
+    echo "CDN URL: $CDN_URL"
 
-    wrangler r2 object put "${R2_BUCKET_NAME}/${R2_KEY}" \
+    echo "Uploading Keystatic content image to REAL R2..."
+
+    if wrangler r2 object put "${R2_BUCKET_NAME}/${R2_KEY}" \
+      --remote \
       --file "$FILE" \
-      --content-type "$CONTENT_TYPE"
+      --content-type "$CONTENT_TYPE"; then
+
+      echo "Upload successful."
+
+    else
+      echo "Upload failed for: $FILE"
+      continue
+    fi
 
     MD_FILE="src/content/blog/${POST_SLUG}.md"
 
