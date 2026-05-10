@@ -112,7 +112,7 @@ Some factors in my mind while choosing these technologies:
 - edge compatibility
 - and long-term maintainability
 
-![arjun-nambiar-blog-architecture](architecture-diagram.png)
+![arjun-nambiar-blog-architecture](https://cdn.arjunnambiar.dev/images/blog/i-built-a-globally-distributed-blog-platform/architecture-diagram.png)
 
 ---
 
@@ -214,7 +214,7 @@ Initially, I considered building the entire admin interface myself - something t
 
 While researching CMS options (with a lot of help from AI recommendations and documentation rabbit holes), I came across Keystatic, and it ended up solving almost everything I needed out of the box.
 
-![](keystatic-page.png)
+![](https://cdn.arjunnambiar.dev/images/blog/i-built-a-globally-distributed-blog-platform/keystatic-page.png)
 
 What made it particularly attractive was that:
 
@@ -359,7 +359,7 @@ A lot of the Lighthouse and SEO improvements actually came from these frontend d
 
 Ironically, some of the biggest performance wins came from removing things instead of adding more optimizations on top.
 
-![](lighthouse.png)
+![](https://cdn.arjunnambiar.dev/images/blog/i-built-a-globally-distributed-blog-platform/lighthouse.png)
 
 ---
 
