@@ -2,27 +2,29 @@ name: Sync blog images to R2
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
     paths:
       - 'public/images/blog/**'
+      - 'src/content/blog/**/content/**'
 
-# Prevent a second run if two pushes queue up simultaneously
 concurrency:
   group: sync-images-to-R2
   cancel-in-progress: false
 
-# Needed so the bot can push the URL-replacement commit back
 permissions:
   contents: write
 
 jobs:
   sync:
     runs-on: ubuntu-latest
-    # Skip if the last commit was the bot's own commit
+
+    # Prevent infinite loops
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
         with:
           fetch-depth: 2
 
