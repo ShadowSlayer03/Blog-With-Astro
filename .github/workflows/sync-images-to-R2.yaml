@@ -8,6 +8,9 @@ on:
       - 'public/images/blog/**'
       - 'src/content/blog/**/content/**'
 
+  # Manual trigger from GitHub Actions UI
+  workflow_dispatch:
+
 concurrency:
   group: sync-images-to-R2
   cancel-in-progress: false
