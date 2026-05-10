@@ -214,7 +214,7 @@ Initially, I considered building the entire admin interface myself - something t
 
 While researching CMS options (with a lot of help from AI recommendations and documentation rabbit holes), I came across Keystatic, and it ended up solving almost everything I needed out of the box.
 
-![](Screenshot%202026-05-10%20134258.png)
+![](keystatic-page.png)
 
 What made it particularly attractive was that:
 
