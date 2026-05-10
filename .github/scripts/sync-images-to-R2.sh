@@ -69,17 +69,11 @@ while IFS= read -r FILE; do
 
     CDN_URL="${CDN_BASE_URL}/${R2_KEY}"
 
-    echo "Uploading public image..."
+    echo "Uploading public image to R2..."
 
     wrangler r2 object put "${R2_BUCKET_NAME}/${R2_KEY}" \
       --file "$FILE" \
       --content-type "$CONTENT_TYPE"
-
-    echo "Verifying upload..."
-
-    wrangler r2 object get "${R2_BUCKET_NAME}/${R2_KEY}" \
-      --remote \
-      --pipe > /dev/null
 
     echo "Replacing markdown references..."
 
@@ -110,17 +104,11 @@ while IFS= read -r FILE; do
 
     CDN_URL="${CDN_BASE_URL}/${R2_KEY}"
 
-    echo "Uploading Keystatic content image..."
+    echo "Uploading Keystatic content image to R2..."
 
     wrangler r2 object put "${R2_BUCKET_NAME}/${R2_KEY}" \
       --file "$FILE" \
       --content-type "$CONTENT_TYPE"
-
-    echo "Verifying upload..."
-
-    wrangler r2 object get "${R2_BUCKET_NAME}/${R2_KEY}" \
-      --remote \
-      --pipe > /dev/null
 
     MD_FILE="src/content/blog/${POST_SLUG}.md"
 
@@ -149,7 +137,7 @@ while IFS= read -r FILE; do
       rm "$FILE"
 
     else
-      echo "Could not find markdown file for: $POST_SLUG"
+      echo "Could not find markdown file for slug: $POST_SLUG"
     fi
 
   fi
