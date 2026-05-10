@@ -122,15 +122,19 @@ while IFS= read -r FILE; do
 
       RELATIVE_PATH_1="./content/${IMAGE_NAME}"
       RELATIVE_PATH_2="content/${IMAGE_NAME}"
+      RELATIVE_PATH_3="${IMAGE_NAME}"
 
       SED_RELATIVE_PATH_1=$(escape_sed_pattern "$RELATIVE_PATH_1")
       SED_RELATIVE_PATH_2=$(escape_sed_pattern "$RELATIVE_PATH_2")
+      SED_RELATIVE_PATH_3=$(escape_sed_pattern "$RELATIVE_PATH_3")
 
       SED_CDN_URL=$(escape_sed_replacement "$CDN_URL")
 
-      sed -i "s|${SED_RELATIVE_PATH_1}|${SED_CDN_URL}|g" "$MD_FILE"
+      sed -E -i "s|\(${SED_RELATIVE_PATH_1}\)|(${SED_CDN_URL})|g" "$MD_FILE"
 
-      sed -i "s|${SED_RELATIVE_PATH_2}|${SED_CDN_URL}|g" "$MD_FILE"
+      sed -E -i "s|\(${SED_RELATIVE_PATH_2}\)|(${SED_CDN_URL})|g" "$MD_FILE"
+
+      sed -E -i "s|\(${SED_RELATIVE_PATH_3}\)|(${SED_CDN_URL})|g" "$MD_FILE"
 
       echo "Removing local image..."
 
