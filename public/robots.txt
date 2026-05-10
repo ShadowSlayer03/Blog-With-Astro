@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://your-blog.com/sitemap-index.xml
+Sitemap: https://arjunnambiar.dev/sitemap-index.xml
