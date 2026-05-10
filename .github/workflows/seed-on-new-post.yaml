@@ -29,5 +29,5 @@ jobs:
       - name: Run seed script
         run: bun run seed
         env:
-          API_BASE_URL: ${{ secrets.API_BASE_URL }}
+          API_BASE_URL: ${{ vars.API_BASE_URL }}
           API_KEY: ${{ secrets.API_KEY }}
