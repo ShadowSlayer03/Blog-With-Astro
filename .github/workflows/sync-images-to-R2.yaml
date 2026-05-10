@@ -8,7 +8,7 @@ on:
 
 # Prevent a second run if two pushes queue up simultaneously
 concurrency:
-  group: sync-images-to-r2
+  group: sync-images-to-R2
   cancel-in-progress: false
 
 # Needed so the bot can push the URL-replacement commit back
@@ -19,7 +19,7 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     # Skip if the last commit was the bot's own commit
-    if: "!contains(github.event.head_commit.message, 'chore: migrate blog images to R2')"
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
 
     steps:
       - uses: actions/checkout@v4
@@ -35,4 +35,4 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           R2_BUCKET_NAME: ${{ vars.R2_BUCKET_NAME }}
           CDN_BASE_URL: ${{ vars.CDN_BASE_URL }}
-        run: bash .github/scripts/sync-images-to-r2.sh
+        run: bash .github/scripts/sync-images-to-R2.sh
