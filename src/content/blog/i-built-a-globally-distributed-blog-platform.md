@@ -14,7 +14,7 @@ tags:
   - keystatic
   - pagefind
   - giscus
-draft: true
+draft: false
 ---
 Most personal blogs today fall into one of three categories:
 
