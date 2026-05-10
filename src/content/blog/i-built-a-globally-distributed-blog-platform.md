@@ -5,7 +5,7 @@ description: >-
   motion-heavy frontend engineering with React islands.
 pubDate: 2026-05-10
 updatedDate: 2026-05-10
-heroImage: /images/blog/i-built-a-globally-distributed-blog-platform/heroImage.png
+heroImage: https://cdn.arjunnambiar.dev/images/blog/i-built-a-globally-distributed-blog-platform/heroImage.png
 tags:
   - astro
   - react
