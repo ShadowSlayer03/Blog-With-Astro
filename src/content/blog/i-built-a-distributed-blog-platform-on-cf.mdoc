@@ -5,7 +5,9 @@ description: >-
   motion-heavy frontend engineering with React islands.
 pubDate: 2026-05-11
 updatedDate: 2026-05-11
-heroImage: https://cdn.arjunnambiar.dev/images/blog/i-built-a-distributed-blog-platform-on-cf/heroImage.png
+heroImage: >-
+  https://cdn.arjunnambiar.dev/images/blog/i-built-a-distributed-blog-platform-on-cf/heroImage.png
+draft: false
 tags:
   - astro
   - react
@@ -14,7 +16,6 @@ tags:
   - keystatic
   - pagefind
   - giscus
-draft: false
 ---
 Most personal blogs today fall into one of three categories:
 
@@ -41,7 +42,7 @@ This post breaks down the architecture, engineering decisions, tradeoffs, and le
 
 ## The Goal
 
-My goal was to create a platform that could serve as:
+My goal simply put was to create a platform that could serve as:
 
 - a space for writing and sharing technical ideas
 - a playground for frontend engineering and UI experimentation
@@ -111,9 +112,10 @@ Some factors in my mind while choosing these technologies:
 - and long-term maintainability
 
 {% image
-  src="https://cdn.arjunnambiar.dev/images/blog/i-built-a-globally-distributed-blog-platform/architecture-diagram.png"
-  alt="arjun-nambiar-blog-architecture"
-/%}
+   src="https://cdn.arjunnambiar.dev/images/blog/i-built-a-globally-distributed-blog-platform/architecture-diagram.png"
+   alt="arjun-nambiar-blog-architecture"
+   loading="lazy"
+   decoding="async" /%}
 
 ---
 
@@ -215,7 +217,11 @@ Initially, I considered building the entire admin interface myself - something t
 
 While researching CMS options (with a lot of help from AI recommendations and documentation rabbit holes), I came across Keystatic, and it ended up solving almost everything I needed out of the box.
 
-{% image src="https://cdn.arjunnambiar.dev/images/blog/i-built-a-globally-distributed-blog-platform/keystatic-page.png" alt="Keystatic Dashboard" /%}
+{% image
+   src="https://cdn.arjunnambiar.dev/images/blog/i-built-a-globally-distributed-blog-platform/keystatic-page.png"
+   alt="Keystatic Dashboard"
+   loading="lazy"
+   decoding="async" /%}
 
 What made it particularly attractive was that:
 
@@ -360,7 +366,11 @@ A lot of the Lighthouse and SEO improvements actually came from these frontend d
 
 Ironically, some of the biggest performance wins came from removing things instead of adding more optimizations on top.
 
-{% image src="https://cdn.arjunnambiar.dev/images/blog/i-built-a-globally-distributed-blog-platform/lighthouse.png" alt="Lighthouse Performance Scores" /%}
+{% image
+   src="https://cdn.arjunnambiar.dev/images/blog/i-built-a-globally-distributed-blog-platform/lighthouse.png"
+   alt="Lighthouse Performance Scores"
+   loading="lazy"
+   decoding="async" /%}
 
 ---
 
