@@ -1,0 +1,12 @@
+---
+const { src, class: className } = Astro.props;
+const getVideoType = (url: string) => {
+    if (url.endsWith(".webm")) return "video/webm";
+    if (url.endsWith(".mov")) return "video/quicktime";
+    return "video/mp4";
+};
+---
+
+<video controls playsinline preload="metadata" class={className}>
+    <source src={src} type={getVideoType(src)} />
+</video>
