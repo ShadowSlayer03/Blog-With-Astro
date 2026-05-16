@@ -12,6 +12,19 @@ export default defineMarkdocConfig({
         alt: {
           type: String,
         },
+        class: {
+          type: String,
+        },
+        loading: {
+          type: String,
+          default: "lazy",
+          matches: ["lazy", "eager"],
+        },
+        decoding: {
+          type: String,
+          default: "async",
+          matches: ["async", "sync", "auto"],
+        },
       },
     },
 
@@ -21,6 +34,9 @@ export default defineMarkdocConfig({
         src: {
           type: String,
           required: true,
+        },
+        class: {
+          type: String,
         },
       },
     },
