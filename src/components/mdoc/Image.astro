@@ -1,10 +1,20 @@
 ---
-const { src, alt, class: className, loading = "lazy", decoding = "async" } = Astro.props;
+const {
+  src,
+  alt = "",
+  class: className = "",
+  loading = "lazy",
+  decoding = "async",
+} = Astro.props;
+
+const defaultClasses = "rounded-xl border border-white/10 my-8 w-full";
+const combinedClasses = `${defaultClasses} ${className}`.trim();
 ---
-<img 
-  src={src} 
-  alt={alt} 
-  class={className} 
-  loading={loading} 
-  decoding={decoding} 
+
+<img
+  src={src}
+  alt={alt}
+  class={combinedClasses}
+  loading={loading}
+  decoding={decoding}
 />
