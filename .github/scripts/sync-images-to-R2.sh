@@ -3,6 +3,13 @@
 set -euo pipefail
 
 # ============================================================================
+# CONFIG
+# ============================================================================
+
+BLOG_CONTENT_DIR="src/content/blog"
+PUBLIC_IMAGE_DIR="public/images/blog"
+
+# ============================================================================
 # Helpers
 # ============================================================================
 
@@ -21,29 +28,27 @@ get_content_type() {
   esac
 }
 
-escape_sed_pattern() {
-  printf '%s' "$1" | sed 's/[][\/.^$*+?(){}|]/\\&/g'
-}
-
-escape_sed_replacement() {
-  printf '%s' "$1" | sed 's/[&|\\]/\\&/g'
-}
-
 # ============================================================================
-# ONE-TIME MIGRATION:
-# Convert existing CDN markdown image syntax -> HTML img tags
+# ONE-TIME SAFE MIGRATION
+# Converts ONLY markdown CDN image syntax -> HTML img tags
+# ONLY if markdown syntax still exists
 # ============================================================================
 
 echo ""
 echo "=================================================="
-echo "Migrating existing CDN markdown images → HTML..."
+echo "Migrating markdown CDN images → HTML..."
 echo "=================================================="
 
-find src/content/blog -type f \
+find "$BLOG_CONTENT_DIR" -type f \
   \( -name "*.mdoc" -o -name "*.md" -o -name "*.mdx" \) \
 | while IFS= read -r MD_FILE; do
 
-  echo "Processing markdown migration: $MD_FILE"
+  # Skip files already migrated
+  if ! grep -qE '!\[[^]]*\]\(https://cdn\.' "$MD_FILE"; then
+    continue
+  fi
+
+  echo "Migrating: $MD_FILE"
 
   TEMP_FILE=$(mktemp)
 
@@ -79,10 +84,17 @@ find src/content/blog -type f \
 done
 
 # ============================================================================
-# Find ALL remaining local blog media
+# FIND LOCAL MEDIA ONLY
+# IMPORTANT:
+# ONLY local files should be processed
+# Never reprocess CDN content
 # ============================================================================
 
-CHANGED=$(find public/images/blog src/content/blog -type f \
+CHANGED=$(find "$PUBLIC_IMAGE_DIR" "$BLOG_CONTENT_DIR" -type f \
+  \( \
+    -path "*/content/*" \
+    -o -path "public/images/blog/*" \
+  \) \
   \( \
     -iname "*.png" \
     -o -iname "*.jpg" \
@@ -97,15 +109,14 @@ CHANGED=$(find public/images/blog src/content/blog -type f \
   \) \
   2>/dev/null || true)
 
-if [ -z "$CHANGED" ]; then
-  echo "No media left to process."
-else
-  echo "Found media:"
-  echo "$CHANGED"
-fi
+echo ""
+echo "=================================================="
+echo "Local media detected"
+echo "=================================================="
+echo "$CHANGED"
 
 # ============================================================================
-# Process media one-by-one
+# PROCESS MEDIA
 # ============================================================================
 
 while IFS= read -r FILE; do
@@ -121,58 +132,62 @@ while IFS= read -r FILE; do
   CONTENT_TYPE=$(get_content_type "$FILE")
 
   # ==========================================================================
-  # CASE 1: public/images/blog/**
+  # CASE 1:
+  # public/images/blog/*
+  # Used mainly for heroImage
   # ==========================================================================
 
   if [[ "$FILE" == public/images/blog/* ]]; then
 
     PUBLIC_PATH="${FILE#public}"
-
     R2_KEY="${PUBLIC_PATH#/}"
-
     CDN_URL="${CDN_BASE_URL}/${R2_KEY}"
 
-    echo "R2 Key: $R2_KEY"
+    echo "Uploading public asset → R2"
     echo "CDN URL: $CDN_URL"
 
-    echo "Uploading public asset to R2..."
-
-    if wrangler r2 object put "${R2_BUCKET_NAME}/${R2_KEY}" \
+    wrangler r2 object put "${R2_BUCKET_NAME}/${R2_KEY}" \
       --remote \
       --file "$FILE" \
-      --content-type "$CONTENT_TYPE"; then
+      --content-type "$CONTENT_TYPE"
 
-      echo "Upload successful."
+    echo "Updating heroImage references safely..."
 
-    else
-      echo "Upload failed for: $FILE"
-      continue
-    fi
+    grep -rlF -- "$PUBLIC_PATH" "$BLOG_CONTENT_DIR" 2>/dev/null | while IFS= read -r MD_FILE; do
 
-    echo "Replacing public asset references..."
+python3 <<PYTHON
+from pathlib import Path
 
-    SED_PUBLIC_PATH=$(escape_sed_pattern "$PUBLIC_PATH")
-    SED_CDN_URL=$(escape_sed_replacement "$CDN_URL")
+file_path = Path("$MD_FILE")
 
-    grep -rlF -- "$PUBLIC_PATH" src/content/blog/ 2>/dev/null | while IFS= read -r MD_FILE; do
-      sed -i "s|${SED_PUBLIC_PATH}|${SED_CDN_URL}|g" "$MD_FILE"
+content = file_path.read_text()
+
+public_path = "$PUBLIC_PATH"
+cdn_url = "$CDN_URL"
+
+# ONLY replace exact local heroImage references
+content = content.replace(
+    f"heroImage: {public_path}",
+    f"heroImage: {cdn_url}"
+)
+
+file_path.write_text(content)
+PYTHON
+
     done
 
   fi
 
   # ==========================================================================
-  # CASE 2: Keystatic content assets
+  # CASE 2:
+  # Keystatic content assets
+  # src/content/blog/<slug>/content/*
   # ==========================================================================
 
   if [[ "$FILE" == src/content/blog/*/content/* ]]; then
 
     POST_SLUG=$(echo "$FILE" | cut -d'/' -f4)
-
     EXTENSION="${FILE_NAME##*.}"
-
-    # ------------------------------------------------------------------------
-    # Decide CDN folder
-    # ------------------------------------------------------------------------
 
     if [[ "$EXTENSION" =~ ^(mp4|webm|mov)$ ]]; then
       R2_KEY="videos/blog/${POST_SLUG}/${FILE_NAME}"
@@ -182,113 +197,88 @@ while IFS= read -r FILE; do
 
     CDN_URL="${CDN_BASE_URL}/${R2_KEY}"
 
-    echo "R2 Key: $R2_KEY"
+    echo "Uploading Keystatic asset → R2"
     echo "CDN URL: $CDN_URL"
 
-    echo "Uploading Keystatic asset to R2..."
-
-    if wrangler r2 object put "${R2_BUCKET_NAME}/${R2_KEY}" \
+    wrangler r2 object put "${R2_BUCKET_NAME}/${R2_KEY}" \
       --remote \
       --file "$FILE" \
-      --content-type "$CONTENT_TYPE"; then
+      --content-type "$CONTENT_TYPE"
 
-      echo "Upload successful."
+    MD_FILE="${BLOG_CONTENT_DIR}/${POST_SLUG}.mdoc"
 
-    else
-      echo "Upload failed for: $FILE"
-      continue
-    fi
+    [ -f "$MD_FILE" ] || continue
 
-    # ------------------------------------------------------------------------
-    # Find markdown file
-    # ------------------------------------------------------------------------
+    echo "Transforming local markdown asset syntax → CDN HTML"
 
-    MD_FILE="src/content/blog/${POST_SLUG}.mdoc"
+    TEMP_FILE=$(mktemp)
 
-    if [ ! -f "$MD_FILE" ]; then
-      MD_FILE="src/content/blog/${POST_SLUG}.md"
-    fi
+    awk \
+      -v filename="$FILE_NAME" \
+      -v cdn="$CDN_URL" \
+      -v ext="$EXTENSION" \
+    '
 
-    if [ ! -f "$MD_FILE" ]; then
-      MD_FILE="src/content/blog/${POST_SLUG}.mdx"
-    fi
+    function is_video(extension) {
+      return (
+        extension == "mp4" ||
+        extension == "webm" ||
+        extension == "mov"
+      )
+    }
 
-    if [ -f "$MD_FILE" ]; then
+    {
+      line = $0
 
-      echo "Transforming markdown asset syntax → HTML..."
+      while (match(line, /!\[[^]]*\]\([^)]+\)/)) {
 
-      TEMP_FILE=$(mktemp)
+        full = substr(line, RSTART, RLENGTH)
 
-      awk \
-        -v filename="$FILE_NAME" \
-        -v cdn="$CDN_URL" \
-        -v ext="$EXTENSION" \
-      '
+        alt = full
+        sub(/^!\[/, "", alt)
+        sub(/\]\([^)]+\)$/, "", alt)
 
-      function is_video(extension) {
-        return (
-          extension == "mp4" ||
-          extension == "webm" ||
-          extension == "mov"
-        )
-      }
+        path = full
+        sub(/^!\[[^]]*\]\(/, "", path)
+        sub(/\)$/, "", path)
 
-      {
-        line = $0
+        if (
+          path == "./content/" filename ||
+          path == "content/" filename ||
+          path == filename
+        ) {
 
-        while (match(line, /!\[[^]]*\]\([^)]+\)/)) {
+          if (is_video(ext)) {
 
-          full = substr(line, RSTART, RLENGTH)
-
-          alt = full
-          sub(/^!\[/, "", alt)
-          sub(/\]\([^)]+\)$/, "", alt)
-
-          path = full
-          sub(/^!\[[^]]*\]\(/, "", path)
-          sub(/\)$/, "", path)
-
-          if (
-            path == "./content/" filename ||
-            path == "content/" filename ||
-            path == filename
-          ) {
-
-            if (is_video(ext)) {
-
-              replacement = "<video controls playsinline preload=\"metadata\" class=\"w-full rounded-xl my-8\"><source src=\"" cdn "\" type=\"video/" ext "\" /></video>"
-
-            } else {
-
-              replacement = "<img src=\"" cdn "\" alt=\"" alt "\" loading=\"lazy\" decoding=\"async\" class=\"rounded-xl border border-white/10 my-8 w-full\" />"
-            }
-
-            line = substr(line, 1, RSTART - 1) replacement substr(line, RSTART + RLENGTH)
+            replacement = "<video controls playsinline preload=\"metadata\" class=\"w-full rounded-xl my-8\"><source src=\"" cdn "\" type=\"video/" ext "\" /></video>"
 
           } else {
-            break
-          }
-        }
 
-        print line
+            replacement = "<img src=\"" cdn "\" alt=\"" alt "\" loading=\"lazy\" decoding=\"async\" class=\"rounded-xl border border-white/10 my-8 w-full\" />"
+          }
+
+          line = substr(line, 1, RSTART - 1) replacement substr(line, RSTART + RLENGTH)
+
+        } else {
+          break
+        }
       }
 
-      ' "$MD_FILE" > "$TEMP_FILE"
+      print line
+    }
 
-      mv "$TEMP_FILE" "$MD_FILE"
+    ' "$MD_FILE" > "$TEMP_FILE"
 
-      echo "Successfully transformed asset references."
+    mv "$TEMP_FILE" "$MD_FILE"
 
-    else
-      echo "Could not find markdown file for slug: $POST_SLUG"
-    fi
+    echo "Successfully transformed content assets."
 
   fi
 
 done <<< "$CHANGED"
 
 # ============================================================================
-# Commit changes
+# COMMIT CHANGES
 # ============================================================================
 
 git config user.name "github-actions[bot]"
