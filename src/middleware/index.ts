@@ -16,7 +16,13 @@ export const onRequest = defineMiddleware(async (context, next) => {
     }
 
     if (url.pathname.startsWith("/api/")) {
+
+        if (url.pathname.startsWith("/api/og/")) {
+            return next();
+        }
+
         const apiKey = context.request.headers.get("x-api-key");
+
         if (apiKey) {
             if (!env.API_KEY || apiKey !== env.API_KEY) {
                 return new Response(JSON.stringify({ message: "Unauthorized" }), { status: 401 });
