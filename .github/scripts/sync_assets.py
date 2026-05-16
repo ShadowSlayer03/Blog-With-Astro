@@ -68,52 +68,111 @@ def upload_to_r2(file_path: Path, r2_key: str):
     )
 
 
-# ============================================================================
-# ONE-TIME SAFE MIGRATION
-# markdown CDN image syntax -> HTML img tags
-# ============================================================================
+def generate_image_tag(url: str, alt: str) -> str:
+    return (
+        "{% image "
+        f'src="{url}" '
+        f'alt="{alt}" '
+        "/%}"
+    )
 
-print("")
-print("==================================================")
-print("Migrating CDN markdown images → HTML")
-print("==================================================")
+
+def generate_video_tag(url: str) -> str:
+    return (
+        "{% video "
+        f'src="{url}" '
+        "/%}"
+    )
+
+
+# ============================================================================
+# FIND MARKDOWN FILES
+# ============================================================================
 
 markdown_files = list(BLOG_CONTENT_DIR.rglob("*.mdoc"))
 markdown_files += list(BLOG_CONTENT_DIR.rglob("*.md"))
 markdown_files += list(BLOG_CONTENT_DIR.rglob("*.mdx"))
 
+# ============================================================================
+# MIGRATIONS
+# ============================================================================
+
+print("")
+print("==================================================")
+print("Running migrations")
+print("==================================================")
+
 cdn_markdown_pattern = re.compile(
     r'!\[([^\]]*)\]\((https://cdn\.[^)]+)\)'
+)
+
+raw_img_pattern = re.compile(
+    r'<img[^>]*src="([^"]+)"[^>]*alt="([^"]*)"[^>]*/?>'
+)
+
+raw_video_pattern = re.compile(
+    r'<video[^>]*>.*?<source src="([^"]+)"[^>]*>.*?</video>',
+    re.DOTALL,
 )
 
 for md_file in markdown_files:
 
     content = md_file.read_text()
+    updated = content
 
-    if not cdn_markdown_pattern.search(content):
-        continue
-
-    print(f"Migrating: {md_file}")
+    # ------------------------------------------------------------------------
+    # Markdown CDN image syntax -> Markdoc tags
+    # ------------------------------------------------------------------------
 
     def replace_cdn_markdown(match):
         alt = match.group(1)
         url = match.group(2)
 
-        return (
-            f'<img src="{url}" '
-            f'alt="{alt}" '
-            f'loading="lazy" '
-            f'decoding="async" '
-            f'class="rounded-xl border border-white/10 my-8 w-full" />'
-        )
+        if any(
+            url.endswith(ext)
+            for ext in VIDEO_EXTENSIONS
+        ):
+            return generate_video_tag(url)
+
+        return generate_image_tag(url, alt)
 
     updated = cdn_markdown_pattern.sub(
         replace_cdn_markdown,
-        content,
+        updated,
     )
 
-    md_file.write_text(updated)
+    # ------------------------------------------------------------------------
+    # Raw HTML img -> Markdoc tags
+    # ------------------------------------------------------------------------
 
+    def replace_raw_img(match):
+        url = match.group(1)
+        alt = match.group(2)
+
+        return generate_image_tag(url, alt)
+
+    updated = raw_img_pattern.sub(
+        replace_raw_img,
+        updated,
+    )
+
+    # ------------------------------------------------------------------------
+    # Raw HTML video -> Markdoc tags
+    # ------------------------------------------------------------------------
+
+    def replace_raw_video(match):
+        url = match.group(1)
+
+        return generate_video_tag(url)
+
+    updated = raw_video_pattern.sub(
+        replace_raw_video,
+        updated,
+    )
+
+    if updated != content:
+        print(f"Migrated: {md_file}")
+        md_file.write_text(updated)
 
 # ============================================================================
 # FIND LOCAL MEDIA
@@ -134,9 +193,11 @@ for root in [PUBLIC_IMAGE_DIR, BLOG_CONTENT_DIR]:
         if file.suffix.lower() not in MEDIA_EXTENSIONS:
             continue
 
+        normalized = str(file).replace("\\", "/")
+
         if (
-            "/content/" in str(file)
-            or str(file).startswith("public/images/blog/")
+            "/content/" in normalized
+            or normalized.startswith("public/images/blog/")
         ):
             media_files.append(file)
 
@@ -154,19 +215,24 @@ for media in media_files:
 
 for file_path in media_files:
 
+    normalized_path = str(file_path).replace("\\", "/")
+
     print("")
     print("==================================================")
-    print(f"Processing: {file_path}")
+    print(f"Processing: {normalized_path}")
     print("==================================================")
 
     # =========================================================================
     # CASE 1
     # public/images/blog/*
+    # Usually heroImage
     # =========================================================================
 
-    if str(file_path).startswith("public/images/blog/"):
+    if normalized_path.startswith("public/images/blog/"):
 
-        public_path = "/" + str(file_path.relative_to("public")).replace("\\", "/")
+        public_path = "/" + str(
+            file_path.relative_to("public")
+        ).replace("\\", "/")
 
         r2_key = public_path.lstrip("/")
 
@@ -193,7 +259,7 @@ for file_path in media_files:
     # src/content/blog/<slug>/content/*
     # =========================================================================
 
-    if "/content/" in str(file_path):
+    if "/content/" in normalized_path:
 
         parts = file_path.parts
 
@@ -218,7 +284,7 @@ for file_path in media_files:
         if not md_file.exists():
             continue
 
-        print("Transforming local markdown asset syntax → CDN HTML")
+        print("Transforming local markdown asset syntax → Markdoc tags")
 
         content = md_file.read_text()
 
@@ -238,22 +304,14 @@ for file_path in media_files:
                 alt = match.group(1)
 
                 if ext in VIDEO_EXTENSIONS:
-                    return (
-                        f'<video controls playsinline preload="metadata" '
-                        f'class="w-full rounded-xl my-8">'
-                        f'<source src="{cdn_url}" type="video/{ext[1:]}" />'
-                        f'</video>'
-                    )
+                    return generate_video_tag(cdn_url)
 
-                return (
-                    f'<img src="{cdn_url}" '
-                    f'alt="{alt}" '
-                    f'loading="lazy" '
-                    f'decoding="async" '
-                    f'class="rounded-xl border border-white/10 my-8 w-full" />'
-                )
+                return generate_image_tag(cdn_url, alt)
 
-            updated = regex.sub(replace_local, updated)
+            updated = regex.sub(
+                replace_local,
+                updated,
+            )
 
         if updated != content:
             md_file.write_text(updated)
