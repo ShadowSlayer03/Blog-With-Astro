@@ -1,4 +1,4 @@
-name: Sync blog images to R2
+name: Sync blog assets to R2
 
 on:
   push:
@@ -7,12 +7,12 @@ on:
     paths:
       - 'public/images/blog/**'
       - 'src/content/blog/**/content/**'
+      - 'src/content/blog/**/*.mdoc'
 
-  # Manual trigger from GitHub Actions UI
   workflow_dispatch:
 
 concurrency:
-  group: sync-images-to-R2
+  group: sync-blog-assets
   cancel-in-progress: false
 
 permissions:
@@ -31,13 +31,18 @@ jobs:
         with:
           fetch-depth: 2
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
       - name: Install Wrangler
         run: npm install -g wrangler
 
-      - name: Run image sync script
+      - name: Run asset sync script
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           R2_BUCKET_NAME: ${{ vars.R2_BUCKET_NAME }}
           CDN_BASE_URL: ${{ vars.CDN_BASE_URL }}
-        run: bash .github/scripts/sync-images-to-R2.sh
+        run: python .github/scripts/sync_assets.py
