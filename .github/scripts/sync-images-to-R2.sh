@@ -30,6 +30,65 @@ escape_sed_replacement() {
 }
 
 # ============================================================================
+# ONE-TIME MIGRATION:
+# Convert existing CDN markdown image syntax -> HTML img tags
+# ============================================================================
+
+echo ""
+echo "=================================================="
+echo "Migrating existing CDN markdown images → HTML..."
+echo "=================================================="
+
+find src/content/blog -type f \
+  \( -name "*.mdoc" -o -name "*.md" -o -name "*.mdx" \) \
+| while IFS= read -r MD_FILE; do
+
+  echo "Processing markdown migration: $MD_FILE"
+
+  TEMP_FILE=$(mktemp)
+
+  awk '
+
+  {
+    line = $0
+
+    while (match(line, /!\[[^]]*\]\(https:\/\/cdn\.[^)]+\)/)) {
+
+      full = substr(line, RSTART, RLENGTH)
+
+      alt = full
+      sub(/^!\[/, "", alt)
+      sub(/\]\(https:\/\/cdn\.[^)]+\)$/, "", alt)
+
+      url = full
+      sub(/^!\[[^]]*\]\(/, "", url)
+      sub(/\)$/, "", url)
+
+      replacement =
+        "<img " \
+        "src=\"" url "\" " \
+        "alt=\"" alt "\" " \
+        "loading=\"lazy\" " \
+        "decoding=\"async\" " \
+        "class=\"rounded-xl border border-white/10 my-8 w-full\" " \
+        "/>"
+
+      line =
+        substr(line, 1, RSTART - 1) \
+        replacement \
+        substr(line, RSTART + RLENGTH)
+    }
+
+    print line
+  }
+
+  ' "$MD_FILE" > "$TEMP_FILE"
+
+  mv "$TEMP_FILE" "$MD_FILE"
+
+done
+
+# ============================================================================
 # Find ALL remaining local blog media
 # ============================================================================
 
@@ -50,11 +109,10 @@ CHANGED=$(find public/images/blog src/content/blog -type f \
 
 if [ -z "$CHANGED" ]; then
   echo "No media left to process."
-  exit 0
+else
+  echo "Found media:"
+  echo "$CHANGED"
 fi
-
-echo "Found media:"
-echo "$CHANGED"
 
 # ============================================================================
 # Process media one-by-one
@@ -109,12 +167,6 @@ while IFS= read -r FILE; do
     grep -rlF -- "$PUBLIC_PATH" src/content/blog/ 2>/dev/null | while IFS= read -r MD_FILE; do
       sed -i "s|${SED_PUBLIC_PATH}|${SED_CDN_URL}|g" "$MD_FILE"
     done
-
-    # IMPORTANT:
-    # DO NOT DELETE LOCAL FILES
-    # Keystatic internally tracks them.
-    #
-    # rm "$FILE"
 
   fi
 
@@ -249,12 +301,6 @@ while IFS= read -r FILE; do
       mv "$TEMP_FILE" "$MD_FILE"
 
       echo "Successfully transformed asset references."
-
-      # IMPORTANT:
-      # DO NOT DELETE LOCAL FILES
-      # Keystatic internally tracks them.
-      #
-      # rm "$FILE"
 
     else
       echo "Could not find markdown file for slug: $POST_SLUG"
