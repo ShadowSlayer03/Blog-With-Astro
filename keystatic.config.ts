@@ -25,7 +25,13 @@ export default config({
         title: fields.slug({ name: { label: 'Title' } }),
         description: fields.text({ label: 'Description', multiline: true }),
         pubDate: fields.date({ label: 'Publication Date' }),
-        repComm: fields.text({ label: 'REP COMM %', defaultValue: '0%' }),
+        updatedDate: fields.date({ label: 'Updated Date' }),
+        heroImage: fields.text({ label: 'Hero Image URL / Path' }),
+        draft: fields.checkbox({ label: 'Draft', defaultValue: false }),
+        tags: fields.array(fields.text({ label: 'Tag' }), {
+          label: 'Tags',
+          itemLabel: (props) => props.value,
+        }),
 
         content: fields.document({
           label: 'Content',
