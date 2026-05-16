@@ -41,7 +41,7 @@ const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
 
 const currentUrl = new URL(Astro.url.pathname, Astro.site).toString();
 
-const ogImage = heroImage || `/og/${slug}.png`;
+const ogImage = `/api/og/${slug}.png` || heroImage;
 ---
 
 <BaseLayout
