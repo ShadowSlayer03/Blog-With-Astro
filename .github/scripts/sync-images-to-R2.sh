@@ -14,6 +14,9 @@ get_content_type() {
     webp) echo "image/webp" ;;
     avif) echo "image/avif" ;;
     svg) echo "image/svg+xml" ;;
+    mp4) echo "video/mp4" ;;
+    webm) echo "video/webm" ;;
+    mov) echo "video/quicktime" ;;
     *) echo "application/octet-stream" ;;
   esac
 }
@@ -27,23 +30,34 @@ escape_sed_replacement() {
 }
 
 # ============================================================================
-# Find ALL remaining local blog images
+# Find ALL remaining local blog media
 # ============================================================================
 
 CHANGED=$(find public/images/blog src/content/blog -type f \
-  \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.webp" -o -iname "*.gif" -o -iname "*.avif" -o -iname "*.svg" \) \
+  \( \
+    -iname "*.png" \
+    -o -iname "*.jpg" \
+    -o -iname "*.jpeg" \
+    -o -iname "*.webp" \
+    -o -iname "*.gif" \
+    -o -iname "*.avif" \
+    -o -iname "*.svg" \
+    -o -iname "*.mp4" \
+    -o -iname "*.webm" \
+    -o -iname "*.mov" \
+  \) \
   2>/dev/null || true)
 
 if [ -z "$CHANGED" ]; then
-  echo "No images left to process."
+  echo "No media left to process."
   exit 0
 fi
 
-echo "Found images:"
+echo "Found media:"
 echo "$CHANGED"
 
 # ============================================================================
-# Process images one-by-one
+# Process media one-by-one
 # ============================================================================
 
 while IFS= read -r FILE; do
@@ -55,15 +69,7 @@ while IFS= read -r FILE; do
   echo "Processing: $FILE"
   echo "=================================================="
 
-  # --------------------------------------------------------------------------
-  # Skip if this image is already referenced via CDN URL in any markdown file
-  # --------------------------------------------------------------------------
-  IMAGE_NAME=$(basename "$FILE")
-  if grep -rl "${CDN_BASE_URL}" src/content/blog/ 2>/dev/null | xargs grep -l "$IMAGE_NAME" 2>/dev/null | grep -q .; then
-    echo "Skipping (already on CDN): $FILE"
-    continue
-  fi
-
+  FILE_NAME=$(basename "$FILE")
   CONTENT_TYPE=$(get_content_type "$FILE")
 
   # ==========================================================================
@@ -81,7 +87,7 @@ while IFS= read -r FILE; do
     echo "R2 Key: $R2_KEY"
     echo "CDN URL: $CDN_URL"
 
-    echo "Uploading public image to REAL R2..."
+    echo "Uploading public asset to R2..."
 
     if wrangler r2 object put "${R2_BUCKET_NAME}/${R2_KEY}" \
       --remote \
@@ -95,39 +101,49 @@ while IFS= read -r FILE; do
       continue
     fi
 
-    echo "Replacing markdown references..."
+    echo "Replacing public asset references..."
 
     SED_PUBLIC_PATH=$(escape_sed_pattern "$PUBLIC_PATH")
     SED_CDN_URL=$(escape_sed_replacement "$CDN_URL")
 
-    grep -rlF -- "$PUBLIC_PATH" src/content/blog/ | while IFS= read -r MD_FILE; do
+    grep -rlF -- "$PUBLIC_PATH" src/content/blog/ 2>/dev/null | while IFS= read -r MD_FILE; do
       sed -i "s|${SED_PUBLIC_PATH}|${SED_CDN_URL}|g" "$MD_FILE"
     done
 
-    echo "Removing local image..."
-
-    rm "$FILE"
+    # IMPORTANT:
+    # DO NOT DELETE LOCAL FILES
+    # Keystatic internally tracks them.
+    #
+    # rm "$FILE"
 
   fi
 
   # ==========================================================================
-  # CASE 2: Keystatic content images
+  # CASE 2: Keystatic content assets
   # ==========================================================================
 
   if [[ "$FILE" == src/content/blog/*/content/* ]]; then
 
     POST_SLUG=$(echo "$FILE" | cut -d'/' -f4)
 
-    IMAGE_NAME=$(basename "$FILE")
+    EXTENSION="${FILE_NAME##*.}"
 
-    R2_KEY="images/blog/${POST_SLUG}/${IMAGE_NAME}"
+    # ------------------------------------------------------------------------
+    # Decide CDN folder
+    # ------------------------------------------------------------------------
+
+    if [[ "$EXTENSION" =~ ^(mp4|webm|mov)$ ]]; then
+      R2_KEY="videos/blog/${POST_SLUG}/${FILE_NAME}"
+    else
+      R2_KEY="images/blog/${POST_SLUG}/${FILE_NAME}"
+    fi
 
     CDN_URL="${CDN_BASE_URL}/${R2_KEY}"
 
     echo "R2 Key: $R2_KEY"
     echo "CDN URL: $CDN_URL"
 
-    echo "Uploading Keystatic content image to REAL R2..."
+    echo "Uploading Keystatic asset to R2..."
 
     if wrangler r2 object put "${R2_BUCKET_NAME}/${R2_KEY}" \
       --remote \
@@ -141,7 +157,10 @@ while IFS= read -r FILE; do
       continue
     fi
 
-    # Find the markdown file — check .mdoc first, then .md, then .mdx
+    # ------------------------------------------------------------------------
+    # Find markdown file
+    # ------------------------------------------------------------------------
+
     MD_FILE="src/content/blog/${POST_SLUG}.mdoc"
 
     if [ ! -f "$MD_FILE" ]; then
@@ -154,27 +173,88 @@ while IFS= read -r FILE; do
 
     if [ -f "$MD_FILE" ]; then
 
-      echo "Replacing markdown references in: $MD_FILE"
+      echo "Transforming markdown asset syntax → HTML..."
 
-      RELATIVE_PATH_1="./content/${IMAGE_NAME}"
-      RELATIVE_PATH_2="content/${IMAGE_NAME}"
-      RELATIVE_PATH_3="${IMAGE_NAME}"
+      TEMP_FILE=$(mktemp)
 
-      SED_RELATIVE_PATH_1=$(escape_sed_pattern "$RELATIVE_PATH_1")
-      SED_RELATIVE_PATH_2=$(escape_sed_pattern "$RELATIVE_PATH_2")
-      SED_RELATIVE_PATH_3=$(escape_sed_pattern "$RELATIVE_PATH_3")
+      awk \
+        -v filename="$FILE_NAME" \
+        -v cdn="$CDN_URL" \
+        -v ext="$EXTENSION" \
+      '
 
-      SED_CDN_URL=$(escape_sed_replacement "$CDN_URL")
+      function is_video(extension) {
+        return (
+          extension == "mp4" ||
+          extension == "webm" ||
+          extension == "mov"
+        )
+      }
 
-      sed -E -i "s|\(${SED_RELATIVE_PATH_1}\)|(${SED_CDN_URL})|g" "$MD_FILE"
+      {
+        line = $0
 
-      sed -E -i "s|\(${SED_RELATIVE_PATH_2}\)|(${SED_CDN_URL})|g" "$MD_FILE"
+        while (match(line, /!\[[^]]*\]\([^)]+\)/)) {
 
-      sed -E -i "s|\(${SED_RELATIVE_PATH_3}\)|(${SED_CDN_URL})|g" "$MD_FILE"
+          full = substr(line, RSTART, RLENGTH)
 
-      echo "Removing local image..."
+          alt = full
+          sub(/^!\[/, "", alt)
+          sub(/\]\([^)]+\)$/, "", alt)
 
-      rm "$FILE"
+          path = full
+          sub(/^!\[[^]]*\]\(/, "", path)
+          sub(/\)$/, "", path)
+
+          if (
+            path == "./content/" filename ||
+            path == "content/" filename ||
+            path == filename
+          ) {
+
+            if (is_video(ext)) {
+
+              replacement =
+                "<video controls playsinline preload=\"metadata\" class=\"w-full rounded-xl my-8\">" \
+                "<source src=\"" cdn "\" type=\"video/" ext "\" />" \
+                "</video>"
+
+            } else {
+
+              replacement =
+                "<img " \
+                "src=\"" cdn "\" " \
+                "alt=\"" alt "\" " \
+                "loading=\"lazy\" " \
+                "decoding=\"async\" " \
+                "class=\"rounded-xl border border-white/10 my-8 w-full\" " \
+                "/>"
+            }
+
+            line =
+              substr(line, 1, RSTART - 1) \
+              replacement \
+              substr(line, RSTART + RLENGTH)
+
+          } else {
+            break
+          }
+        }
+
+        print line
+      }
+
+      ' "$MD_FILE" > "$TEMP_FILE"
+
+      mv "$TEMP_FILE" "$MD_FILE"
+
+      echo "Successfully transformed asset references."
+
+      # IMPORTANT:
+      # DO NOT DELETE LOCAL FILES
+      # Keystatic internally tracks them.
+      #
+      # rm "$FILE"
 
     else
       echo "Could not find markdown file for slug: $POST_SLUG"
@@ -198,6 +278,6 @@ if git diff --staged --quiet; then
   exit 0
 fi
 
-git commit -m "chore: migrate blog images to R2 CDN [skip ci]"
+git commit -m "chore: sync blog assets to R2 CDN [skip ci]"
 
 git push
