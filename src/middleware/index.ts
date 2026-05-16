@@ -4,11 +4,16 @@ import { env } from "cloudflare:workers";
 const SECURITY_HEADERS = {
     "X-Content-Type-Options": "nosniff",
     "Referrer-Policy": "strict-origin-when-cross-origin",
-    "X-Frame-Options": "DENY",
 }
 
 export const onRequest = defineMiddleware(async (context, next) => {
     const url = new URL(context.request.url);
+
+    const isKeystaticRoute = url.pathname.startsWith("/keystatic");
+
+    if (isKeystaticRoute) {
+        return next()
+    }
 
     if (url.pathname.startsWith("/api/")) {
         const apiKey = context.request.headers.get("x-api-key");
@@ -35,7 +40,12 @@ export const onRequest = defineMiddleware(async (context, next) => {
     const response = await next();
     const newResponse = new Response(response.body, response);
 
-    Object.entries(SECURITY_HEADERS).forEach(([key, value]) => {
+    const headers = {
+        ...SECURITY_HEADERS,
+        ...(!isKeystaticRoute && { "X-Frame-Options": "DENY" }),
+    }
+
+    Object.entries(headers).forEach(([key, value]) => {
         newResponse.headers.set(key, value);
     });
 
