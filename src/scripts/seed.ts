@@ -18,7 +18,7 @@ function getBlogSlugs(): string[] {
     return fs
         .readdirSync(blogDir)
         .filter((file) =>
-            file.endsWith(".md") ||
+            file.endsWith(".mdoc") ||
             file.endsWith(".mdx")
         )
         .map((file) => path.basename(file, path.extname(file)))
