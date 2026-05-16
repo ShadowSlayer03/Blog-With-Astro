@@ -64,19 +64,9 @@ find src/content/blog -type f \
       sub(/^!\[[^]]*\]\(/, "", url)
       sub(/\)$/, "", url)
 
-      replacement =
-        "<img " \
-        "src=\"" url "\" " \
-        "alt=\"" alt "\" " \
-        "loading=\"lazy\" " \
-        "decoding=\"async\" " \
-        "class=\"rounded-xl border border-white/10 my-8 w-full\" " \
-        "/>"
+      replacement = "<img src=\"" url "\" alt=\"" alt "\" loading=\"lazy\" decoding=\"async\" class=\"rounded-xl border border-white/10 my-8 w-full\" />"
 
-      line =
-        substr(line, 1, RSTART - 1) \
-        replacement \
-        substr(line, RSTART + RLENGTH)
+      line = substr(line, 1, RSTART - 1) replacement substr(line, RSTART + RLENGTH)
     }
 
     print line
@@ -266,27 +256,14 @@ while IFS= read -r FILE; do
 
             if (is_video(ext)) {
 
-              replacement =
-                "<video controls playsinline preload=\"metadata\" class=\"w-full rounded-xl my-8\">" \
-                "<source src=\"" cdn "\" type=\"video/" ext "\" />" \
-                "</video>"
+              replacement = "<video controls playsinline preload=\"metadata\" class=\"w-full rounded-xl my-8\"><source src=\"" cdn "\" type=\"video/" ext "\" /></video>"
 
             } else {
 
-              replacement =
-                "<img " \
-                "src=\"" cdn "\" " \
-                "alt=\"" alt "\" " \
-                "loading=\"lazy\" " \
-                "decoding=\"async\" " \
-                "class=\"rounded-xl border border-white/10 my-8 w-full\" " \
-                "/>"
+              replacement = "<img src=\"" cdn "\" alt=\"" alt "\" loading=\"lazy\" decoding=\"async\" class=\"rounded-xl border border-white/10 my-8 w-full\" />"
             }
 
-            line =
-              substr(line, 1, RSTART - 1) \
-              replacement \
-              substr(line, RSTART + RLENGTH)
+            line = substr(line, 1, RSTART - 1) replacement substr(line, RSTART + RLENGTH)
 
           } else {
             break
