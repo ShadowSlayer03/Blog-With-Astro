@@ -1,4 +1,4 @@
-import { config, fields, collection } from '@keystatic/core';
+import { config, fields, collection, component } from '@keystatic/core';
 
 export default config({
   storage: {
@@ -17,45 +17,67 @@ export default config({
   },
   collections: {
     blog: collection({
-      label: 'Blog Posts',
+      label: 'Blog',
       slugField: 'title',
       path: 'src/content/blog/*',
       format: { contentField: 'content' },
-      entryLayout: 'content',
       schema: {
-        title: fields.slug({
-          name: { label: 'Title', validation: { isRequired: true } },
-        }),
-        description: fields.text({
-          label: 'Description',
-          multiline: true,
-          validation: { isRequired: true },
-        }),
-        pubDate: fields.date({
-          label: 'Published Date',
-          validation: { isRequired: true },
-        }),
-        updatedDate: fields.date({
-          label: 'Updated Date',
-        }),
-        heroImage: fields.image({
-          label: 'Hero Image',
-          description: 'Upload the hero image',
-          directory: 'public/images/blog',
-          publicPath: '/images/blog/',
-        }),
-        tags: fields.array(fields.text({ label: 'Tag' }), {
-          label: 'Tags',
-          itemLabel: (props) => props.value,
-        }),
-        draft: fields.checkbox({
-          label: 'Draft',
-          defaultValue: false,
-          description: 'Draft posts are not published',
-        }),
-        content: fields.markdoc({
+        title: fields.slug({ name: { label: 'Title' } }),
+        description: fields.text({ label: 'Description', multiline: true }),
+        pubDate: fields.date({ label: 'Publication Date' }),
+        repComm: fields.text({ label: 'REP COMM %', defaultValue: '0%' }),
+
+        content: fields.document({
           label: 'Content',
-          extension: 'mdoc',
+          formatting: true,
+          dividers: true,
+          links: true,
+          tables: true,
+          componentBlocks: {
+            image: component({
+              label: 'Custom Image',
+              schema: {
+                src: fields.text({
+                  label: 'Image URL / Public Path',
+                  validation: { length: { min: 1 } }
+                }),
+                alt: fields.text({ label: 'Alt Text', defaultValue: '' }),
+                class: fields.text({ label: 'Extra CSS Classes', defaultValue: '' }),
+                loading: fields.select({
+                  label: 'Loading Strategy',
+                  options: [
+                    { label: 'Lazy (Default)', value: 'lazy' },
+                    { label: 'Eager', value: 'eager' },
+                  ],
+                  defaultValue: 'lazy',
+                }),
+                decoding: fields.select({
+                  label: 'Decoding Strategy',
+                  options: [
+                    { label: 'Async (Default)', value: 'async' },
+                    { label: 'Sync', value: 'sync' },
+                    { label: 'Auto', value: 'auto' },
+                  ],
+                  defaultValue: 'async',
+                }),
+              },
+              preview: (props) => null,
+            }),
+            video: component({
+              label: 'Custom Video',
+              schema: {
+                src: fields.text({
+                  label: 'Video Source URL',
+                  validation: { length: { min: 1 } }
+                }),
+                class: fields.text({
+                  label: 'Extra CSS Classes',
+                  defaultValue: 'w-full rounded-xl my-8'
+                }),
+              },
+              preview: (props) => null,
+            }),
+          },
         }),
       },
     }),
