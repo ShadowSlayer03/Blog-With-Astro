@@ -55,6 +55,15 @@ while IFS= read -r FILE; do
   echo "Processing: $FILE"
   echo "=================================================="
 
+  # --------------------------------------------------------------------------
+  # Skip if this image is already referenced via CDN URL in any markdown file
+  # --------------------------------------------------------------------------
+  IMAGE_NAME=$(basename "$FILE")
+  if grep -rl "${CDN_BASE_URL}" src/content/blog/ 2>/dev/null | xargs grep -l "$IMAGE_NAME" 2>/dev/null | grep -q .; then
+    echo "Skipping (already on CDN): $FILE"
+    continue
+  fi
+
   CONTENT_TYPE=$(get_content_type "$FILE")
 
   # ==========================================================================
@@ -132,7 +141,12 @@ while IFS= read -r FILE; do
       continue
     fi
 
-    MD_FILE="src/content/blog/${POST_SLUG}.md"
+    # Find the markdown file — check .mdoc first, then .md, then .mdx
+    MD_FILE="src/content/blog/${POST_SLUG}.mdoc"
+
+    if [ ! -f "$MD_FILE" ]; then
+      MD_FILE="src/content/blog/${POST_SLUG}.md"
+    fi
 
     if [ ! -f "$MD_FILE" ]; then
       MD_FILE="src/content/blog/${POST_SLUG}.mdx"
@@ -140,7 +154,7 @@ while IFS= read -r FILE; do
 
     if [ -f "$MD_FILE" ]; then
 
-      echo "Replacing markdown references..."
+      echo "Replacing markdown references in: $MD_FILE"
 
       RELATIVE_PATH_1="./content/${IMAGE_NAME}"
       RELATIVE_PATH_2="content/${IMAGE_NAME}"
