@@ -17,7 +17,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
     if (url.pathname.startsWith("/api/")) {
 
-        if (url.pathname.startsWith("/api/og/")) {
+        if (url.pathname.startsWith("/api/og/") || url.pathname === "/api/og.png") {
             return next();
         }
 
