@@ -8,7 +8,9 @@ import keystatic from '@keystatic/astro';
 import cloudflare from '@astrojs/cloudflare';
 import node from '@astrojs/node';
 import tailwindcss from '@tailwindcss/vite';
-import pagefind from "astro-pagefind";
+import pagefind from 'astro-pagefind';
+import wasm from 'vite-plugin-wasm';
+import topLevelAwait from 'vite-plugin-top-level-await';
 import { fileURLToPath } from 'url';
 
 // Keystatic's virtual:keystatic-config module) and the Cloudflare adapter
@@ -26,11 +28,13 @@ export default defineConfig({
     react(),
     markdoc(),
     keystatic(),
-    pagefind()
+    pagefind(),
   ],
   vite: {
     plugins: [
       tailwindcss(),
+      wasm(),
+      topLevelAwait(),
     ],
     resolve: {
       alias: isProduction ? {} : {
@@ -40,8 +44,8 @@ export default defineConfig({
       },
     },
     server: {
-      allowedHosts: ["astroblog.share.zrok.io"]
-    }
+      allowedHosts: ['astroblog.share.zrok.io'],
+    },
   },
   markdown: {
     shikiConfig: {
