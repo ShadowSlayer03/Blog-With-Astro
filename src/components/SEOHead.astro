@@ -9,11 +9,24 @@ export interface Props {
 const {
   title,
   description,
-  image = '/og-default.png',
+  image,
   article = false,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+let finalOgImage = '/og-default.png';
+
+if (image) {
+  finalOgImage = image;
+} else {
+  const ogUrlParams = new URLSearchParams();
+  ogUrlParams.append('title', title);
+  ogUrlParams.append('description', description);
+  finalOgImage = `/api/og.png?${ogUrlParams.toString()}`;
+}
+
+const ogImageUrl = new URL(finalOgImage, Astro.url);
 ---
 
 <meta charset="utf-8" />
@@ -51,13 +64,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 <meta property="og:url" content={Astro.url} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={new URL(image, Astro.url)} />
+<meta property="og:image" content={ogImageUrl} />
 
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content={Astro.url} />
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={new URL(image, Astro.url)} />
+<meta property="twitter:image" content={ogImageUrl} />
 
 <script is:inline>
   const theme = (() => {

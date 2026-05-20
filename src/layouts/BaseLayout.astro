@@ -12,14 +12,23 @@ export interface Props {
   isBlogPost?: boolean;
 }
 
-const { title, description, image, article, isBlogPost = false } = Astro.props;
+const { 
+  title, 
+  description, 
+  image, 
+  article, 
+  isBlogPost = false 
+} = Astro.props;
+
+const pageParam = Astro.url.searchParams.get("page");
+const structuralTitle = pageParam && pageParam !== "1" ? `${title} (Page ${pageParam})` : title;
 ---
 
 <!doctype html>
 <html lang="en" class="scroll-smooth">
   <head>
     <SEOHead
-      title={title}
+      title={structuralTitle}
       description={description}
       image={image}
       article={article}

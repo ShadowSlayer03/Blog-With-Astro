@@ -8,6 +8,11 @@ declare module "cloudflare:workers" {
   };
 }
 
+declare module '*.wasm' {
+  const content: WebAssembly.Module;
+  export default content;
+}
+
 interface ImportMetaEnv {
   readonly TURSO_DB_URL: string;
   readonly TURSO_AUTH_TOKEN: string;
