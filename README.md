@@ -30,7 +30,7 @@ The site is deployed on Cloudflare’s edge network and powered by Astro Islands
 
 ### Mobile View
 
-![Mobile View](./public/screenshots/mobile-view.png)
+<img src="./public/screenshots/mobile-view.png" alt="Mobile View" width="300" height="600">
 
 ---
 
